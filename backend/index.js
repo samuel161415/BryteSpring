@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Import DB connection
+const { connectToDatabase } = require('./db/connection');
+
 // Import routes
 const indexRouter = require('./routes');
 
@@ -18,6 +21,14 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+// Start server after DB is connected
+connectToDatabase()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server running at http://localhost:${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Failed to start server due to DB connection error:', error.message);
+    process.exit(1);
+  });
