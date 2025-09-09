@@ -9,6 +9,7 @@ const { validationResult } = require('express-validator');
 // Create initial verse (for superadmin)
 // Create initial verse (for superadmin)
 exports.createInitialVerse = async (req, res) => {
+  console.log("Creating initial verse");
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -245,7 +246,7 @@ exports.completeVerseSetup = async (req, res) => {
     }
   };
 
-// Get verse by ID
+// Get verse by IDID
 exports.getVerse = async (req, res) => {
   try {
     const { id } = req.params;
