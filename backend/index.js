@@ -8,12 +8,14 @@ const { connectToDatabase } = require('./db/connection');
 
 // Import routes
 const indexRouter = require('./routes');
+const verseRouter = require('./routes/verse');
 
 // Middleware
 app.use(express.json());
 
 // Routes
 app.use('/', indexRouter);
+app.use('/verse', verseRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
