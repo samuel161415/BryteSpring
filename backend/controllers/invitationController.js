@@ -1,6 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
 const Invitation = require('../models/Invitation');
 const Role = require('../models/Role');
+const Verse = require('../models/Verse');
+const { sendInvitationEmail } = require('../services/email');
 
 // Create invitation (admin or superadmin)
 exports.createInvitation = async (req, res) => {
@@ -12,7 +14,8 @@ exports.createInvitation = async (req, res) => {
       first_name,
       last_name,
       position,
-      expires_in_days = 7
+      expires_in_days = 7,
+      subdomain
     } = req.body;
 
     // Basic auth check: require authenticated user
@@ -20,9 +23,6 @@ exports.createInvitation = async (req, res) => {
     if (!inviter) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
-
-    // Optional: ensure inviter has permission (superadmin or manage_verse)
-    // This can be expanded later using UserRole and Role permissions if needed.
 
     // Validate role exists and belongs to the same verse
     const role = await Role.findOne({ _id: role_id, verse_id });
@@ -50,7 +50,20 @@ exports.createInvitation = async (req, res) => {
 
     await invitation.save();
 
-    // TODO: send email with token
+    // Try sending an email (non-blocking error)
+    let verseName = undefined;
+    try {
+      const verse = await Verse.findById(verse_id).select('name');
+      verseName = verse?.name;
+    } catch {}
+    await sendInvitationEmail({
+      to: invitation.email,
+      verseName,
+      roleName: role.name,
+      token: invitation.token,
+      subdomain,
+      fromEmail: inviter.email
+    });
 
     return res.status(200).json({
       message: 'Invitation created',

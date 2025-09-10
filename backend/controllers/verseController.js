@@ -6,6 +6,7 @@ const UserRole = require('../models/UserRole');
 const ActivityLog = require('../models/ActivityLog');
 const Invitation = require('../models/Invitation');
 const { v4: uuidv4 } = require('uuid');
+const { sendInvitationEmail } = require('../services/email');
 const { validationResult } = require('express-validator');
 
 // Create initial verse (for superadmin)
@@ -18,7 +19,7 @@ exports.createInitialVerse = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
       }
   
-      const { name, admin_email, first_name, last_name, position } = req.body;
+      const { name, admin_email, first_name, last_name, position, subdomain } = req.body;
       const superadminId = req.user._id;
   
       // Check if superadmin
@@ -77,6 +78,16 @@ exports.createInitialVerse = async (req, res) => {
         position: position || ''
       });
       await invitation.save();
+
+      // Attempt to send invitation email (non-blocking)
+      await sendInvitationEmail({
+        to: invitation.email,
+        verseName: verse.name,
+        roleName: 'Administrator',
+        token: invitation.token,
+        subdomain,
+        fromEmail: superadmin.email
+      });
   
       // Log the activity
       const activityLog = new ActivityLog({
