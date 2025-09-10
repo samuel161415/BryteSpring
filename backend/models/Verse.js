@@ -67,7 +67,7 @@ const verseSchema = new mongoose.Schema({
   created_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false
   },
   created_at: {
     type: Date,
