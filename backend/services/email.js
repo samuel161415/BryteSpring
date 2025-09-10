@@ -1,6 +1,7 @@
 const { Resend } = require('resend');
+const nodemailer = require("nodemailer");
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const RESEND_API_KEY = "process.env.RESEND_API_KEY";
 const INVITE_BASE_URL = process.env.INVITE_BASE_URL || 'http://localhost:3000';
 const FROM_ADDRESS = process.env.EMAIL_FROM || 'onboarding@resend.dev';
 
@@ -15,9 +16,21 @@ function buildInviteLink({ token, subdomain }) {
   }
   return url.toString();
 }
-
+function getTransporter() {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: Number(process.env.SMTP_PORT) === 465, // true for SSL
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+}
 async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, fromEmail }) {
   const inviteLink = buildInviteLink({ token, subdomain });
+
+
   const subject = `Invitation to join ${verseName || 'a verse'} as ${roleName || 'member'}`;
   const html = `
     <div style="font-family: Arial, sans-serif; line-height: 1.5;">
@@ -36,12 +49,20 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
     console.log("From email:", fromEmail || FROM_ADDRESS);
     console.log("Subject:", subject);
     console.log("HTML:", html);
-    const response = await resend.emails.send({
-      from: fromEmail || FROM_ADDRESS,
+    const transporter = getTransporter();
+  
+    const response= await transporter.sendMail({
+      from: `${process.env.FROM_NAME} <${fromEmail || FROM_ADDRESS}>`,
       to,
-      subject,
-      html,
+      subject: subject,
+      html:html
     });
+    // const response = await resend.emails.send({
+    //   from: fromEmail || FROM_ADDRESS,
+    //   to,
+    //   subject,
+    //   html,
+    // });
     console.log("Response:", response);
     return { ok: true };
   } catch (err) {
