@@ -1,6 +1,6 @@
 const { Resend } = require('resend');
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY || 're_MMqeEPGo_AvPRZke4hcVzMG4vzZxU5vTa';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const INVITE_BASE_URL = process.env.INVITE_BASE_URL || 'http://localhost:3000';
 const FROM_ADDRESS = process.env.EMAIL_FROM || 'onboarding@resend.dev';
 
