@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Invitation = require("../models/Invitation");
+const UserRole = require("../models/UserRole");
 
 // Generate JWT
 const generateToken = (id) => {
@@ -15,7 +17,8 @@ const registerUser = async (req, res) => {
     first_name,
     last_name,
     avatar_url,
-    joined_verse = []
+    joined_verse = [],
+    invitation_token
   } = req.body;
 
   try {
@@ -37,6 +40,50 @@ const registerUser = async (req, res) => {
     await user.setPassword(password);
 
     await user.save();
+
+    // If invitation token provided, attach role and verse membership
+    if (invitation_token) {
+      const invitation = await Invitation.findOne({ token: invitation_token });
+      if (!invitation) {
+        return res.status(400).json({ message: "Invalid invitation token" });
+      }
+      if (invitation.is_accepted) {
+        return res.status(400).json({ message: "Invitation already accepted" });
+      }
+      if (invitation.expires_at && invitation.expires_at < new Date()) {
+        return res.status(400).json({ message: "Invitation expired" });
+      }
+
+      // Create user role from invitation
+      try {
+        await UserRole.create({
+          user_id: user._id,
+          verse_id: invitation.verse_id,
+          role_id: invitation.role_id,
+          assigned_at: new Date(),
+        });
+      } catch (e) {
+        // ignore duplicate if already assigned for safety
+      }
+
+      // Add verse membership to user profile if not present
+      if (!Array.isArray(user.joined_verse)) {
+        user.joined_verse = [];
+      }
+      // This should be done during verse join process
+      // const alreadyJoined = user.joined_verse
+      //   .map((v) => v.toString())
+      //   .includes(invitation.verse_id.toString());
+      // if (!alreadyJoined) {
+      //   user.joined_verse.push(invitation.verse_id);
+      //   await user.save();
+      // }
+
+      // Mark invitation accepted
+      invitation.is_accepted = true;
+      invitation.accepted_at = new Date();
+      await invitation.save();
+    }
 
     // Return response with JWT
     res.status(201).json({

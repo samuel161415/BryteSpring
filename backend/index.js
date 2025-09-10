@@ -9,6 +9,7 @@ const { connectToDatabase } = require('./db/connection');
 // Import routes
 const indexRouter = require('./routes');
 const verseRouter = require('./routes/verse');
+const invitationRouter = require('./routes/invitation');
 
 // Middleware
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use(express.json());
 // Routes
 app.use('/', indexRouter);
 app.use('/verse', verseRouter);
+app.use('/invitation', invitationRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
