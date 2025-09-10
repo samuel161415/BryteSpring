@@ -4,6 +4,8 @@ const User = require('../models/User');
 const Role = require('../models/Role');
 const UserRole = require('../models/UserRole');
 const ActivityLog = require('../models/ActivityLog');
+const Invitation = require('../models/Invitation');
+const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
 
 // Create initial verse (for superadmin)
@@ -16,7 +18,7 @@ exports.createInitialVerse = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
       }
   
-      const { name, admin_email } = req.body;
+      const { name, admin_email, first_name, last_name, position } = req.body;
       const superadminId = req.user._id;
   
       // Check if superadmin
@@ -25,21 +27,18 @@ exports.createInitialVerse = async (req, res) => {
         return res.status(403).json({ message: 'Only superadmins can create initial verses' });
       }
   
-      // Check if admin email exists as a user
+      // Optionally check if admin email already exists as a user (not required to proceed)
       const adminUser = await User.findOne({ email: admin_email.toLowerCase() });
-      if (!adminUser) {
-        return res.status(400).json({ message: 'Admin user not found with this email' });
-      }
   
       const verse = new Verse({
         name,
         admin_email: admin_email.toLowerCase(),
-        created_by: adminUser._id, // Set created_by to admin, not superadmin
+        created_by: adminUser ? adminUser._id : null,
         is_setup_complete: false
       });
   
       await verse.save();
-  
+
       // Ensure Administrator role exists for this verse (idempotent)
       const adminRole = await Role.findOneAndUpdate(
         { verse_id: verse._id, name: 'Administrator' },
@@ -59,21 +58,25 @@ exports.createInitialVerse = async (req, res) => {
         { new: true, upsert: true }
       );
   
-      // Assign admin role to the user (idempotent-ish)
-      const existingUserRole = await UserRole.findOne({
-        user_id: adminUser._id,
+      // Create an invitation for the admin (user may not exist yet)
+      const token = uuidv4();
+      const now = new Date();
+      const expires_at = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // default 7 days
+
+      const invitation = new Invitation({
         verse_id: verse._id,
+        email: admin_email.toLowerCase(),
         role_id: adminRole._id,
+        token,
+        invited_by: superadminId,
+        is_accepted: false,
+        created_at: now,
+        expires_at,
+        first_name: first_name || '',
+        last_name: last_name || '',
+        position: position || ''
       });
-      if (!existingUserRole) {
-        const userRole = new UserRole({
-          user_id: adminUser._id,
-          verse_id: verse._id,
-          role_id: adminRole._id,
-          assigned_at: new Date()
-        });
-        await userRole.save();
-      }
+      await invitation.save();
   
       // Log the activity
       const activityLog = new ActivityLog({
@@ -86,13 +89,14 @@ exports.createInitialVerse = async (req, res) => {
         details: {
           verse_name: name,
           admin_email: admin_email,
-          action: 'verse_created_by_superadmin'
+          action: 'verse_created_by_superadmin',
+          invitation_token: token
         }
       });
       await activityLog.save();
   
       res.status(201).json({
-        message: 'Verse created successfully. Admin role assigned.',
+        message: 'Verse created successfully. Invitation created for admin.',
         verse: {
           _id: verse._id,
           name: verse.name,
@@ -100,6 +104,13 @@ exports.createInitialVerse = async (req, res) => {
           created_by: verse.created_by,
           is_setup_complete: verse.is_setup_complete,
           created_at: verse.created_at
+        },
+        invitation: {
+          _id: invitation._id,
+          token: invitation.token,
+          email: invitation.email,
+          expires_at: invitation.expires_at,
+          role_id: adminRole._id
         }
       });
     } catch (error) {
