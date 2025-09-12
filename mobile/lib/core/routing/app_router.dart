@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
@@ -29,7 +28,8 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.almostJoinVerse}',
       name: Routelists.almostJoinVerse,
-      pageBuilder: (context, state) => _buildPage(context, state, JoinVerseAlmostDone()),
+      pageBuilder: (context, state) =>
+          _buildPage(context, state, JoinVerseAlmostDone()),
     ),
     GoRoute(
       path: '/${Routelists.joinVerse}',
@@ -39,7 +39,8 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.getToKnowRole}',
       name: Routelists.getToKnowRole,
-      pageBuilder: (context, state) => _buildPage(context, state, GetToKnowRole()),
+      pageBuilder: (context, state) =>
+          _buildPage(context, state, GetToKnowRole()),
     ),
   ];
 
@@ -48,17 +49,7 @@ class AppRouter {
     GoRouterState state,
     Widget child,
   ) {
-    if (kIsWeb) {
-      return NoTransitionPage(child: child);
-    }
-    return CustomTransitionPage(
-      child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return FadeTransition(opacity: animation, child: child);
-      },
-      transitionDuration: const Duration(milliseconds: 150),
-      reverseTransitionDuration: const Duration(milliseconds: 120),
-    );
+    return NoTransitionPage(child: child);
   }
 
   /// Push a named route
