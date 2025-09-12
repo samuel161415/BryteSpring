@@ -6,7 +6,7 @@ import 'package:mobile/core/storage/local_storage.dart';
 import 'package:mobile/features/Authentication/data/repositories/login_repository_impl.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/Authentication/domain/usecases/login_usecase.dart';
-import 'package:mobile/features/verse_join/data/repositories/offline_first_verse_repository.dart';
+import 'package:mobile/features/verse_join/data/repositories/verse_join_repository_impl.dart';
 import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
 import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,7 +36,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<VerseJoinRepository>(
-    () => OfflineFirstVerseRepository(
+    () => VerseJoinRepositoryImpl(
       dioClient: sl(),
       localStorage: sl(),
       connectivity: sl(),
