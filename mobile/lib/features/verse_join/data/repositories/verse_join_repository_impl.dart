@@ -1,20 +1,19 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/failure.dart';
-import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/core/storage/local_storage.dart';
+import 'package:mobile/features/verse_join/data/datasources/verse_join_remote_datasource.dart';
 import 'package:mobile/features/verse_join/domain/entities/verse_join_entity.dart';
 import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
 
 class VerseJoinRepositoryImpl implements VerseJoinRepository {
-  final DioClient dioClient;
+  final VerseJoinRemoteDataSource remoteDataSource;
   final LocalStorage localStorage;
   final Connectivity connectivity;
 
   VerseJoinRepositoryImpl({
-    required this.dioClient,
+    required this.remoteDataSource,
     required this.localStorage,
     required this.connectivity,
   });
@@ -27,31 +26,22 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
       final isOnline = connectivityResult != ConnectivityResult.none;
 
       if (isOnline) {
-        // Try online first
-        try {
-          final response = await dioClient.post(
-            '/verses/$verseId/join',
-            data: {'verseId': verseId},
-          );
-
-          if (response.statusCode == 200) {
-            final verse = VerseJoinEntity.fromJson(response.data);
-
-            // Cache verse data locally for offline access
-            await localStorage.cacheData('verse_$verseId', verse.toJson());
-
-            // Also cache in joined verses list
-            await _addToJoinedVersesCache(verse);
-
-            return Right(verse);
-          } else {
-            return Left(
-              ServerFailure('Join verse failed: ${response.statusCode}'),
-            );
-          }
-        } on DioException catch (e) {
+        // Try online first using remote datasource
+        final result = await remoteDataSource.joinVerse(verseId);
+        
+        if (result.isRight()) {
+          final verse = result.getOrElse(() => throw Exception());
+          
+          // Cache verse data locally for offline access
+          await localStorage.cacheData('verse_$verseId', verse.toJson());
+          
+          // Also cache in joined verses list
+          await _addToJoinedVersesCache(verse);
+          
+          return Right(verse);
+        } else {
           if (kDebugMode) {
-            print('Online join verse failed, trying offline: ${e.message}');
+            print('Online join verse failed, trying offline');
           }
           // Fall through to offline attempt
         }
@@ -88,13 +78,8 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
       final isOnline = connectivityResult != ConnectivityResult.none;
 
       if (isOnline) {
-        try {
-          await dioClient.delete('/verses/$verseId/leave');
-        } catch (e) {
-          if (kDebugMode) {
-            print('Online leave verse failed: $e');
-          }
-        }
+        // Try online using remote datasource
+        await remoteDataSource.leaveVerse(verseId);
       }
 
       // Always remove from local cache
@@ -115,25 +100,22 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
       final isOnline = connectivityResult != ConnectivityResult.none;
 
       if (isOnline) {
-        try {
-          // Try to get fresh joined verses
-          final response = await dioClient.get('/verses/joined');
-          if (response.statusCode == 200) {
-            final List<dynamic> versesJson = response.data;
-            final verses = versesJson
-                .map((json) => VerseJoinEntity.fromJson(json))
-                .toList();
-
-            // Cache joined verses locally
-            await localStorage.cacheData('joined_verses', {
-              'verses': versesJson,
-            });
-
-            return Right(verses);
-          }
-        } catch (e) {
+        // Try to get fresh joined verses using remote datasource
+        final result = await remoteDataSource.getJoinedVerses();
+        
+        if (result.isRight()) {
+          final verses = result.getOrElse(() => throw Exception());
+          
+          // Cache joined verses locally
+          final versesJson = verses.map((v) => v.toJson()).toList();
+          await localStorage.cacheData('joined_verses', {
+            'verses': versesJson,
+          });
+          
+          return Right(verses);
+        } else {
           if (kDebugMode) {
-            print('Failed to get fresh joined verses: $e');
+            print('Failed to get fresh joined verses');
           }
         }
       }
@@ -162,24 +144,19 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
       final isOnline = connectivityResult != ConnectivityResult.none;
 
       if (isOnline) {
-        try {
-          // Try to get fresh verse data
-          final response = await dioClient.get('/verses/$verseId');
-          if (response.statusCode == 200) {
-            final verse = VerseJoinEntity.fromJson(response.data);
-
-            // Cache verse data locally
-            await localStorage.cacheData('verse_$verseId', verse.toJson());
-
-            return Right(verse);
-          } else {
-            return Left(
-              ServerFailure('Get verse failed: ${response.statusCode}'),
-            );
-          }
-        } catch (e) {
+        // Try to get fresh verse data using remote datasource
+        final result = await remoteDataSource.getVerse(verseId);
+        
+        if (result.isRight()) {
+          final verse = result.getOrElse(() => throw Exception());
+          
+          // Cache verse data locally
+          await localStorage.cacheData('verse_$verseId', verse.toJson());
+          
+          return Right(verse);
+        } else {
           if (kDebugMode) {
-            print('Failed to get fresh verse data: $e');
+            print('Failed to get fresh verse data');
           }
         }
       }

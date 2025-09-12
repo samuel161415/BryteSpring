@@ -6,6 +6,7 @@ import 'package:mobile/core/storage/local_storage.dart';
 import 'package:mobile/features/Authentication/data/repositories/login_repository_impl.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/Authentication/domain/usecases/login_usecase.dart';
+import 'package:mobile/features/verse_join/data/datasources/verse_join_remote_datasource.dart';
 import 'package:mobile/features/verse_join/data/repositories/verse_join_repository_impl.dart';
 import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
 import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
@@ -27,6 +28,11 @@ Future<void> init() async {
   // Storage
   sl.registerLazySingleton(() => LocalStorage(sl.get<SharedPreferences>()));
 
+  // Data sources
+  sl.registerLazySingleton<VerseJoinRemoteDataSource>(
+    () => VerseJoinRemoteDataSourceImpl(dioClient: sl()),
+  );
+
   // Repositories - Login is online-only, Verse is offline-first
   sl.registerLazySingleton<LoginRepository>(
     () => LoginRepositoryImpl(
@@ -37,7 +43,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<VerseJoinRepository>(
     () => VerseJoinRepositoryImpl(
-      dioClient: sl(),
+      remoteDataSource: sl(),
       localStorage: sl(),
       connectivity: sl(),
     ),
