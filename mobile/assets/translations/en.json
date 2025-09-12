@@ -34,6 +34,16 @@
     "create_verse_button": "+ Create Verse",
     "welcome_title": "Welcome to the Verse of BrightNetWorks!",
     "welcome_desc": "Great, you joined the Verse of BrightNetWorks as an Expert. Are you ready to learn more about your new role?",
-    "learn_role_cta": "Get to know Stephan's role"
+    "learn_role_cta": "Get to know Stephan's role",
+    "role": {
+      "title": "Your role as Expert",
+      "intro": "As an Expert, you help keep your organization's valuable content up to date, structured and ready for use at any time.",
+      "bullet_1": "You can upload assets such as images, texts or data",
+      "bullet_2": "You can edit and enrich assets",
+      "bullet_3": "You can assign assets to channels (book, website, etc.)",
+      "bullet_4": "You can prepare content and request approval",
+      "hint": "Note: Your organization might have specific approval policies. Only upload or edit content that has been approved by your team. Handle structures and data in this protected Verse carefully and responsibly.",
+      "cta": "I understand my role – let's start"
+    }
   }
 }

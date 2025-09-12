@@ -34,6 +34,16 @@
     "create_verse_button": "+ Verse anlegen",
     "welcome_title": "Willkommen im Verse von BrightNetWorks!",
     "welcome_desc": "Super, Du bist dem Verse von BrightNetWorks in der Rolle eines Experten beigetreten. Bist Du bereit, mehr über Deine neue Rolle zu erfahren?",
-    "learn_role_cta": "Stephans Rolle kennenlernen"
+    "learn_role_cta": "Stephans Rolle kennenlernen",
+    "role": {
+      "title": "Deine Rolle als Experte",
+      "intro": "In Deiner Rolle als Experte trägst Du im Verse dazu bei, die wertvollen Inhalte Deiner Organisation professionell aufzubereiten, zu strukturieren und jederzeit die aktuellste Version griffbereit zu haben.",
+      "bullet_1": "Du kannst Assets wie Bilder, Texte oder Daten hochladen",
+      "bullet_2": "Du kannst Assets bearbeiten und anreichern",
+      "bullet_3": "Du kannst Assets sortieren und Kanälen (Buch, Website etc.) zuordnen",
+      "bullet_4": "Du kannst Inhalte vorbereiten und um Freigabe bitten",
+      "hint": "Hinweis: In Deiner Organisation können spezifische Freigaberichtlinien gelten. Bitte achte darauf, Inhalte nur zu bearbeiten oder hochzuladen, wenn sie mit Deinem Team abgestimmt sind. Bitte gehe sorgfältig mit den Strukturen und Daten in diesem geschützten Verse um und handle verantwortungsvoll.",
+      "cta": "Rolle verstanden & loslegen"
+    }
   }
 }

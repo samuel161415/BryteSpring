@@ -39,32 +39,58 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
                 children: [Icon(Icons.close)],
               ),
               SizedBox(height: 24),
-              Image.network(
-                'https://t4.ftcdn.net/jpg/06/59/37/09/360_F_659370930_7f4Iuy35H4HmkLmZKABNralmfvqTDMe2.jpg',
-                height: 80,
-              ),
               Text(
-                'join_verse.welcome_title'.tr(),
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                'join_verse.role.title'.tr(),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              ),
+              SizedBox(height: 12),
+              Text(
+                'join_verse.role.intro'.tr(),
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: 16),
+              _ChecklistItem(text: 'join_verse.role.bullet_1'.tr()),
+              _ChecklistItem(text: 'join_verse.role.bullet_2'.tr()),
+              _ChecklistItem(text: 'join_verse.role.bullet_3'.tr()),
+              _ChecklistItem(text: 'join_verse.role.bullet_4'.tr()),
+              const SizedBox(height: 12),
               Text(
-                'join_verse.welcome_desc'.tr(),
+                'join_verse.role.hint'.tr(),
+                style: TextStyle(fontSize: 12, color: Colors.black87),
                 textAlign: TextAlign.center,
-                style: TextStyle(),
               ),
-              SizedBox(height: 36),
+              const SizedBox(height: 24),
               Container(
-                width: 200,
+                width: 230,
                 height: 40,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 4),
                 ),
-                child: Center(child: Text('join_verse.learn_role_cta'.tr())),
+                child: Center(child: Text('join_verse.role.cta'.tr())),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ChecklistItem extends StatelessWidget {
+  final String text;
+  const _ChecklistItem({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Icon(Icons.check, color: Color(0xFF3EC1B7), size: 18),
+          const SizedBox(width: 8),
+          Expanded(child: Text(text)),
+        ],
       ),
     );
   }
