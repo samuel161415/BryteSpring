@@ -1,5 +1,7 @@
+import 'package:equatable/equatable.dart';
+
 // Verse Entity matching database schema
-class VerseJoinEntity {
+class VerseJoinEntity extends Equatable {
   final String id; // _id ObjectId
   final String name;
   final String subdomain;
@@ -8,7 +10,7 @@ class VerseJoinEntity {
   final DateTime createdAt;
   final String createdBy; // ObjectId reference to Users._id
 
-  VerseJoinEntity({
+  const VerseJoinEntity({
     required this.id,
     required this.name,
     required this.subdomain,
@@ -47,12 +49,13 @@ class VerseJoinEntity {
   }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is VerseJoinEntity &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
+  List<Object?> get props => [
+        id,
+        name,
+        subdomain,
+        branding,
+        settings,
+        createdAt,
+        createdBy,
+      ];
 }
