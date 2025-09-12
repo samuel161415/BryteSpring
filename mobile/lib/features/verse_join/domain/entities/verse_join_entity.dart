@@ -1,28 +1,48 @@
-// Verse Join Entity
+// Verse Entity matching database schema
 class VerseJoinEntity {
-  final String id;
+  final String id; // _id ObjectId
   final String name;
+  final String subdomain;
+  final Map<String, dynamic>? branding;
+  final Map<String, dynamic>? settings;
   final DateTime createdAt;
+  final String createdBy; // ObjectId reference to Users._id
 
   VerseJoinEntity({
     required this.id,
     required this.name,
+    required this.subdomain,
+    this.branding,
+    this.settings,
     required this.createdAt,
+    required this.createdBy,
   });
 
   factory VerseJoinEntity.fromJson(Map<String, dynamic> json) {
     return VerseJoinEntity(
-      id: json['id'],
+      id: json['_id'] ?? json['id'], // Handle both _id and id
       name: json['name'],
-      createdAt: DateTime.parse(json['createdAt']),
+      subdomain: json['subdomain'],
+      branding: json['branding'] != null 
+          ? Map<String, dynamic>.from(json['branding']) 
+          : null,
+      settings: json['settings'] != null 
+          ? Map<String, dynamic>.from(json['settings']) 
+          : null,
+      createdAt: DateTime.parse(json['created_at'] ?? json['createdAt']),
+      createdBy: json['created_by'] ?? json['createdBy'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      '_id': id,
       'name': name,
-      'createdAt': createdAt.toIso8601String(),
+      'subdomain': subdomain,
+      'branding': branding,
+      'settings': settings,
+      'created_at': createdAt.toIso8601String(),
+      'created_by': createdBy,
     };
   }
 

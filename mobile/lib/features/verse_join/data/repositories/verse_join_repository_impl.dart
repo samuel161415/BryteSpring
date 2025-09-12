@@ -28,16 +28,16 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
       if (isOnline) {
         // Try online first using remote datasource
         final result = await remoteDataSource.joinVerse(verseId);
-        
+
         if (result.isRight()) {
           final verse = result.getOrElse(() => throw Exception());
-          
+
           // Cache verse data locally for offline access
           await localStorage.cacheData('verse_$verseId', verse.toJson());
-          
+
           // Also cache in joined verses list
           await _addToJoinedVersesCache(verse);
-          
+
           return Right(verse);
         } else {
           if (kDebugMode) {
@@ -102,16 +102,14 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
       if (isOnline) {
         // Try to get fresh joined verses using remote datasource
         final result = await remoteDataSource.getJoinedVerses();
-        
+
         if (result.isRight()) {
           final verses = result.getOrElse(() => throw Exception());
-          
+
           // Cache joined verses locally
           final versesJson = verses.map((v) => v.toJson()).toList();
-          await localStorage.cacheData('joined_verses', {
-            'verses': versesJson,
-          });
-          
+          await localStorage.cacheData('joined_verses', {'verses': versesJson});
+
           return Right(verses);
         } else {
           if (kDebugMode) {
@@ -146,13 +144,13 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
       if (isOnline) {
         // Try to get fresh verse data using remote datasource
         final result = await remoteDataSource.getVerse(verseId);
-        
+
         if (result.isRight()) {
           final verse = result.getOrElse(() => throw Exception());
-          
+
           // Cache verse data locally
           await localStorage.cacheData('verse_$verseId', verse.toJson());
-          
+
           return Right(verse);
         } else {
           if (kDebugMode) {
@@ -189,7 +187,7 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
       }
 
       // Add new verse if not already present
-      if (!versesJson.any((v) => v['id'] == verse.id)) {
+      if (!versesJson.any((v) => v['_id'] == verse.id || v['id'] == verse.id)) {
         versesJson.add(verse.toJson());
         await localStorage.cacheData('joined_verses', {'verses': versesJson});
       }
@@ -208,7 +206,7 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
         final List<dynamic> versesJson = List<dynamic>.from(
           cachedData['verses'],
         );
-        versesJson.removeWhere((v) => v['id'] == verseId);
+        versesJson.removeWhere((v) => v['_id'] == verseId || v['id'] == verseId);
         await localStorage.cacheData('joined_verses', {'verses': versesJson});
       }
     } catch (e) {
