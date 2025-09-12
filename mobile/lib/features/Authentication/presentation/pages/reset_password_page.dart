@@ -11,7 +11,8 @@ class ResetPasswordPage extends StatefulWidget {
 }
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmController = TextEditingController();
 
   void _handleLanguageChanged() {
     setState(() {});
@@ -19,7 +20,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmController.dispose();
     super.dispose();
   }
 
@@ -35,12 +37,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             width: screenSize.width > 500 ? 500 : screenSize.width * 0.9,
             margin: const EdgeInsets.symmetric(vertical: 20.0),
             decoration: BoxDecoration(
+              color: AppTheme.surface,
               borderRadius: BorderRadius.circular(24.0),
-              gradient: LinearGradient(
-                colors: [AppTheme.secondary, AppTheme.primary],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),
@@ -76,7 +74,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'reset_password.email_label'.tr(),
+                          'reset_password.password_label'.tr(),
                           style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w600,
@@ -85,10 +83,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       ),
                       const SizedBox(height: 8),
                       TextField(
-                        controller: _emailController,
+                        controller: _passwordController,
+                        obscureText: true,
                         textAlign: TextAlign.left,
                         decoration: InputDecoration(
-                          hintText: 'reset_password.email_hint'.tr(),
+                          hintText: 'reset_password.password_hint'.tr(),
                           hintStyle: const TextStyle(color: Colors.black54),
                           border: const OutlineInputBorder(
                             borderSide: BorderSide(
@@ -113,7 +112,49 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             vertical: 12,
                           ),
                         ),
-                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 16),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'reset_password.confirm_label'.tr(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _confirmController,
+                        obscureText: true,
+                        textAlign: TextAlign.left,
+                        decoration: InputDecoration(
+                          hintText: 'reset_password.confirm_hint'.tr(),
+                          hintStyle: const TextStyle(color: Colors.black54),
+                          border: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 20),
                       SizedBox(
@@ -145,7 +186,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               ),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // TODO: hook into backend
+                                  // TODO: validate and call backend
+                                  final pass = _passwordController.text;
+                                  final confirm = _confirmController.text;
+                                  if (pass.isEmpty ||
+                                      confirm.isEmpty ||
+                                      pass != confirm) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Passwords do not match'),
+                                      ),
+                                    );
+                                    return;
+                                  }
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(

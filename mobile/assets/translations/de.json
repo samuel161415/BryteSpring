@@ -22,11 +22,13 @@
     "footer_link_imprint": "Impressum"
   },
   "reset_password": {
-    "title": "Passwort zurücksetzen",
-    "subtitle": "Gib Deine E-Mail-Adresse ein und wir senden Dir einen Link zum Zurücksetzen.",
-    "email_label": "E-Mail-Adresse",
-    "email_hint": "E-Mail-Adresse eingeben",
-    "send_button": "Link senden",
+    "title": "Neues Passwort festlegen",
+    "subtitle": "Wähle ein sicheres Passwort und bestätige es, um fortzufahren.",
+    "password_label": "Neues Passwort",
+    "password_hint": "Neues Passwort eingeben",
+    "confirm_label": "Passwort bestätigen",
+    "confirm_hint": "Neues Passwort erneut eingeben",
+    "send_button": "Passwort zurücksetzen",
     "back_to_login": "Zurück zum Login"
   },
   "app_footer": {

@@ -22,11 +22,13 @@
     "footer_link_imprint": "Imprint"
   },
   "reset_password": {
-    "title": "Reset your password",
-    "subtitle": "Enter your email and we'll send you a link to reset your password.",
-    "email_label": "Email address",
-    "email_hint": "Enter your email",
-    "send_button": "Send reset link",
+    "title": "Set a new password",
+    "subtitle": "Choose a strong password and confirm it to continue.",
+    "password_label": "New password",
+    "password_hint": "Enter new password",
+    "confirm_label": "Confirm password",
+    "confirm_hint": "Re-enter new password",
+    "send_button": "Reset password",
     "back_to_login": "Back to login"
   },
   "app_footer": {
