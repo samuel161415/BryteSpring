@@ -35,8 +35,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             width: screenSize.width > 500 ? 500 : screenSize.width * 0.9,
             margin: const EdgeInsets.symmetric(vertical: 20.0),
             decoration: BoxDecoration(
-              color: AppTheme.surface,
               borderRadius: BorderRadius.circular(24.0),
+              gradient: LinearGradient(
+                colors: [AppTheme.secondary, AppTheme.primary],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),
@@ -87,13 +91,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           hintText: 'reset_password.email_hint'.tr(),
                           hintStyle: const TextStyle(color: Colors.black54),
                           border: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 2),
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            ),
                           ),
                           enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 2),
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            ),
                           ),
                           focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white, width: 2),
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                              width: 2,
+                            ),
                           ),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -111,26 +124,44 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               margin: const EdgeInsets.only(top: 4, left: 4),
                               height: 48,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white, width: 4),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 4,
+                                ),
                                 color: Colors.transparent,
                               ),
                             ),
                             Container(
-                              margin: const EdgeInsets.only(bottom: 4, right: 4),
+                              margin: const EdgeInsets.only(
+                                bottom: 4,
+                                right: 4,
+                              ),
                               height: 48,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black, width: 4),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 4,
+                                ),
                               ),
                               child: ElevatedButton(
                                 onPressed: () {
                                   // TODO: hook into backend
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('reset_password.send_button'.tr())),
+                                    SnackBar(
+                                      content: Text(
+                                        'reset_password.send_button'.tr(),
+                                      ),
+                                    ),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
-                                  shadowColor: const Color.fromARGB(0, 148, 124, 124),
+                                  shadowColor: const Color.fromARGB(
+                                    0,
+                                    148,
+                                    124,
+                                    124,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),

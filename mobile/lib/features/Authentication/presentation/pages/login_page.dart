@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
-import 'package:mobile/features/Authentication/presentation/components/login_header.dart';
 import 'package:mobile/features/Authentication/presentation/components/login_form.dart';
-import 'package:mobile/features/Authentication/presentation/components/login_footer.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -31,8 +29,12 @@ class _LoginPageState extends State<LoginPage> {
             width: screenSize.width > 500 ? 500 : screenSize.width * 0.9,
             margin: const EdgeInsets.symmetric(vertical: 20.0),
             decoration: BoxDecoration(
-              color: AppTheme.surface,
               borderRadius: BorderRadius.circular(24.0),
+              gradient: LinearGradient(
+                colors: [AppTheme.secondary, AppTheme.primary],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),
