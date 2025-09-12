@@ -6,4 +6,5 @@ abstract class VerseJoinRepository {
   Future<Either<Failure, VerseJoinEntity>> joinVerse(String verseId);
   Future<Either<Failure, void>> leaveVerse(String verseId);
   Future<Either<Failure, List<VerseJoinEntity>>> getJoinedVerses();
+  Future<Either<Failure, VerseJoinEntity>> getVerse(String verseId);
 }

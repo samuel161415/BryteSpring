@@ -10,6 +10,22 @@ class VerseJoinEntity {
     required this.createdAt,
   });
 
+  factory VerseJoinEntity.fromJson(Map<String, dynamic> json) {
+    return VerseJoinEntity(
+      id: json['id'],
+      name: json['name'],
+      createdAt: DateTime.parse(json['createdAt']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

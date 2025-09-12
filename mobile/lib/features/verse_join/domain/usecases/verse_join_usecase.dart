@@ -8,7 +8,19 @@ class VerseJoinUseCase {
 
   VerseJoinUseCase(this.repository);
 
-  Future<Either<Failure, VerseJoinEntity>> call(String verseId) {
+  Future<Either<Failure, VerseJoinEntity>> joinVerse(String verseId) {
     return repository.joinVerse(verseId);
+  }
+
+  Future<Either<Failure, void>> leaveVerse(String verseId) {
+    return repository.leaveVerse(verseId);
+  }
+
+  Future<Either<Failure, List<VerseJoinEntity>>> getJoinedVerses() {
+    return repository.getJoinedVerses();
+  }
+
+  Future<Either<Failure, VerseJoinEntity>> getVerse(String verseId) {
+    return repository.getVerse(verseId);
   }
 }
