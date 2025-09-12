@@ -2,7 +2,8 @@ import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/core/network/dio_client.dart';
-import 'package:mobile/features/Authentication/data/repositories/login_repository_impl.dart';
+import 'package:mobile/core/storage/local_storage.dart';
+import 'package:mobile/features/Authentication/data/repositories/offline_first_repository.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/Authentication/domain/usecases/login_usecase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,11 +21,15 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DioClient(dio: sl()));
   sl.registerLazySingleton(() => Connectivity());
 
-  // Repositories
+  // Storage
+  sl.registerLazySingleton(() => LocalStorage(sl.get<SharedPreferences>()));
+
+  // Repositories - Choose between offline-first or regular implementation
   sl.registerLazySingleton<LoginRepository>(
-    () => LoginRepositoryImpl(
+    () => OfflineFirstRepository(
       dioClient: sl(),
-      prefs: sl.get<SharedPreferences>(),
+      localStorage: sl(),
+      connectivity: sl(),
     ),
   );
 
