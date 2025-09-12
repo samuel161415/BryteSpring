@@ -10,13 +10,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 final GetIt sl = GetIt.instance;
 
 Future<void> init() async {
+  // External dependencies
+  sl.registerLazySingletonAsync(
+    () async => await SharedPreferences.getInstance(),
+  );
+
   // Network
   sl.registerLazySingleton(() => Dio());
   sl.registerLazySingleton(() => DioClient(dio: sl()));
   sl.registerLazySingleton(() => Connectivity());
-  sl.registerLazySingletonAsync(
-    () async => await SharedPreferences.getInstance(),
-  );
 
   // Repositories
   sl.registerLazySingleton<LoginRepository>(
