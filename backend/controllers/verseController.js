@@ -469,3 +469,116 @@ exports.listVerses = async (req, res) => {
     res.status(500).json({ message: 'Server error listing verses', error: error.message });
   }
 };
+
+// Join existing verse (for users who registered via invitation but didn't join yet)
+exports.joinVerse = async (req, res) => {
+  try {
+    const { verse_id } = req.params;
+    const userId = req.user._id;
+
+    // Check if verse exists and is complete
+    const verse = await Verse.findById(verse_id);
+    if (!verse) {
+      return res.status(404).json({ message: 'Verse not found' });
+    }
+
+    if (!verse.is_setup_complete) {
+      return res.status(400).json({ message: 'Cannot join verse that is not yet set up' });
+    }
+
+    // Check if user already joined this verse
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const alreadyJoined = user.joined_verse
+      .map(v => v.toString())
+      .includes(verse_id.toString());
+
+    if (alreadyJoined) {
+      return res.status(400).json({ message: 'User has already joined this verse' });
+    }
+
+    // Check if user has an accepted invitation for this verse
+    const invitation = await Invitation.findOne({
+      email: user.email,
+      verse_id: verse_id,
+      is_accepted: true
+    });
+
+    if (!invitation) {
+      return res.status(403).json({ message: 'No valid invitation found for this verse' });
+    }
+
+    // Check if UserRole already exists (shouldn't happen but safety check)
+    const existingUserRole = await UserRole.findOne({
+      user_id: userId,
+      verse_id: verse_id
+    });
+
+    if (existingUserRole) {
+      return res.status(400).json({ message: 'User role already exists for this verse' });
+    }
+
+    // Create UserRole
+    await UserRole.create({
+      user_id: userId,
+      verse_id: verse_id,
+      role_id: invitation.role_id,
+      assigned_at: new Date(),
+      assigned_by: invitation.invited_by
+    });
+
+    // Add verse to user's joined_verse
+    user.joined_verse.push(verse_id);
+    await user.save();
+
+    // Log the activity
+    const activityLog = new ActivityLog({
+      verse_id: verse_id,
+      user_id: userId,
+      action: 'create',
+      resource_type: 'user_role',
+      resource_id: invitation.role_id,
+      timestamp: new Date(),
+      details: {
+        action: 'user_joined_verse',
+        verse_name: verse.name,
+        role_assigned: invitation.role_id,
+        invitation_id: invitation._id
+      }
+    });
+    await activityLog.save();
+
+    // Get role details for response
+    const role = await Role.findById(invitation.role_id);
+
+    res.status(200).json({
+      message: 'Successfully joined verse',
+      verse: {
+        _id: verse._id,
+        name: verse.name,
+        subdomain: verse.subdomain,
+        organization_name: verse.organization_name
+      },
+      role: {
+        _id: role._id,
+        name: role.name,
+        description: role.description,
+        permissions: role.permissions
+      },
+      user: {
+        _id: user._id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        joined_verse: user.joined_verse
+      }
+    });
+
+  } catch (error) {
+    console.error('Error joining verse:', error);
+    res.status(500).json({ message: 'Server error joining verse', error: error.message });
+  }
+};

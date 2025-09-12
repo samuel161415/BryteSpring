@@ -10,6 +10,7 @@ const { connectToDatabase } = require('./db/connection');
 const indexRouter = require('./routes');
 const verseRouter = require('./routes/verse');
 const invitationRouter = require('./routes/invitation');
+const channelRouter = require('./routes/channel');
 
 // Middleware
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/', indexRouter);
 app.use('/verse', verseRouter);
 app.use('/invitation', invitationRouter);
+app.use('/channel', channelRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

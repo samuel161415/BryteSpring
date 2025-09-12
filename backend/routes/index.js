@@ -7,6 +7,7 @@ const {
     loginUser,
     logoutUser,
     getUserProfile,
+    getUserByEmail,
     updateUserProfile,
     adminUpdateUser,
     getUsers,
@@ -27,6 +28,7 @@ router.put("admin/update-user-profile", protect,admin, adminUpdateUser);
 
 
 router.get("/users", protect, admin, getUsers);
+router.get("/user/email/:email", protect, getUserByEmail);
 router.delete("/user/:id", protect, admin, deleteUser);
 router.post("/forgot-password", forgotPassword);
 
