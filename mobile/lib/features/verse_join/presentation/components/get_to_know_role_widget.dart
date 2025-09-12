@@ -1,17 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 
-class JoinVerseComponent extends StatefulWidget {
-  const JoinVerseComponent({super.key});
+class GetToKnowRoleWidget extends StatefulWidget {
+  const GetToKnowRoleWidget({super.key});
 
   @override
-  State<JoinVerseComponent> createState() => _JoinVerseComponentState();
+  State<GetToKnowRoleWidget> createState() => _GetToKnowRoleWidgetState();
 }
 
-class _JoinVerseComponentState extends State<JoinVerseComponent> {
+class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -46,28 +44,23 @@ class _JoinVerseComponentState extends State<JoinVerseComponent> {
                 height: 80,
               ),
               Text(
-                'join_verse.invited_title'.tr(),
+                'join_verse.welcome_title'.tr(),
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
               ),
               SizedBox(height: 16),
               Text(
-                'join_verse.invited_desc'.tr(),
+                'join_verse.welcome_desc'.tr(),
                 textAlign: TextAlign.center,
                 style: TextStyle(),
               ),
               SizedBox(height: 36),
-              GestureDetector(
-                onTap: () {
-                  context.pushNamed(Routelists.getToKnowRole);
-                },
-                child: Container(
-                  width: 200,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 4),
-                  ),
-                  child: Center(child: Text('join_verse.join_button'.tr())),
+              Container(
+                width: 200,
+                height: 40,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 4),
                 ),
+                child: Center(child: Text('join_verse.learn_role_cta'.tr())),
               ),
             ],
           ),

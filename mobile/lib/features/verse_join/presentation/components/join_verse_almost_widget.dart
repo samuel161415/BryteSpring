@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routing/routeLists.dart';
@@ -30,7 +31,7 @@ class _JoinVerseAlmostComponentState extends State<JoinVerseAlmostComponent> {
               TopHeader(),
               SizedBox(height: 24),
               Text(
-                'Hallo, Stephan!',
+                'join_verse.greeting_name'.tr(),
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
               ),
               SizedBox(height: 36),
@@ -41,12 +42,12 @@ class _JoinVerseAlmostComponentState extends State<JoinVerseAlmostComponent> {
               ),
               SizedBox(height: 24),
               Text(
-                'Fast geschafft!',
+                'join_verse.almost_done_title'.tr(),
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
               ),
               SizedBox(height: 16),
               Text(
-                'Bevor Du Inhalte ablegen und verwalten kannst, musst Du zunächst einem Verse beitreten. Du kannst den Administrator Deines Unternehmemens um eine Einladung bitten, oder ein neues Verse anlegen.',
+                'join_verse.almost_done_desc'.tr(),
                 textAlign: TextAlign.center,
                 style: TextStyle(),
               ),
@@ -61,7 +62,7 @@ class _JoinVerseAlmostComponentState extends State<JoinVerseAlmostComponent> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 4),
                   ),
-                  child: Center(child: Text('+ Verse anlegen')),
+                  child: Center(child: Text('join_verse.create_verse_button'.tr())),
                 ),
               ),
             ],

@@ -23,5 +23,17 @@
   },
   "app_footer": {
     "relevant_links": "Relevante Links"
+  },
+  "join_verse": {
+    "greeting_name": "Hallo, Stephan!",
+    "invited_title": "Du bist eingeladen!",
+    "invited_desc": "Dirk Markus, Chief Financial Officer, lädt Dich ein, dem Verse von BrightNetWorks GmbH beizutreten.",
+    "join_button": "Verse beitreten",
+    "almost_done_title": "Fast geschafft!",
+    "almost_done_desc": "Bevor Du Inhalte ablegen und verwalten kannst, musst Du zunächst einem Verse beitreten. Du kannst den Administrator Deines Unternehmens um eine Einladung bitten, oder ein neues Verse anlegen.",
+    "create_verse_button": "+ Verse anlegen",
+    "welcome_title": "Willkommen im Verse von BrightNetWorks!",
+    "welcome_desc": "Super, Du bist dem Verse von BrightNetWorks in der Rolle eines Experten beigetreten. Bist Du bereit, mehr über Deine neue Rolle zu erfahren?",
+    "learn_role_cta": "Stephans Rolle kennenlernen"
   }
 }
