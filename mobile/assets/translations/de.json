@@ -1,0 +1,27 @@
+{
+  "login_screen": {
+    "welcome_message": "Willkommen bei BryteSpring",
+    "email_placeholder": "E-Mail-Adresse eingeben",
+    "password_placeholder": "Passwort eingeben",
+    "remember_me": "Angemeldet bleiben",
+    "login_button": "Anmelden",
+    "switch_account": "Benutzer wechseln",
+    "footer_title": "BryteVerse© by Publify ist die Zukunft im Publishing.",
+    "menu": "Menü",
+    "footer_feature_1": "Wir senken Deine Kosten",
+    "footer_feature_2": "Wir sparen Deine Zeit",
+    "footer_feature_3": "Wir machen Deine Inhalte relevant",
+    "footer_feature_4": "Wir bündeln Deine Inhalte an einem Ort",
+    "footer_feature_5": "Wir machen Deine Inhalte sicher",
+    "footer_feature_6": "Wir sind für Dich da",
+    "footer_social_media": "Social Media",
+    "footer_relevant_links": "Relevante Links",
+    "footer_link_contact": "Kontakt",
+    "footer_link_data_protection": "Datenschutz",
+    "footer_link_privacy_settings": "Privatsphäre-Einstellungen",
+    "footer_link_imprint": "Impressum"
+  },
+  "app_footer": {
+    "relevant_links": "Relevante Links"
+  }
+}
