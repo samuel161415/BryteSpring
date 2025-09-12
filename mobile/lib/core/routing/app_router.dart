@@ -1,7 +1,9 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
+import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
 
@@ -13,34 +15,51 @@ class AppRouter {
   static final AppRouter instance = AppRouter._();
 
   late final GoRouter router = GoRouter(
-    initialLocation: Routelists.loginPath,
+    initialLocation: '/${Routelists.login}',
     routes: _routes,
     debugLogDiagnostics: false,
   );
 
   final List<GoRoute> _routes = [
     GoRoute(
-      path: Routelists.loginPath,
+      path: '/${Routelists.login}',
       name: Routelists.login,
-      builder: (context, state) {
-        return LoginPage();
-      },
+      pageBuilder: (context, state) => _buildPage(context, state, LoginPage()),
     ),
     GoRoute(
-      path: Routelists.almostJoinVersePath,
+      path: '/${Routelists.almostJoinVerse}',
       name: Routelists.almostJoinVerse,
-      builder: (context, state) {
-        return JoinVerseAlmostDone();
-      },
+      pageBuilder: (context, state) => _buildPage(context, state, JoinVerseAlmostDone()),
     ),
     GoRoute(
-      path: Routelists.joinVersePath,
+      path: '/${Routelists.joinVerse}',
       name: Routelists.joinVerse,
-      builder: (context, state) {
-        return JoinVerse();
-      },
+      pageBuilder: (context, state) => _buildPage(context, state, JoinVerse()),
+    ),
+    GoRoute(
+      path: '/${Routelists.getToKnowRole}',
+      name: Routelists.getToKnowRole,
+      pageBuilder: (context, state) => _buildPage(context, state, GetToKnowRole()),
     ),
   ];
+
+  static Page<dynamic> _buildPage(
+    BuildContext context,
+    GoRouterState state,
+    Widget child,
+  ) {
+    if (kIsWeb) {
+      return NoTransitionPage(child: child);
+    }
+    return CustomTransitionPage(
+      child: child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      transitionDuration: const Duration(milliseconds: 150),
+      reverseTransitionDuration: const Duration(milliseconds: 120),
+    );
+  }
 
   /// Push a named route
   void pushNamed(
