@@ -1,0 +1,27 @@
+{
+  "login_screen": {
+    "welcome_message": "Welcome to BryteSpring",
+    "email_placeholder": "Enter your email",
+    "password_placeholder": "Enter your password",
+    "remember_me": "Remember me",
+    "login_button": "Log in",
+    "switch_account": "Switch Account",
+    "footer_title": "BryteVerse by Publify",
+    "menu": "Menu",
+    "footer_feature_1": "Cost Reduction",
+    "footer_feature_2": "Time Saving",
+    "footer_feature_3": "Content Relevance",
+    "footer_feature_4": "Centralized Content",
+    "footer_feature_5": "Security",
+    "footer_feature_6": "Support",
+    "footer_social_media": "Social Media",
+    "footer_relevant_links": "Relevant Links",
+    "footer_link_contact": "Contact",
+    "footer_link_data_protection": "Data Protection",
+    "footer_link_privacy_settings": "Privacy Settings",
+    "footer_link_imprint": "Imprint"
+  },
+  "app_footer": {
+    "relevant_links": "Relevant Links"
+  }
+}
