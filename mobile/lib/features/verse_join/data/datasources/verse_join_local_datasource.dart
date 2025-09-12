@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mobile/core/error/failure.dart';
@@ -15,9 +16,10 @@ class VerseJoinLocalDataSource {
       final now = DateTime.now();
       final entity = VerseJoinEntity(
         id: verseId,
-        name:
-            'Verse $verseId', // This would come from API in real implementation
+        name: 'Verse $verseId', // This would come from API in real implementation
+        subdomain: 'verse-$verseId', // Generate subdomain
         createdAt: now,
+        createdBy: 'local-user', // Placeholder for local user
       );
 
       // Check if already joined
@@ -62,28 +64,16 @@ class VerseJoinLocalDataSource {
     }
 
     try {
-      // Simple implementation - in real app, use proper JSON serialization
-      final List<dynamic> jsonList = jsonString.split('|');
-      return jsonList.map((item) {
-        final parts = item.split(',');
-        return VerseJoinEntity(
-          id: parts[0],
-          name: parts[1],
-          createdAt: DateTime.parse(parts[2]),
-        );
-      }).toList();
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+      return jsonList.map((json) => VerseJoinEntity.fromJson(json)).toList();
     } catch (e) {
       return [];
     }
   }
 
   Future<void> _saveJoinedVerses(List<VerseJoinEntity> verses) async {
-    final jsonList = verses
-        .map((verse) {
-          return '${verse.id},${verse.name},${verse.createdAt.toIso8601String()}';
-        })
-        .join('|');
-
-    await prefs.setString(_joinedVersesKey, jsonList);
+    final jsonList = verses.map((verse) => verse.toJson()).toList();
+    final jsonString = jsonEncode(jsonList);
+    await prefs.setString(_joinedVersesKey, jsonString);
   }
 }
