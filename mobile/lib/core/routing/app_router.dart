@@ -27,21 +27,21 @@ class AppRouter {
       },
     ),
     GoRoute(
-      path: Routelists.loginRoute,
-      name: Routelists.loginRoute,
+      path: Routelists.loginPath,
+      name: Routelists.login,
       builder: (context, state) {
         return LoginPage();
       },
     ),
     GoRoute(
-      path: Routelists.almostJoinVerse,
+      path: Routelists.almostJoinVersePath,
       name: Routelists.almostJoinVerse,
       builder: (context, state) {
         return JoinVerseAlmostDone();
       },
     ),
     GoRoute(
-      path: Routelists.joinVerse,
+      path: Routelists.joinVersePath,
       name: Routelists.joinVerse,
       builder: (context, state) {
         return JoinVerse();
