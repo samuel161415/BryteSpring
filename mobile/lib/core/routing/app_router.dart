@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
@@ -14,18 +13,12 @@ class AppRouter {
   static final AppRouter instance = AppRouter._();
 
   late final GoRouter router = GoRouter(
+    initialLocation: Routelists.loginPath,
     routes: _routes,
     debugLogDiagnostics: false,
   );
 
   final List<GoRoute> _routes = [
-    GoRoute(
-      path: '/',
-
-      builder: (context, state) {
-        return LoginPage();
-      },
-    ),
     GoRoute(
       path: Routelists.loginPath,
       name: Routelists.login,
