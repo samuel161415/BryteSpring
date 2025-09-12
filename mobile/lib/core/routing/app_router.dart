@@ -1,7 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
+import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
+import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
 
 /// App router configuration using go_router
 class AppRouter {
@@ -18,8 +21,30 @@ class AppRouter {
   final List<GoRoute> _routes = [
     GoRoute(
       path: '/',
+
       builder: (context, state) {
         return LoginPage();
+      },
+    ),
+    GoRoute(
+      path: Routelists.loginRoute,
+      name: Routelists.loginRoute,
+      builder: (context, state) {
+        return LoginPage();
+      },
+    ),
+    GoRoute(
+      path: Routelists.almostJoinVerse,
+      name: Routelists.almostJoinVerse,
+      builder: (context, state) {
+        return JoinVerseAlmostDone();
+      },
+    ),
+    GoRoute(
+      path: Routelists.joinVerse,
+      name: Routelists.joinVerse,
+      builder: (context, state) {
+        return JoinVerse();
       },
     ),
   ];

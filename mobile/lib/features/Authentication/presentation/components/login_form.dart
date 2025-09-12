@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
+import 'package:mobile/core/routing/routeLists.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
@@ -151,10 +153,12 @@ class LoginForm extends StatelessWidget {
                         border: Border.all(color: Colors.black, width: 4),
                       ),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.pushNamed(Routelists.almostJoinVerse);
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
+                          shadowColor: const Color.fromARGB(0, 148, 124, 124),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
