@@ -23,4 +23,9 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
   Future<Either<Failure, List<VerseJoinEntity>>> getJoinedVerses() {
     return dataSource.getJoinedVerses();
   }
+
+  @override
+  Future<Either<Failure, VerseJoinEntity>> getVerse(String verseId) {
+    return dataSource.getVerse(verseId);
+  }
 }

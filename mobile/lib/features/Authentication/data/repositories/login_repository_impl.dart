@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:mobile/core/error/failure.dart';
-import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/storage/secure_storage.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
@@ -61,6 +60,21 @@ class LoginRepositoryImpl implements LoginRepository {
       return Left(ServerFailure('Dio error: ${e.message}'));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, User?>> getCurrentUser() async {
+    try {
+      // Get user data from local storage
+      final userDataString = prefs.getString('user_data');
+      if (userDataString != null) {
+        final user = User.fromJsonString(userDataString);
+        return Right(user);
+      }
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure('Get current user error: $e'));
     }
   }
 }

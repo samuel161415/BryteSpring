@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
-import 'package:mobile/features/Authentication/presentation/components/login_form.dart';
+import 'package:mobile/features/verse_join/presentation/components/get_to_know_role_widget.dart';
 
-class ResetPassword extends StatefulWidget {
-  ResetPassword({super.key});
+class GetToKnowRole extends StatefulWidget {
+  const GetToKnowRole({super.key});
 
   @override
-  State<ResetPassword> createState() => _ResetPasswordState();
+  State<GetToKnowRole> createState() => _GetToKnowRoleState();
 }
 
-class _ResetPasswordState extends State<ResetPassword> {
+class _GetToKnowRoleState extends State<GetToKnowRole> {
   void _handleLanguageChanged() {
+    // Force rebuild when language changes
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions for responsive layout
     final Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -40,8 +40,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             ),
             child: Column(
               children: [
-                // LoginHeader(onLanguageChanged: _handleLanguageChanged),
-                LoginForm(),
+                GetToKnowRoleWidget(),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
             ),
