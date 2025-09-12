@@ -21,6 +21,14 @@
     "footer_link_privacy_settings": "Privacy Settings",
     "footer_link_imprint": "Imprint"
   },
+  "reset_password": {
+    "title": "Reset your password",
+    "subtitle": "Enter your email and we'll send you a link to reset your password.",
+    "email_label": "Email address",
+    "email_hint": "Enter your email",
+    "send_button": "Send reset link",
+    "back_to_login": "Back to login"
+  },
   "app_footer": {
     "relevant_links": "Relevant Links"
   },

@@ -21,6 +21,14 @@
     "footer_link_privacy_settings": "Privatsphäre-Einstellungen",
     "footer_link_imprint": "Impressum"
   },
+  "reset_password": {
+    "title": "Passwort zurücksetzen",
+    "subtitle": "Gib Deine E-Mail-Adresse ein und wir senden Dir einen Link zum Zurücksetzen.",
+    "email_label": "E-Mail-Adresse",
+    "email_hint": "E-Mail-Adresse eingeben",
+    "send_button": "Link senden",
+    "back_to_login": "Zurück zum Login"
+  },
   "app_footer": {
     "relevant_links": "Relevante Links"
   },

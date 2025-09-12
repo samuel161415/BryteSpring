@@ -182,9 +182,11 @@ class LoginForm extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.pushNamed(Routelists.resetPassword);
+                    },
                     child: Text(
-                      'login_screen.switch_account'.tr(),
+                      'reset_password.back_to_login'.tr(),
                       style: TextStyle(color: Colors.black, fontSize: 12),
                     ),
                   ),
@@ -195,7 +197,6 @@ class LoginForm extends StatelessWidget {
                         'Menu',
                         style: TextStyle(color: Colors.black, fontSize: 8),
                       ),
-                      // const SizedBox(height: 2),
                       Icon(Icons.menu, color: Colors.black, size: 30),
                     ],
                   ),

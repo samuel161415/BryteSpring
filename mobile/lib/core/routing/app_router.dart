@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
+import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
@@ -24,6 +25,11 @@ class AppRouter {
       path: '/${Routelists.login}',
       name: Routelists.login,
       pageBuilder: (context, state) => _buildPage(context, state, LoginPage()),
+    ),
+    GoRoute(
+      path: '/${Routelists.resetPassword}',
+      name: Routelists.resetPassword,
+      pageBuilder: (context, state) => _buildPage(context, state, const ResetPasswordPage()),
     ),
     GoRoute(
       path: '/${Routelists.almostJoinVerse}',
