@@ -1,12 +1,12 @@
 const axios = require('axios');
 
 // CleverReach configuration
-const CLEVERREACH_BASE_URL = 'https://rest.cleverreach.com/v3';
-const CLIENT_ID = process.env.CLEVERREACH_CLIENT_ID || 'fJJZuUT29g';
-const CLIENT_SECRET = process.env.CLEVERREACH_CLIENT_SECRET || 'akjRdeKHfCzJyh0TeUq8CTs4R3WXRpAO';
+const CLEVERREACH_BASE_URL = process.env.CLEVERREACH_BASE_URL;
+const CLIENT_ID = process.env.CLEVERREACH_CLIENT_ID ;
+const CLIENT_SECRET = process.env.CLEVERREACH_CLIENT_SECRET;
 const GROUP_ID = process.env.CLEVERREACH_GROUP_ID; // You'll need to create a group and set this
-const FROM_EMAIL = process.env.EMAIL_FROM || 'samuelnegalign19@gmail.com';
-const FROM_NAME = process.env.FROM_NAME || 'BRYTE VERSE';
+const FROM_EMAIL = process.env.EMAIL_FROM;
+const FROM_NAME = process.env.FROM_NAME;
 
 // Store access token (in production, you might want to store this in a database)
 let accessToken = null;
@@ -94,7 +94,7 @@ async function ensureInvitationGroup() {
       }
     });
 
-    console.log('Created CleverReach invitation group:', createResponse.data.id);
+    // console.log('Created CleverReach invitation group:', createResponse.data.id);
     return createResponse.data.id;
   } catch (error) {
     console.error('Failed to ensure invitation group:', error.response?.data || error.message);
@@ -109,9 +109,7 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
   try {
     const token_auth = await getAccessToken();
     const groupId = await ensureInvitationGroup();
-    // console.log("groupId", groupId);
-    // console.log("token_auth", token_auth);
-    
+
     const inviteLink = buildInviteLink({ token, subdomain });
     const subject = `Invitation to join ${verseName || 'a verse'} as ${roleName || 'member'}`;
     

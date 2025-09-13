@@ -75,7 +75,7 @@ const debugCleverReachAPI = async (req, res) => {
     
     // Test different API endpoints
     const axios = require('axios');
-    const CLEVERREACH_BASE_URL = 'https://rest.cleverreach.com/v3';
+    const CLEVERREACH_BASE_URL = process.env.CLEVERREACH_BASE_URL;
     
     const endpoints = [
       '/groups.json',
