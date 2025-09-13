@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Invitation = require("../models/Invitation");
 const UserRole = require("../models/UserRole");
+const Verse = require("../models/Verse");
+const ActivityLog = require("../models/ActivityLog");
 
 // Generate JWT
 const generateToken = (id) => {
@@ -14,10 +16,7 @@ const registerUser = async (req, res) => {
   const {
     email,
     password,
-    first_name,
-    last_name,
     avatar_url,
-    joined_verse = [],
     invitation_token
   } = req.body;
 
@@ -27,21 +26,13 @@ const registerUser = async (req, res) => {
     if (userExists)
       return res.status(400).json({ message: "User already exists" });
 
-    // Create new user
-    const user = new User({
-      email,
-      first_name,
-      last_name,
-      avatar_url,
-      joined_verse
-    });
+    let first_name = '';
+    let last_name = '';
+    let verse_id = null;
+    let role_id = null;
+    let is_verse_setup = false;
 
-    // Hash password
-    await user.setPassword(password);
-
-    await user.save();
-
-    // If invitation token provided, attach role and verse membership
+    // If invitation token provided, get user details from invitation
     if (invitation_token) {
       const invitation = await Invitation.findOne({ token: invitation_token });
       if (!invitation) {
@@ -54,35 +45,100 @@ const registerUser = async (req, res) => {
         return res.status(400).json({ message: "Invitation expired" });
       }
 
-      // Create user role from invitation
-      try {
-        await UserRole.create({
-          user_id: user._id,
+      // Get user details from invitation
+      first_name = invitation.first_name || '';
+      last_name = invitation.last_name || '';
+      verse_id = invitation.verse_id;
+      role_id = invitation.role_id;
+
+      // Check if this is a verse setup invitation (verse not yet complete)
+      const verse = await Verse.findById(verse_id);
+      if (verse && !verse.is_setup_complete) {
+        is_verse_setup = true;
+      }
+    }
+
+    // Create new user
+    const user = new User({
+      email,
+      first_name,
+      last_name,
+      avatar_url,
+      joined_verse: []
+    });
+
+    // Hash password
+    await user.setPassword(password);
+    await user.save();
+
+    // Handle invitation scenarios
+    if (invitation_token) {
+      const invitation = await Invitation.findOne({ token: invitation_token });
+      
+      if (is_verse_setup) {
+        // Scenario 1: User is completing verse setup (admin completing verse creation)
+        // Immediately add to verse and create user role
+        try {
+          await UserRole.create({
+            user_id: user._id,
+            verse_id: invitation.verse_id,
+            role_id: invitation.role_id,
+            assigned_at: new Date(),
+            assigned_by: invitation.invited_by
+          });
+        } catch (e) {
+          // ignore duplicate if already assigned for safety
+        }
+
+        // Add verse to user's joined_verse
+        user.joined_verse.push(invitation.verse_id);
+        await user.save();
+
+        // Mark invitation as accepted
+        invitation.is_accepted = true;
+        invitation.accepted_at = new Date();
+        await invitation.save();
+
+        // Log the activity
+        const activityLog = new ActivityLog({
           verse_id: invitation.verse_id,
-          role_id: invitation.role_id,
-          assigned_at: new Date(),
+          user_id: user._id,
+          action: 'create',
+          resource_type: 'user',
+          resource_id: user._id,
+          timestamp: new Date(),
+          details: {
+            action: 'admin_joined_for_verse_setup',
+            invitation_token: invitation_token,
+            role_assigned: true
+          }
         });
-      } catch (e) {
-        // ignore duplicate if already assigned for safety
-      }
+        await activityLog.save();
 
-      // Add verse membership to user profile if not present
-      if (!Array.isArray(user.joined_verse)) {
-        user.joined_verse = [];
-      }
-      // This should be done during verse join process
-      // const alreadyJoined = user.joined_verse
-      //   .map((v) => v.toString())
-      //   .includes(invitation.verse_id.toString());
-      // if (!alreadyJoined) {
-      //   user.joined_verse.push(invitation.verse_id);
-      //   await user.save();
-      // }
+      } else {
+        // Scenario 2: User is joining existing verse
+        // Mark invitation as accepted but don't add to verse yet
+        // User must call joinVerse endpoint later
+        invitation.is_accepted = true;
+        invitation.accepted_at = new Date();
+        await invitation.save();
 
-      // Mark invitation accepted
-      invitation.is_accepted = true;
-      invitation.accepted_at = new Date();
-      await invitation.save();
+        // Log the activity
+        const activityLog = new ActivityLog({
+          verse_id: invitation.verse_id,
+          user_id: user._id,
+          action: 'create',
+          resource_type: 'user',
+          resource_id: user._id,
+          timestamp: new Date(),
+          details: {
+            action: 'user_registered_pending_verse_join',
+            invitation_token: invitation_token,
+            requires_join_action: true
+          }
+        });
+        await activityLog.save();
+      }
     }
 
     // Return response with JWT
@@ -93,7 +149,8 @@ const registerUser = async (req, res) => {
       last_name: user.last_name,
       avatar_url: user.avatar_url,
       joined_verse: user.joined_verse,
-      token: generateToken(user._id)
+      token: generateToken(user._id),
+      pending_verse_join: invitation_token && !is_verse_setup ? verse_id : null
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -130,6 +187,31 @@ const logoutUser = (req, res) => {
 //   Get user profile
 const getUserProfile = async (req, res) => {
   res.json(req.user);
+};
+
+//   Get user by email
+const getUserByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    
+    const user = await User.findOne({ email }).select('-password_hash');
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      _id: user._id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      avatar_url: user.avatar_url,
+      joined_verse: user.joined_verse,
+      is_active: user.is_active,
+      created_at: user.created_at
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 //   Update user profile
@@ -236,6 +318,7 @@ module.exports = {
   loginUser,
   logoutUser,
   getUserProfile,
+  getUserByEmail,
   updateUserProfile,
   getUsers,
   deleteUser,
