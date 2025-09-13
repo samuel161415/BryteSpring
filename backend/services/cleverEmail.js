@@ -109,8 +109,8 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
   try {
     const token_auth = await getAccessToken();
     const groupId = await ensureInvitationGroup();
-    console.log("groupId", groupId);
-    console.log("token_auth", token_auth);
+    // console.log("groupId", groupId);
+    // console.log("token_auth", token_auth);
     
     const inviteLink = buildInviteLink({ token, subdomain });
     const subject = `Invitation to join ${verseName || 'a verse'} as ${roleName || 'member'}`;
