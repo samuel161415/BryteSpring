@@ -40,4 +40,10 @@ router.delete('/:id',
   verseController.deleteVerse
 );
 
+// Join existing verse (for users with accepted invitations)
+router.post('/:verse_id/join',
+  auth.requireAuth,
+  verseController.joinVerse
+);
+
 module.exports = router;

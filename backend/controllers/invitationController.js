@@ -2,7 +2,8 @@ const { v4: uuidv4 } = require('uuid');
 const Invitation = require('../models/Invitation');
 const Role = require('../models/Role');
 const Verse = require('../models/Verse');
-const { sendInvitationEmail } = require('../services/email');
+// const { sendInvitationEmail } = require('../services/email'); // Old email service
+const { sendInvitationEmail } = require('../services/cleverEmail'); // New CleverReach service
 
 // Create invitation (admin or superadmin)
 exports.createInvitation = async (req, res) => {
