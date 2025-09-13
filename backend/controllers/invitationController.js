@@ -1,4 +1,11 @@
-const { v4: uuidv4 } = require('uuid');
+// Try uuid/v4 first, fallback to crypto if it fails
+let uuidv4;
+try {
+  uuidv4 = require('uuid/v4');
+} catch (error) {
+  const crypto = require('crypto');
+  uuidv4 = () => crypto.randomUUID();
+}
 const Invitation = require('../models/Invitation');
 const Role = require('../models/Role');
 const Verse = require('../models/Verse');

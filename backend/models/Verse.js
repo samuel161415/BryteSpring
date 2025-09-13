@@ -82,7 +82,7 @@ const verseSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-verseSchema.index({ subdomain: 1 });
+// Note: subdomain index is already created by unique: true above
 verseSchema.index({ created_by: 1 });
 verseSchema.index({ is_setup_complete: 1 });
 
