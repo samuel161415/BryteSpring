@@ -2,6 +2,7 @@ const express = require('express');
 const { protect, admin } = require("../middleware/authMiddleware");
 const router = express.Router();
 const homeController = require('../controllers/homeController');
+const emailTestController = require('../controllers/emailTestController');
 const {
     registerUser,
     loginUser,
@@ -31,6 +32,11 @@ router.get("/users", protect, admin, getUsers);
 router.get("/user/email/:email", protect, getUserByEmail);
 router.delete("/user/:id", protect, admin, deleteUser);
 router.post("/forgot-password", forgotPassword);
+
+// CleverReach test routes (for development/testing only)
+router.get("/test/cleverreach", emailTestController.testCleverReachConnection);
+router.post("/test/send-invitation", emailTestController.testSendInvitation);
+router.get("/test/cleverreach-debug", emailTestController.debugCleverReachAPI);
 
 
 

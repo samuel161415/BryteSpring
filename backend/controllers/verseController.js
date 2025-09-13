@@ -6,7 +6,8 @@ const UserRole = require('../models/UserRole');
 const ActivityLog = require('../models/ActivityLog');
 const Invitation = require('../models/Invitation');
 const { v4: uuidv4 } = require('uuid');
-const { sendInvitationEmail } = require('../services/email');
+// const { sendInvitationEmail } = require('../services/email'); // Old email service
+const { sendInvitationEmail } = require('../services/cleverEmail'); // New CleverReach service
 const { validationResult } = require('express-validator');
 
 // Create initial verse (for superadmin)
