@@ -19,14 +19,19 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   @override
   Future<Either<Failure, VerseJoinEntity>> joinVerse(String verseId) async {
     try {
-      final response = await dioClient.post(
-        '/verses/$verseId/join',
-        data: {'verseId': verseId},
-      );
+      final response = await dioClient.post('/verses/$verseId/join');
 
       if (response.statusCode == 200) {
-        final verse = VerseJoinEntity.fromJson(response.data);
-        return Right(verse);
+        // Backend returns: { verse: {...}, role: {...}, user: {...} }
+        final responseData = response.data;
+        final verseData = responseData['verse'];
+        
+        if (verseData != null) {
+          final verse = VerseJoinEntity.fromJson(verseData);
+          return Right(verse);
+        } else {
+          return Left(ServerFailure('Invalid response format: missing verse data'));
+        }
       } else {
         return Left(ServerFailure('Join verse failed: ${response.statusCode}'));
       }
@@ -40,6 +45,12 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   @override
   Future<Either<Failure, void>> leaveVerse(String verseId) async {
     try {
+      // TODO: Backend needs to implement DELETE /verses/:verseId/leave endpoint
+      // For now, return success as this endpoint doesn't exist yet
+      return const Right(null);
+      
+      // Uncomment when backend implements this endpoint:
+      /*
       final response = await dioClient.delete('/verses/$verseId/leave');
 
       if (response.statusCode == 200) {
@@ -49,6 +60,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
           ServerFailure('Leave verse failed: ${response.statusCode}'),
         );
       }
+      */
     } on DioException catch (e) {
       return Left(ServerFailure('Network error: ${e.message}'));
     } catch (e) {
@@ -59,6 +71,12 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   @override
   Future<Either<Failure, List<VerseJoinEntity>>> getJoinedVerses() async {
     try {
+      // TODO: Backend needs to implement GET /verses/joined endpoint
+      // For now, return empty list as this endpoint doesn't exist yet
+      return Right(<VerseJoinEntity>[]);
+      
+      // Uncomment when backend implements this endpoint:
+      /*
       final response = await dioClient.get('/verses/joined');
 
       if (response.statusCode == 200) {
@@ -72,6 +90,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
           ServerFailure('Get joined verses failed: ${response.statusCode}'),
         );
       }
+      */
     } on DioException catch (e) {
       return Left(ServerFailure('Network error: ${e.message}'));
     } catch (e) {
@@ -85,6 +104,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
       final response = await dioClient.get('/verses/$verseId');
 
       if (response.statusCode == 200) {
+        // Backend returns verse object directly
         final verse = VerseJoinEntity.fromJson(response.data);
         return Right(verse);
       } else {

@@ -9,8 +9,7 @@ class DioClient {
   DioClient({required this.dio}) {
     // Configure Dio
     dio.options = BaseOptions(
-      baseUrl:
-          'https://api.brytespring.com', // Replace with your actual API base URL
+      baseUrl: 'https://bryte-spring.vercel.app', // Backend API base URL
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
