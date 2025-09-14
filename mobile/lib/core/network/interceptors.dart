@@ -21,7 +21,9 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (kDebugMode) {
-      print('✅ RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}');
+      print(
+        '✅ RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
+      );
       print('Data: ${response.data}');
     }
     super.onResponse(response, handler);
@@ -30,7 +32,9 @@ class LoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (kDebugMode) {
-      print('❌ ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+      print(
+        '❌ ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}',
+      );
       print('Message: ${err.message}');
       print('Response: ${err.response?.data}');
     }
@@ -69,7 +73,8 @@ class AuthInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (err.response?.statusCode == 401 && !_shouldSkipAuth(err.requestOptions.path)) {
+    if (err.response?.statusCode == 401 &&
+        !_shouldSkipAuth(err.requestOptions.path)) {
       if (_isRefreshing) {
         // Add request to pending queue
         _pendingRequests.add(err.requestOptions);
@@ -98,10 +103,10 @@ class AuthInterceptor extends Interceptor {
 
         // Retry the original request
         final response = await dio.fetch(request);
-        
+
         // Process pending requests
         await _processPendingRequests(newTokens['accessToken']!);
-        
+
         handler.resolve(response);
       } catch (e) {
         if (kDebugMode) {
@@ -120,7 +125,12 @@ class AuthInterceptor extends Interceptor {
   }
 
   bool _shouldSkipAuth(String path) {
-    final skipPaths = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/forgot-password'];
+    final skipPaths = [
+      '/auth/login',
+      '/auth/register',
+      '/auth/refresh',
+      '/auth/forgot-password',
+    ];
     return skipPaths.any((skipPath) => path.contains(skipPath));
   }
 
@@ -140,9 +150,7 @@ class AuthInterceptor extends Interceptor {
   Future<Map<String, String>> _refreshToken(String refreshToken) async {
     // Create a new Dio instance to avoid circular dependency
     final refreshDio = Dio();
-    refreshDio.options = dio.options.copyWith(
-      baseUrl: dio.options.baseUrl,
-    );
+    refreshDio.options = dio.options.copyWith(baseUrl: dio.options.baseUrl);
 
     final response = await refreshDio.post(
       '/auth/refresh',
@@ -155,7 +163,9 @@ class AuthInterceptor extends Interceptor {
         'refreshToken': response.data['refreshToken'],
       };
     } else {
-      throw Exception('Token refresh failed with status: ${response.statusCode}');
+      throw Exception(
+        'Token refresh failed with status: ${response.statusCode}',
+      );
     }
   }
 }

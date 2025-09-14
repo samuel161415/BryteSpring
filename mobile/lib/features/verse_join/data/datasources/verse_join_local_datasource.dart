@@ -16,7 +16,8 @@ class VerseJoinLocalDataSource {
       final now = DateTime.now();
       final entity = VerseJoinEntity(
         id: verseId,
-        name: 'Verse $verseId', // This would come from API in real implementation
+        name:
+            'Verse $verseId', // This would come from API in real implementation
         subdomain: 'verse-$verseId', // Generate subdomain
         createdAt: now,
         createdBy: 'local-user', // Placeholder for local user

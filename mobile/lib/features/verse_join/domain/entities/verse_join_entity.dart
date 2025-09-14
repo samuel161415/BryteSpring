@@ -25,11 +25,11 @@ class VerseJoinEntity extends Equatable {
       id: json['_id'] ?? json['id'], // Handle both _id and id
       name: json['name'],
       subdomain: json['subdomain'],
-      branding: json['branding'] != null 
-          ? Map<String, dynamic>.from(json['branding']) 
+      branding: json['branding'] != null
+          ? Map<String, dynamic>.from(json['branding'])
           : null,
-      settings: json['settings'] != null 
-          ? Map<String, dynamic>.from(json['settings']) 
+      settings: json['settings'] != null
+          ? Map<String, dynamic>.from(json['settings'])
           : null,
       createdAt: DateTime.parse(json['created_at'] ?? json['createdAt']),
       createdBy: json['created_by'] ?? json['createdBy'],
@@ -50,12 +50,12 @@ class VerseJoinEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        subdomain,
-        branding,
-        settings,
-        createdAt,
-        createdBy,
-      ];
+    id,
+    name,
+    subdomain,
+    branding,
+    settings,
+    createdAt,
+    createdBy,
+  ];
 }

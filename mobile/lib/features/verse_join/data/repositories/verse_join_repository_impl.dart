@@ -206,7 +206,9 @@ class VerseJoinRepositoryImpl implements VerseJoinRepository {
         final List<dynamic> versesJson = List<dynamic>.from(
           cachedData['verses'],
         );
-        versesJson.removeWhere((v) => v['_id'] == verseId || v['id'] == verseId);
+        versesJson.removeWhere(
+          (v) => v['_id'] == verseId || v['id'] == verseId,
+        );
         await localStorage.cacheData('joined_verses', {'verses': versesJson});
       }
     } catch (e) {

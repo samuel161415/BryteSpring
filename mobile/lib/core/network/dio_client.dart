@@ -9,7 +9,8 @@ class DioClient {
   DioClient({required this.dio}) {
     // Configure Dio
     dio.options = BaseOptions(
-      baseUrl: 'https://api.brytespring.com', // Replace with your actual API base URL
+      baseUrl:
+          'https://api.brytespring.com', // Replace with your actual API base URL
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),
@@ -27,12 +28,14 @@ class DioClient {
     ]);
 
     // Add error interceptor for better error handling
-    dio.interceptors.add(InterceptorsWrapper(
-      onError: (DioException error, ErrorInterceptorHandler handler) {
-        _handleError(error);
-        handler.next(error);
-      },
-    ));
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (DioException error, ErrorInterceptorHandler handler) {
+          _handleError(error);
+          handler.next(error);
+        },
+      ),
+    );
   }
 
   Future<Response> get(

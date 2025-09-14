@@ -29,12 +29,9 @@ class _LoginPageState extends State<LoginPage> {
             width: screenSize.width > 500 ? 500 : screenSize.width * 0.9,
             margin: const EdgeInsets.symmetric(vertical: 20.0),
             decoration: BoxDecoration(
+              color: AppTheme.surface,
               borderRadius: BorderRadius.circular(24.0),
-              gradient: LinearGradient(
-                colors: [AppTheme.secondary, AppTheme.primary],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),

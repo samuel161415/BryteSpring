@@ -36,10 +36,10 @@ class OfflineFirstRepository implements LoginRepository {
 
           if (response.statusCode == 200) {
             final user = User.fromJson(response.data);
-            
+
             // Cache user data locally for offline access
             await localStorage.cacheUserData(user);
-            
+
             return Right(user);
           } else {
             return Left(ServerFailure('Login failed: ${response.statusCode}'));
@@ -61,8 +61,9 @@ class OfflineFirstRepository implements LoginRepository {
         return Right(cachedUser);
       }
 
-      return Left(NetworkFailure('No internet connection and no cached data available'));
-
+      return Left(
+        NetworkFailure('No internet connection and no cached data available'),
+      );
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -87,7 +88,7 @@ class OfflineFirstRepository implements LoginRepository {
 
       // Always clear local data
       await localStorage.clearUserData();
-      
+
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure('Logout error: $e'));
@@ -120,7 +121,6 @@ class OfflineFirstRepository implements LoginRepository {
       // Fall back to cached data
       final cachedUser = await localStorage.getCachedUserData();
       return Right(cachedUser);
-
     } catch (e) {
       return Left(ServerFailure('Get user error: $e'));
     }

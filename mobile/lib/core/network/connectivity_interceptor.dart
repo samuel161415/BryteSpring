@@ -12,22 +12,22 @@ class ConnectivityInterceptor extends Interceptor {
   ) async {
     // Check connectivity before making request
     final connectivityResult = await _connectivity.checkConnectivity();
-    
+
     if (connectivityResult == ConnectivityResult.none) {
       if (kDebugMode) {
         print('❌ No internet connection available');
       }
-      
+
       final error = DioException(
         requestOptions: options,
         type: DioExceptionType.connectionError,
         message: 'No internet connection available',
       );
-      
+
       handler.reject(error);
       return;
     }
-    
+
     handler.next(options);
   }
 
@@ -39,7 +39,7 @@ class ConnectivityInterceptor extends Interceptor {
         print('❌ Connection error: ${err.message}');
       }
     }
-    
+
     handler.next(err);
   }
 }

@@ -29,7 +29,8 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.resetPassword}',
       name: Routelists.resetPassword,
-      pageBuilder: (context, state) => _buildPage(context, state, const ResetPasswordPage()),
+      pageBuilder: (context, state) =>
+          _buildPage(context, state, const ResetPasswordPage()),
     ),
     GoRoute(
       path: '/${Routelists.almostJoinVerse}',

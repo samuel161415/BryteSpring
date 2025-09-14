@@ -51,199 +51,149 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'reset_password.title'.tr(),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                        ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(32.0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [AppTheme.secondary, AppTheme.primary],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'reset_password.subtitle'.tr(),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: Colors.black87),
-                      ),
-                      const SizedBox(height: 24),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'reset_password.password_label'.tr(),
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'reset_password.title'.tr(),
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.black,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          hintText: 'reset_password.password_hint'.tr(),
-                          hintStyle: const TextStyle(color: Colors.black54),
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2,
+                        const SizedBox(height: 12),
+                        Text(
+                          'reset_password.subtitle'.tr(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.black87),
+                        ),
+                        const SizedBox(height: 24),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'reset_password.password_label'.tr(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
                             ),
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'reset_password.confirm_label'.tr(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: _confirmController,
-                        obscureText: true,
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          hintText: 'reset_password.confirm_hint'.tr(),
-                          hintStyle: const TextStyle(color: Colors.black54),
-                          border: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Stack(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 4, left: 4),
-                              height: 48,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 4,
-                                ),
-                                color: Colors.transparent,
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          textAlign: TextAlign.left,
+                          decoration: InputDecoration(
+                            hintText: 'reset_password.password_hint'.tr(),
+                            hintStyle: const TextStyle(color: Colors.black54),
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                                width: 2,
                               ),
                             ),
-                            Container(
-                              margin: const EdgeInsets.only(
-                                bottom: 4,
-                                right: 4,
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                                width: 2,
                               ),
-                              height: 48,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black,
-                                  width: 4,
-                                ),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.white,
+                                width: 2,
                               ),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // TODO: validate and call backend
-                                  final pass = _passwordController.text;
-                                  final confirm = _confirmController.text;
-                                  if (pass.isEmpty ||
-                                      confirm.isEmpty ||
-                                      pass != confirm) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Passwords do not match'),
-                                      ),
-                                    );
-                                    return;
-                                  }
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'reset_password.send_button'.tr(),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shadowColor: const Color.fromARGB(
-                                    0,
-                                    148,
-                                    124,
-                                    124,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  minimumSize: const Size.fromHeight(48),
-                                ),
-                                child: Text(
-                                  'reset_password.send_button'.tr(),
-                                  style: const TextStyle(
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: Stack(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(top: 4, left: 4),
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
                                     color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                                    width: 4,
+                                  ),
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(
+                                  bottom: 4,
+                                  right: 4,
+                                ),
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black,
+                                    width: 4,
+                                  ),
+                                ),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // TODO: validate and call backend
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: const Color.fromARGB(
+                                      0,
+                                      148,
+                                      124,
+                                      124,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    minimumSize: const Size.fromHeight(48),
+                                  ),
+                                  child: Text(
+                                    'reset_password.send_button'.tr(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(
-                          'reset_password.back_to_login'.tr(),
-                          style: const TextStyle(color: Colors.black),
+                        const SizedBox(height: 12),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            'reset_password.back_to_login'.tr(),
+                            style: const TextStyle(color: Colors.black),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),

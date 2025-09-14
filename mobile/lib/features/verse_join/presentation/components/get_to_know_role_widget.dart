@@ -15,7 +15,7 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Container(
-        height: 600,
+        // height: 600,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -44,10 +44,7 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
               SizedBox(height: 12),
-              Text(
-                'join_verse.role.intro'.tr(),
-                textAlign: TextAlign.center,
-              ),
+              Text('join_verse.role.intro'.tr(), textAlign: TextAlign.center),
               SizedBox(height: 16),
               _ChecklistItem(text: 'join_verse.role.bullet_1'.tr()),
               _ChecklistItem(text: 'join_verse.role.bullet_2'.tr()),

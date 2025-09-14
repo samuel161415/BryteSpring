@@ -62,7 +62,9 @@ class _JoinVerseAlmostComponentState extends State<JoinVerseAlmostComponent> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 4),
                   ),
-                  child: Center(child: Text('join_verse.create_verse_button'.tr())),
+                  child: Center(
+                    child: Text('join_verse.create_verse_button'.tr()),
+                  ),
                 ),
               ),
             ],

@@ -5,7 +5,7 @@ import 'package:mobile/core/storage/secure_storage.dart';
 
 class LocalStorage {
   final SharedPreferences prefs;
-  
+
   static const String _userDataKey = 'cached_user_data';
   static const String _lastSyncKey = 'last_sync_timestamp';
   static const String _offlineQueueKey = 'offline_queue';
@@ -18,7 +18,7 @@ class LocalStorage {
       final userJson = user.toJson();
       await prefs.setString(_userDataKey, jsonEncode(userJson));
       await prefs.setInt(_lastSyncKey, DateTime.now().millisecondsSinceEpoch);
-      
+
       await SecureStorage.saveTokens(user.token, user.refreshToken);
     } catch (e) {
       throw Exception('Failed to cache user data: $e');
@@ -53,16 +53,19 @@ class LocalStorage {
   bool isCachedDataStale({int staleHours = 24}) {
     final lastSync = prefs.getInt(_lastSyncKey);
     if (lastSync == null) return true;
-    
+
     final lastSyncTime = DateTime.fromMillisecondsSinceEpoch(lastSync);
     final now = DateTime.now();
     final difference = now.difference(lastSyncTime);
-    
+
     return difference.inHours > staleHours;
   }
 
   /// Queue offline actions for later sync
-  Future<void> queueOfflineAction(String action, Map<String, dynamic> data) async {
+  Future<void> queueOfflineAction(
+    String action,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final queue = getOfflineQueue();
       queue.add({
@@ -70,7 +73,7 @@ class LocalStorage {
         'data': data,
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       });
-      
+
       await prefs.setString(_offlineQueueKey, jsonEncode(queue));
     } catch (e) {
       throw Exception('Failed to queue offline action: $e');
@@ -82,7 +85,7 @@ class LocalStorage {
     try {
       final queueString = prefs.getString(_offlineQueueKey);
       if (queueString == null) return [];
-      
+
       final List<dynamic> queue = jsonDecode(queueString);
       return queue.cast<Map<String, dynamic>>();
     } catch (e) {
@@ -112,7 +115,7 @@ class LocalStorage {
     try {
       final dataString = prefs.getString(key);
       if (dataString == null) return null;
-      
+
       return jsonDecode(dataString) as Map<String, dynamic>;
     } catch (e) {
       return null;

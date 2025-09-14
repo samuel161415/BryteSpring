@@ -45,7 +45,9 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
       if (response.statusCode == 200) {
         return const Right(null);
       } else {
-        return Left(ServerFailure('Leave verse failed: ${response.statusCode}'));
+        return Left(
+          ServerFailure('Leave verse failed: ${response.statusCode}'),
+        );
       }
     } on DioException catch (e) {
       return Left(ServerFailure('Network error: ${e.message}'));
@@ -58,7 +60,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   Future<Either<Failure, List<VerseJoinEntity>>> getJoinedVerses() async {
     try {
       final response = await dioClient.get('/verses/joined');
-      
+
       if (response.statusCode == 200) {
         final List<dynamic> versesJson = response.data;
         final verses = versesJson
@@ -66,7 +68,9 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
             .toList();
         return Right(verses);
       } else {
-        return Left(ServerFailure('Get joined verses failed: ${response.statusCode}'));
+        return Left(
+          ServerFailure('Get joined verses failed: ${response.statusCode}'),
+        );
       }
     } on DioException catch (e) {
       return Left(ServerFailure('Network error: ${e.message}'));
@@ -79,7 +83,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   Future<Either<Failure, VerseJoinEntity>> getVerse(String verseId) async {
     try {
       final response = await dioClient.get('/verses/$verseId');
-      
+
       if (response.statusCode == 200) {
         final verse = VerseJoinEntity.fromJson(response.data);
         return Right(verse);

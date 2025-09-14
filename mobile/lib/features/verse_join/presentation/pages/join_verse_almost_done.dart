@@ -12,7 +12,7 @@ class JoinVerseAlmostDone extends StatefulWidget {
 
 class _JoinVerseAlmostDoneState extends State<JoinVerseAlmostDone> {
   void _handleLanguageChanged() {
-    // Force rebuild when language changes
+    // Force re.build when language changes
     setState(() {});
   }
 
