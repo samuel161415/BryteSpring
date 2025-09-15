@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/theme/app_theme.dart';
+import 'package:mobile/core/constant.dart';
+import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/dashboard/presentation/components/dashboard_header.dart';
 import 'package:mobile/features/dashboard/presentation/components/dashboard_sidebar.dart';
 import 'package:mobile/features/dashboard/presentation/components/dashboard_main_content.dart';
-import 'package:mobile/features/dashboard/presentation/components/dashboard_footer.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +40,14 @@ class DashboardPage extends StatelessWidget {
             ),
           ),
           
-          // Footer
-          const DashboardFooter(),
+          // Footer - Using existing AppFooter
+          AppFooter(
+            onLanguageChanged: () {
+              setState(() {
+                // Force rebuild when language changes
+              });
+            },
+          ),
         ],
       ),
     );

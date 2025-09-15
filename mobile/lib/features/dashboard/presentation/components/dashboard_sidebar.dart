@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:mobile/core/theme/app_theme.dart';
+import 'package:mobile/core/constant.dart';
 
 class DashboardSidebar extends StatelessWidget {
   const DashboardSidebar({super.key});
@@ -24,9 +24,9 @@ class DashboardSidebar extends StatelessWidget {
             ],
             addButtonText: 'dashboard.sidebar.add_channel'.tr(),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Deine Assets
           _buildSection(
             title: 'dashboard.sidebar.assets'.tr(),
@@ -36,9 +36,9 @@ class DashboardSidebar extends StatelessWidget {
             ],
             addButtonText: 'dashboard.sidebar.add_assets'.tr(),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Deine Verse
           _buildSection(
             title: 'dashboard.sidebar.verses'.tr(),
@@ -46,9 +46,9 @@ class DashboardSidebar extends StatelessWidget {
             addButtonText: '',
             customWidget: _buildVerseSection(),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Einstellungen
           _buildSection(
             title: 'dashboard.sidebar.settings'.tr(),
@@ -80,24 +80,23 @@ class DashboardSidebar extends StatelessWidget {
             color: Colors.black,
           ),
         ),
-        
+
         if (customWidget != null) ...[
           const SizedBox(height: 16),
           customWidget,
         ] else ...[
           const SizedBox(height: 12),
-          ...items.map((item) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              item,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black87,
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                item,
+                style: const TextStyle(fontSize: 14, color: Colors.black87),
               ),
             ),
-          )),
+          ),
         ],
-        
+
         if (addButtonText.isNotEmpty) ...[
           const SizedBox(height: 12),
           TextButton(
@@ -140,8 +139,9 @@ class DashboardSidebar extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Row(
-                  children: List.generate(2, (index) => 
-                    Container(
+                  children: List.generate(
+                    2,
+                    (index) => Container(
                       width: 3,
                       height: 3,
                       margin: const EdgeInsets.only(right: 1),
@@ -164,9 +164,9 @@ class DashboardSidebar extends StatelessWidget {
             ),
           ],
         ),
-        
+
         const SizedBox(width: 12),
-        
+
         // Notification badge
         Container(
           width: 20,

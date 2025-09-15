@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:mobile/core/theme/app_theme.dart';
+import 'package:mobile/core/constant.dart';
 
 class DashboardMainContent extends StatelessWidget {
   const DashboardMainContent({super.key});
@@ -21,9 +21,9 @@ class DashboardMainContent extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Description text
           Text(
             'dashboard.description'.tr(),
@@ -33,9 +33,9 @@ class DashboardMainContent extends StatelessWidget {
               height: 1.5,
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Search section
           Text(
             'dashboard.search.title'.tr(),
@@ -45,9 +45,9 @@ class DashboardMainContent extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Search input
           Container(
             height: 48,
@@ -91,9 +91,9 @@ class DashboardMainContent extends StatelessWidget {
               ],
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Frequently searched section
           Text(
             'dashboard.frequent.title'.tr(),
@@ -103,15 +103,15 @@ class DashboardMainContent extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Frequent search items
           _buildFrequentItem('dashboard.frequent.item1'.tr()),
           _buildFrequentItem('dashboard.frequent.item2'.tr()),
-          
+
           const SizedBox(height: 32),
-          
+
           // Upload section
           Text(
             'dashboard.upload.title'.tr(),
@@ -121,9 +121,9 @@ class DashboardMainContent extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Upload button
           ElevatedButton.icon(
             onPressed: () {
@@ -156,10 +156,7 @@ class DashboardMainContent extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         text,
-        style: const TextStyle(
-          fontSize: 16,
-          color: Colors.black87,
-        ),
+        style: const TextStyle(fontSize: 16, color: Colors.black87),
       ),
     );
   }

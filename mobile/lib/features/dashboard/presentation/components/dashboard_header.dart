@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/theme/app_theme.dart';
+import 'package:mobile/core/constant.dart';
 
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({super.key});
@@ -22,11 +22,7 @@ class DashboardHeader extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: Colors.grey[300],
                 ),
-                child: const Icon(
-                  Icons.person,
-                  color: Colors.black,
-                  size: 24,
-                ),
+                child: const Icon(Icons.person, color: Colors.black, size: 24),
               ),
               Positioned(
                 top: 0,
@@ -52,9 +48,9 @@ class DashboardHeader extends StatelessWidget {
               ),
             ],
           ),
-          
+
           const SizedBox(width: 24),
-          
+
           // BryteVerse Logo
           Expanded(
             child: Column(
@@ -73,8 +69,9 @@ class DashboardHeader extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Row(
-                      children: List.generate(3, (index) => 
-                        Container(
+                      children: List.generate(
+                        3,
+                        (index) => Container(
                           width: 4,
                           height: 4,
                           margin: const EdgeInsets.only(right: 2),
@@ -98,17 +95,13 @@ class DashboardHeader extends StatelessWidget {
               ],
             ),
           ),
-          
+
           // Hamburger menu
           IconButton(
             onPressed: () {
               // TODO: Implement menu functionality
             },
-            icon: const Icon(
-              Icons.menu,
-              color: Colors.black,
-              size: 24,
-            ),
+            icon: const Icon(Icons.menu, color: Colors.black, size: 24),
           ),
         ],
       ),
