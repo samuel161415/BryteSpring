@@ -21,7 +21,7 @@ class RegisterUserRemoteDataSourceImpl implements RegisterUserRemoteDataSource {
   ) async {
     try {
       final response = await dioClient.post(
-        '/api/users/register',
+        '/register',
         data: request.toJson(),
       );
 
