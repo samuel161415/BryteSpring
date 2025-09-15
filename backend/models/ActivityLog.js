@@ -27,6 +27,7 @@ const activityLogSchema = new mongoose.Schema(
         "setup_complete",
         "role_assigned",
         "role_removed",
+        
       ],
       trim: true,
     },
@@ -42,6 +43,7 @@ const activityLogSchema = new mongoose.Schema(
         "role",
         "user_role",
         "folder",
+        "verse_branding"
       ],
       trim: true,
     },

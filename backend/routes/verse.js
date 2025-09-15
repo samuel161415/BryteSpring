@@ -40,6 +40,12 @@ router.delete('/:id',
   verseController.deleteVerse
 );
 
+// Update verse branding/white labeling
+router.put('/:verse_id/branding',
+  auth.requireAuth,
+  verseController.updateVerseBranding
+);
+
 // Join existing verse (for users with accepted invitations)
 router.post('/:verse_id/join',
   auth.requireAuth,

@@ -489,6 +489,88 @@ exports.listVerses = async (req, res) => {
   }
 };
 
+// Update verse branding/white labeling
+exports.updateVerseBranding = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { verse_id } = req.params;
+    const { branding } = req.body;
+    const userId = req.user._id;
+
+    // Find the verse
+    const verse = await Verse.findById(verse_id);
+    if (!verse) {
+      return res.status(404).json({ message: 'Verse not found' });
+    }
+
+    // Check if user has Administrator role for this verse
+    const userRole = await UserRole.findOne({ 
+      user_id: userId, 
+      verse_id: verse_id,
+      is_active: true 
+    }).populate('role_id');
+
+    if (!userRole || !userRole.role_id) {
+      return res.status(403).json({ message: 'You do not have access to this verse' });
+    }
+
+    const role = userRole.role_id;
+    if (role.name !== 'Administrator') {
+      return res.status(403).json({ message: 'Only Administrators can update verse branding' });
+    }
+
+    // Capture pre-update branding for audit
+    const beforeBranding = verse.branding ? verse.branding.toObject() : {};
+
+    // Update branding
+    if (branding) {
+      verse.branding = {
+        logo_url: branding.logo_url || verse.branding?.logo_url || null,
+        primary_color: branding.primary_color || verse.branding?.primary_color || '#3B82F6',
+        color_name: branding.color_name || verse.branding?.color_name || 'Primary Blue'
+      };
+    }
+
+    await verse.save();
+
+    // Log the branding update activity
+    const brandingLog = new ActivityLog({
+      verse_id: verse._id,
+      user_id: userId,
+      action: 'update',
+      resource_type: 'verse_branding',
+      resource_id: verse._id,
+      timestamp: new Date(),
+      details: {
+        verse_name: verse.name,
+        updated_fields: {
+          logo_url: { old: beforeBranding.logo_url, new: verse.branding.logo_url },
+          primary_color: { old: beforeBranding.primary_color, new: verse.branding.primary_color },
+          color_name: { old: beforeBranding.color_name, new: verse.branding.color_name }
+        }
+      }
+    });
+    await brandingLog.save();
+
+    res.status(200).json({
+      message: 'Verse branding updated successfully',
+      verse: {
+        _id: verse._id,
+        name: verse.name,
+        branding: verse.branding
+      }
+    });
+
+  } catch (error) {
+    console.error('Error updating verse branding:', error);
+    res.status(500).json({ message: 'Server error updating verse branding', error: error.message });
+  }
+};
+
 // Join existing verse (for users who registered via invitation but didn't join yet)
 exports.joinVerse = async (req, res) => {
   try {
