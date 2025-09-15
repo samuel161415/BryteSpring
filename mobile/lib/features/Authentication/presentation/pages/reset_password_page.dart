@@ -1,12 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
-import 'package:mobile/features/Authentication/domain/entities/reset_password_entity.dart';
-import 'package:mobile/features/Authentication/presentation/bloc/reset_password_bloc.dart';
+import 'package:mobile/features/Authentication/domain/entities/register_user_entity.dart';
+import 'package:mobile/features/Authentication/presentation/bloc/register_user_bloc.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   final InvitationEntity invitation;
@@ -25,15 +27,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     setState(() {});
   }
 
-  void _handleResetPassword() {
+  void _handleRegisterUser(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      final request = ResetPasswordRequest(
+      final request = RegisterUserRequest(
         email: widget.invitation.email,
         password: _passwordController.text,
-        confirmPassword: _confirmController.text,
+        invitationToken: widget.invitation.token,
       );
 
-      context.read<ResetPasswordBloc>().add(ResetPasswordSubmitted(request));
+      context.read<RegisterUserBloc>().add(RegisterUserSubmitted(request));
     }
   }
 
@@ -47,18 +49,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ResetPasswordBloc(resetPasswordUseCase: sl()),
-      child: BlocListener<ResetPasswordBloc, ResetPasswordState>(
+      create: (context) => RegisterUserBloc(registerUserUseCase: sl()),
+      child: BlocListener<RegisterUserBloc, RegisterUserState>(
         listener: (context, state) {
-          if (state is ResetPasswordSuccess) {
+          if (state is RegisterUserSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.response.message),
+                content: Text(
+                  'Account created successfully! Welcome ${state.response.firstName}!',
+                ),
                 backgroundColor: Colors.green,
               ),
             );
-            Navigator.of(context).pop();
-          } else if (state is ResetPasswordFailure) {
+            // Navigate to dashboard after successful registration
+            context.goNamed(Routelists.dashboard);
+          } else if (state is RegisterUserFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
@@ -67,12 +72,14 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             );
           }
         },
-        child: _buildResetPasswordForm(),
+        child: Builder(
+          builder: (context) => _buildRegisterUserForm(context),
+        ),
       ),
     );
   }
 
-  Widget _buildResetPasswordForm() {
+  Widget _buildRegisterUserForm(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -166,7 +173,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           ),
                           const SizedBox(height: 24),
                           Text(
-                            'reset_password.title'.tr(),
+                            'Create Your Account',
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.black,
@@ -176,7 +183,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'reset_password.subtitle'.tr(),
+                            'Set your password to complete your account setup',
                             textAlign: TextAlign.center,
                             style: const TextStyle(color: Colors.black87),
                           ),
@@ -286,7 +293,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           ),
                           const SizedBox(height: 16),
 
-                          BlocBuilder<ResetPasswordBloc, ResetPasswordState>(
+                          BlocBuilder<RegisterUserBloc, RegisterUserState>(
                             builder: (context, state) {
                               return SizedBox(
                                 width: double.infinity,
@@ -319,9 +326,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                         ),
                                       ),
                                       child: ElevatedButton(
-                                        onPressed: state is ResetPasswordLoading
+                                        onPressed: state is RegisterUserLoading
                                             ? null
-                                            : _handleResetPassword,
+                                            : () => _handleRegisterUser(context),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.transparent,
                                           shadowColor: const Color.fromARGB(
@@ -339,7 +346,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                             48,
                                           ),
                                         ),
-                                        child: state is ResetPasswordLoading
+                                        child: state is RegisterUserLoading
                                             ? const SizedBox(
                                                 height: 20,
                                                 width: 20,
@@ -352,8 +359,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                                 ),
                                               )
                                             : Text(
-                                                'reset_password.send_button'
-                                                    .tr(),
+                                                'Create Account',
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 16,

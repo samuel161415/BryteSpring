@@ -5,15 +5,19 @@ import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/core/services/auth_service.dart';
 import 'package:mobile/core/storage/local_storage.dart';
 import 'package:mobile/features/Authentication/data/datasources/invitation_remote_datasource.dart';
+import 'package:mobile/features/Authentication/data/datasources/register_user_remote_datasource.dart';
 import 'package:mobile/features/Authentication/data/datasources/reset_password_remote_datasource.dart';
 import 'package:mobile/features/Authentication/data/repositories/invitation_repository_impl.dart';
 import 'package:mobile/features/Authentication/data/repositories/login_repository_impl.dart';
+import 'package:mobile/features/Authentication/data/repositories/register_user_repository_impl.dart';
 import 'package:mobile/features/Authentication/data/repositories/reset_password_repository_impl.dart';
 import 'package:mobile/features/Authentication/domain/repositories/invitation_repository.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
+import 'package:mobile/features/Authentication/domain/repositories/register_user_repository.dart';
 import 'package:mobile/features/Authentication/domain/repositories/reset_password_repository.dart';
 import 'package:mobile/features/Authentication/domain/usecases/invitation_usecase.dart';
 import 'package:mobile/features/Authentication/domain/usecases/login_usecase.dart';
+import 'package:mobile/features/Authentication/domain/usecases/register_user_usecase.dart';
 import 'package:mobile/features/Authentication/domain/usecases/reset_password_usecase.dart';
 import 'package:mobile/features/verse_join/data/datasources/verse_join_remote_datasource.dart';
 import 'package:mobile/features/verse_join/data/repositories/verse_join_repository_impl.dart';
@@ -41,6 +45,10 @@ Future<void> init() async {
     () => InvitationRemoteDataSourceImpl(dioClient: sl()),
   );
 
+  sl.registerLazySingleton<RegisterUserRemoteDataSource>(
+    () => RegisterUserRemoteDataSourceImpl(dioClient: sl()),
+  );
+
   sl.registerLazySingleton<ResetPasswordRemoteDataSource>(
     () => ResetPasswordRemoteDataSourceImpl(dioClient: sl()),
   );
@@ -52,6 +60,10 @@ Future<void> init() async {
   // Repositories - Auth is online-only, Verse is offline-first
   sl.registerLazySingleton<InvitationRepository>(
     () => InvitationRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  sl.registerLazySingleton<RegisterUserRepository>(
+    () => RegisterUserRepositoryImpl(remoteDataSource: sl()),
   );
 
   sl.registerLazySingleton<ResetPasswordRepository>(
@@ -75,6 +87,7 @@ Future<void> init() async {
 
   // Use cases
   sl.registerLazySingleton(() => InvitationUseCase(sl()));
+  sl.registerLazySingleton(() => RegisterUserUseCase(repository: sl()));
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerseJoinUseCase(sl()));
