@@ -24,9 +24,8 @@ final GetIt sl = GetIt.instance;
 
 Future<void> init() async {
   // External dependencies
-  sl.registerLazySingletonAsync(
-    () async => await SharedPreferences.getInstance(),
-  );
+  final sharedPrefs = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPrefs);
 
   // Network
   sl.registerLazySingleton(() => Dio());
@@ -49,7 +48,7 @@ Future<void> init() async {
     () => VerseJoinRemoteDataSourceImpl(dioClient: sl()),
   );
 
-  // Repositories - Login is online-only, Verse is offline-first
+  // Repositories - Auth is online-only, Verse is offline-first
   sl.registerLazySingleton<InvitationRepository>(
     () => InvitationRepositoryImpl(remoteDataSource: sl()),
   );

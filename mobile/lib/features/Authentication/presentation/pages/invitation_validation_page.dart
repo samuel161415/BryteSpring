@@ -14,7 +14,8 @@ class InvitationValidationPage extends StatefulWidget {
   const InvitationValidationPage({super.key, required this.token});
 
   @override
-  State<InvitationValidationPage> createState() => _InvitationValidationPageState();
+  State<InvitationValidationPage> createState() =>
+      _InvitationValidationPageState();
 }
 
 class _InvitationValidationPageState extends State<InvitationValidationPage> {
@@ -48,9 +49,8 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ResetPasswordPage(
-                    invitation: state.invitation,
-                  ),
+                  builder: (context) =>
+                      ResetPasswordPage(invitation: state.invitation),
                 ),
               );
             }
@@ -61,8 +61,8 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
           body: Center(
             child: SingleChildScrollView(
               child: Container(
-                width: MediaQuery.of(context).size.width > 500 
-                    ? 500 
+                width: MediaQuery.of(context).size.width > 500
+                    ? 500
                     : MediaQuery.of(context).size.width * 0.9,
                 margin: const EdgeInsets.symmetric(vertical: 20.0),
                 decoration: BoxDecoration(
@@ -102,9 +102,12 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
                             ),
                           ),
                           const SizedBox(height: 24),
-                          
+
                           // Content based on state
-                          BlocBuilder<InvitationValidationBloc, InvitationValidationState>(
+                          BlocBuilder<
+                            InvitationValidationBloc,
+                            InvitationValidationState
+                          >(
                             builder: (context, state) {
                               if (state is InvitationValidationLoading) {
                                 return _buildLoadingContent();
@@ -148,10 +151,7 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
         Text(
           'Please wait while we verify your invitation',
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 14,
-          ),
+          style: const TextStyle(color: Colors.white70, fontSize: 14),
         ),
       ],
     );
@@ -175,7 +175,7 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
           ),
         ),
         const SizedBox(height: 24),
-        
+
         // Error Title
         Text(
           state.isExpired ? 'Invitation Expired' : 'Invalid Invitation',
@@ -186,18 +186,15 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
           ),
         ),
         const SizedBox(height: 12),
-        
+
         // Error Message
         Text(
           state.message,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 16,
-          ),
+          style: const TextStyle(color: Colors.white70, fontSize: 16),
         ),
         const SizedBox(height: 24),
-        
+
         // Action Button
         SizedBox(
           width: double.infinity,
@@ -215,10 +212,7 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
             ),
             child: const Text(
               'Go to Login',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -241,10 +235,7 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
         Text(
           'We are processing your invitation',
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white70,
-            fontSize: 16,
-          ),
+          style: const TextStyle(color: Colors.white70, fontSize: 16),
         ),
       ],
     );

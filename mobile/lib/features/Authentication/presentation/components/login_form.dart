@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/routing/routeLists.dart';
-import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
@@ -185,20 +184,10 @@ class LoginForm extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       context.pushNamed(
-                        Routelists.resetPassword,
-                        extra: InvitationEntity(
-                          id: '',
-                          verseId: '',
-                          email: '',
-                          roleId: '',
-                          token: '',
-                          invitedBy: '',
-                          isAccepted: false,
-                          createdAt: DateTime.now(),
-                          firstName: '',
-                          lastName: '',
-                          position: '',
-                        ),
+                        Routelists.invitationValidation,
+                        pathParameters: {
+                          'token': '6fe3ac76-9438-4eb4-b09f-9875f1306424',
+                        },
                       );
                     },
                     child: Text(
