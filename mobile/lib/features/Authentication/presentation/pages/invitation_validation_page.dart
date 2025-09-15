@@ -6,6 +6,7 @@ import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/invitation_validation_bloc.dart';
+import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 
 class InvitationValidationPage extends StatefulWidget {
   final String token;
@@ -32,16 +33,12 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
       child: BlocListener<InvitationValidationBloc, InvitationValidationState>(
         listener: (context, state) {
           if (state is InvitationValidationSuccess) {
-            if (state.userExists) {
-              // User already exists, redirect to login
-              context.goNamed(Routelists.login);
-            } else {
-              // User doesn't exist, redirect to reset password page
-              context.pushNamed(
-                Routelists.resetPassword,
-                extra: state.invitation,
-              );
-            }
+            // Always go to reset password page
+            // The reset password page will handle existing users appropriately
+            context.pushNamed(
+              Routelists.resetPassword,
+              extra: state.invitation,
+            );
           }
         },
         child: Scaffold(

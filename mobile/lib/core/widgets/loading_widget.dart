@@ -71,10 +71,7 @@ class LoadingOverlay extends StatelessWidget {
         if (isLoading)
           Container(
             color: backgroundColor ?? Colors.black.withOpacity(0.3),
-            child: LoadingWidget(
-              message: loadingMessage,
-              color: Colors.white,
-            ),
+            child: LoadingWidget(message: loadingMessage, color: Colors.white),
           ),
       ],
     );
@@ -115,10 +112,10 @@ class LoadingButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? AppTheme.primary,
           foregroundColor: textColor ?? Colors.white,
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          padding:
+              padding ??
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: isLoading
             ? Row(

@@ -25,36 +25,37 @@ class AppRouter {
     debugLogDiagnostics: false,
     redirect: (context, state) {
       final authService = sl<AuthService>();
-      
+
       // Wait for auth service to initialize
       if (!authService.isInitialized) {
         return null; // Let the app initialize
       }
-      
-      final isAuthenticated = authService.isAuthenticated;
-      final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
-      final isDashboardRoute = state.matchedLocation == '/${Routelists.dashboard}';
-      
-      // If user is authenticated and trying to access login, redirect to dashboard
-      if (isAuthenticated && isLoginRoute) {
-        return '/${Routelists.dashboard}';
-      }
-      
-      // If user is not authenticated and trying to access dashboard, redirect to login
-      if (!isAuthenticated && isDashboardRoute) {
-        return '/${Routelists.login}';
-      }
-      
-      // If user is not authenticated and on root, redirect to login
-      if (!isAuthenticated && state.matchedLocation == '/') {
-        return '/${Routelists.login}';
-      }
-      
+
+        final isAuthenticated = authService.isAuthenticated;
+        final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
+        final isDashboardRoute =
+            state.matchedLocation == '/${Routelists.dashboard}';
+
+        // If user is authenticated and trying to access login, redirect to dashboard
+        if (isAuthenticated && isLoginRoute) {
+          return '/${Routelists.dashboard}';
+        }
+
+        // If user is not authenticated and trying to access dashboard, redirect to login
+        if (!isAuthenticated && isDashboardRoute) {
+          return '/${Routelists.login}';
+        }
+
+        // If user is not authenticated and on root, redirect to login
+        if (!isAuthenticated && state.matchedLocation == '/') {
+          return '/${Routelists.login}';
+        }
+
       // If user is authenticated and on root, redirect to dashboard
       if (isAuthenticated && state.matchedLocation == '/') {
         return '/${Routelists.dashboard}';
       }
-      
+
       return null; // No redirect needed
     },
   );
@@ -63,13 +64,13 @@ class AppRouter {
     GoRoute(
       path: '/',
       name: 'root',
-      pageBuilder: (context, state) => _buildPage(context, state, const SizedBox()),
+      pageBuilder: (context, state) =>
+          _buildPage(context, state, const SizedBox()),
     ),
     GoRoute(
       path: '/${Routelists.login}',
       name: Routelists.login,
-      pageBuilder: (context, state) =>
-          _buildPage(context, state, LoginPage()),
+      pageBuilder: (context, state) => _buildPage(context, state, LoginPage()),
     ),
     GoRoute(
       path: '/${Routelists.resetPassword}',

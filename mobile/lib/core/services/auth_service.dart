@@ -34,24 +34,18 @@ class AuthService {
   /// Login user and update authentication state
   Future<Either<Failure, User>> login(String email, String password) async {
     final result = await _loginRepository.login(email, password);
-    result.fold(
-      (failure) => null,
-      (user) {
-        _currentUser = user;
-      },
-    );
+    result.fold((failure) => null, (user) {
+      _currentUser = user;
+    });
     return result;
   }
 
   /// Logout user and clear authentication state
   Future<Either<Failure, void>> logout() async {
     final result = await _loginRepository.logout();
-    result.fold(
-      (failure) => null,
-      (_) {
-        _currentUser = null;
-      },
-    );
+    result.fold((failure) => null, (_) {
+      _currentUser = null;
+    });
     return result;
   }
 

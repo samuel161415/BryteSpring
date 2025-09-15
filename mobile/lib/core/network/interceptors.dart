@@ -58,7 +58,7 @@ class AuthInterceptor extends Interceptor {
       print('🔐 AuthInterceptor: Checking path: ${options.path}');
       print('🔐 Should skip auth: ${_shouldSkipAuth(options.path)}');
     }
-    
+
     // Skip auth for certain endpoints
     if (_shouldSkipAuth(options.path)) {
       if (kDebugMode) {

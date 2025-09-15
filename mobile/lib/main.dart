@@ -7,11 +7,11 @@ import 'package:mobile/core/services/auth_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
-  
+
   // Initialize authentication service
   final authService = sl<AuthService>();
   await authService.initialize();
-  
+
   await EasyLocalization.ensureInitialized();
   runApp(
     EasyLocalization(

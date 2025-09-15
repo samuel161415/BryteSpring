@@ -57,7 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           padding: EdgeInsets.all(24.0),
                           child: TopHeader(),
                         ),
-                        
+
                         // Dashboard Content
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -65,7 +65,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             children: [
                               // Sidebar
                               const DashboardSidebar(),
-                              
+
                               // Main content
                               Expanded(
                                 child: Container(
@@ -80,7 +80,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   ),
                 ),
-                
+
                 // Footer
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
