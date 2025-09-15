@@ -54,8 +54,16 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    if (kDebugMode) {
+      print('🔐 AuthInterceptor: Checking path: ${options.path}');
+      print('🔐 Should skip auth: ${_shouldSkipAuth(options.path)}');
+    }
+    
     // Skip auth for certain endpoints
     if (_shouldSkipAuth(options.path)) {
+      if (kDebugMode) {
+        print('🔐 Skipping auth for: ${options.path}');
+      }
       handler.next(options);
       return;
     }
@@ -64,6 +72,13 @@ class AuthInterceptor extends Interceptor {
     final accessToken = await SecureStorage.getAccessToken();
     if (accessToken != null && accessToken.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $accessToken';
+      if (kDebugMode) {
+        print('🔐 Added auth token for: ${options.path}');
+      }
+    } else {
+      if (kDebugMode) {
+        print('🔐 No auth token available for: ${options.path}');
+      }
     }
     handler.next(options);
   }
@@ -130,6 +145,7 @@ class AuthInterceptor extends Interceptor {
       '/auth/register',
       '/auth/refresh',
       '/auth/forgot-password',
+      '/invitation/', // Add invitation endpoint to skip auth
     ];
     return skipPaths.any((skipPath) => path.contains(skipPath));
   }
