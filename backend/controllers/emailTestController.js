@@ -28,9 +28,6 @@ const testCleverReachConnection = async (req, res) => {
 const testSendInvitation = async (req, res) => {
   try {
     const { email, verseName, roleName } = req.body;
-    console.log("email", email);
-    console.log("verseName", verseName);
-    console.log("roleName", roleName);
     
     if (!email) {
       return res.status(400).json({ message: 'Email is required' });
@@ -71,7 +68,6 @@ const debugCleverReachAPI = async (req, res) => {
     const { sendInvitationEmail, getAccessToken, getGroups } = require('../services/cleverEmail');
     
     const token = await getAccessToken();
-    console.log('Token obtained:', token.substring(0, 20) + '...');
     
     // Test different API endpoints
     const axios = require('axios');
