@@ -31,25 +31,25 @@ class AppRouter {
         return null; // Let the app initialize
       }
 
-        final isAuthenticated = authService.isAuthenticated;
-        final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
-        final isDashboardRoute =
-            state.matchedLocation == '/${Routelists.dashboard}';
+      final isAuthenticated = authService.isAuthenticated;
+      final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
+      final isDashboardRoute =
+          state.matchedLocation == '/${Routelists.dashboard}';
 
-        // If user is authenticated and trying to access login, redirect to dashboard
-        if (isAuthenticated && isLoginRoute) {
-          return '/${Routelists.dashboard}';
-        }
+      // If user is authenticated and trying to access login, redirect to dashboard
+      if (isAuthenticated && isLoginRoute) {
+        return '/${Routelists.dashboard}';
+      }
 
-        // If user is not authenticated and trying to access dashboard, redirect to login
-        if (!isAuthenticated && isDashboardRoute) {
-          return '/${Routelists.login}';
-        }
+      // If user is not authenticated and trying to access dashboard, redirect to login
+      if (!isAuthenticated && isDashboardRoute) {
+        return '/${Routelists.login}';
+      }
 
-        // If user is not authenticated and on root, redirect to login
-        if (!isAuthenticated && state.matchedLocation == '/') {
-          return '/${Routelists.login}';
-        }
+      // If user is not authenticated and on root, redirect to login
+      if (!isAuthenticated && state.matchedLocation == '/') {
+        return '/${Routelists.login}';
+      }
 
       // If user is authenticated and on root, redirect to dashboard
       if (isAuthenticated && state.matchedLocation == '/') {

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/routeLists.dart';
+import 'package:mobile/core/storage/secure_storage.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/core/widgets/loading_widget.dart';
 import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
@@ -54,6 +55,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       child: BlocListener<RegisterUserBloc, RegisterUserState>(
         listener: (context, state) {
           if (state is RegisterUserSuccess) {
+            // Save tokens to secure storage
+            // Use token as refreshToken if refreshToken is not provided
+            final refreshToken = state.response.refreshToken ?? state.response.token;
+            SecureStorage.saveTokens(state.response.token, refreshToken);
+            
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(

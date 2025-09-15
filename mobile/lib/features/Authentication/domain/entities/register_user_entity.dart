@@ -34,6 +34,7 @@ class RegisterUserResponse extends Equatable {
   final String? avatarUrl;
   final List<String> joinedVerse;
   final String token;
+  final String? refreshToken;
   final String? pendingVerseJoin;
 
   const RegisterUserResponse({
@@ -44,6 +45,7 @@ class RegisterUserResponse extends Equatable {
     this.avatarUrl,
     required this.joinedVerse,
     required this.token,
+    this.refreshToken,
     this.pendingVerseJoin,
   });
 
@@ -56,6 +58,7 @@ class RegisterUserResponse extends Equatable {
       avatarUrl: json['avatar_url'],
       joinedVerse: List<String>.from(json['joined_verse'] ?? []),
       token: json['token'] ?? '',
+      refreshToken: json['refresh_token'], // May be null
       pendingVerseJoin: json['pending_verse_join'],
     );
   }
@@ -69,6 +72,7 @@ class RegisterUserResponse extends Equatable {
     avatarUrl,
     joinedVerse,
     token,
+    refreshToken,
     pendingVerseJoin,
   ];
 }

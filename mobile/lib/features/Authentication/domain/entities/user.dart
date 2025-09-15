@@ -45,7 +45,7 @@ class User {
       updatedAt: DateTime.parse(json['updated_at']),
       joinedVerse: List<String>.from(json['joined_verse']),
       token: json['token'], // Access token
-      refreshToken: json['refresh_token'], // Refresh token
+      refreshToken: json['refresh_token'] ?? json['token'], // Use token as refreshToken if not provided
     );
   }
 

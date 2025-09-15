@@ -28,8 +28,8 @@ class LoginRepositoryImpl implements LoginRepository {
 
         // Save tokens to secure storage
         await SecureStorage.saveTokens(
-          user.token, // Assuming token field contains access token
-          user.refreshToken, // Assuming refreshToken field contains refresh token
+          user.token, // Access token
+          user.refreshToken, // Refresh token (or token if refreshToken not provided)
         );
 
         return Right(user);

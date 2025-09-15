@@ -109,7 +109,7 @@ class AuthInterceptor extends Interceptor {
         final newTokens = await _refreshToken(refreshToken);
         await SecureStorage.saveTokens(
           newTokens['accessToken']!,
-          newTokens['refreshToken']!,
+          newTokens['refreshToken'] ?? newTokens['accessToken']!, // Use accessToken as refreshToken if not provided
         );
 
         // Update original request with new token
@@ -175,8 +175,8 @@ class AuthInterceptor extends Interceptor {
 
     if (response.statusCode == 200) {
       return {
-        'accessToken': response.data['accessToken'],
-        'refreshToken': response.data['refreshToken'],
+        'accessToken': response.data['accessToken'] ?? response.data['token'],
+        'refreshToken': response.data['refreshToken'], // May be null
       };
     } else {
       throw Exception(
