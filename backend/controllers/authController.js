@@ -31,10 +31,11 @@ const registerUser = async (req, res) => {
     let verse_id = null;
     let role_id = null;
     let is_verse_setup = false;
+    let invitation = null;
 
     // If invitation token provided, get user details from invitation
     if (invitation_token) {
-      const invitation = await Invitation.findOne({ token: invitation_token });
+      invitation = await Invitation.findOne({ token: invitation_token });
       if (!invitation) {
         return res.status(400).json({ message: "Invalid invitation token" });
       }
@@ -72,9 +73,7 @@ const registerUser = async (req, res) => {
     await user.save();
 
     // Handle invitation scenarios
-    if (invitation_token) {
-      const invitation = await Invitation.findOne({ token: invitation_token });
-      
+    if (invitation_token && invitation) {
       if (is_verse_setup) {
         // Scenario 1: User is completing verse setup (admin completing verse creation)
         // Immediately add to verse and create user role
