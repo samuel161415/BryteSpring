@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/app_router.dart';
+import 'package:mobile/core/services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
+  
+  // Initialize authentication service
+  final authService = sl<AuthService>();
+  await authService.initialize();
+  
   await EasyLocalization.ensureInitialized();
   runApp(
     EasyLocalization(

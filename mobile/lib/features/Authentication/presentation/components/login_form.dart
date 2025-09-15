@@ -3,9 +3,68 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/routing/routeLists.dart';
+import 'package:mobile/core/services/auth_service.dart';
+import 'package:mobile/core/injection_container.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter email and password')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authService = sl<AuthService>();
+      final result = await authService.login(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+
+      result.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Login failed: ${failure.message}')),
+          );
+        },
+        (user) {
+          // Login successful, redirect to dashboard
+          context.go('/${Routelists.dashboard}');
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login error: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +104,7 @@ class LoginForm extends StatelessWidget {
                 ],
               ),
               TextField(
+                controller: _emailController,
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
                   hintText: 'login_screen.email_placeholder'.tr(),
@@ -73,9 +133,11 @@ class LoginForm extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               TextField(
+                controller: _passwordController,
                 textAlign: TextAlign.center,
+                obscureText: true,
                 decoration: InputDecoration(
-                  hintText: 'login_screen.email_placeholder'.tr(),
+                  hintText: 'login_screen.password_placeholder'.tr(),
                   hintStyle: TextStyle(color: Colors.black),
                   // filled: true,
                   // fillColor: const Color(0xFF21262D),
@@ -153,9 +215,7 @@ class LoginForm extends StatelessWidget {
                         border: Border.all(color: Colors.black, width: 4),
                       ),
                       child: ElevatedButton(
-                        onPressed: () {
-                          context.pushNamed(Routelists.almostJoinVerse);
-                        },
+                        onPressed: _isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.transparent,
                           shadowColor: const Color.fromARGB(0, 148, 124, 124),
@@ -164,14 +224,23 @@ class LoginForm extends StatelessWidget {
                           ),
                           minimumSize: const Size.fromHeight(48),
                         ),
-                        child: Text(
-                          'login_screen.login_button'.tr(),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : Text(
+                                'login_screen.login_button'.tr(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                   ],
