@@ -6,6 +6,7 @@ import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
+import 'package:mobile/core/widgets/loading_widget.dart';
 import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/Authentication/domain/entities/register_user_entity.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/register_user_bloc.dart';
@@ -73,7 +74,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           }
         },
         child: Builder(
-          builder: (context) => _buildRegisterUserForm(context),
+          builder: (context) => BlocBuilder<RegisterUserBloc, RegisterUserState>(
+            builder: (context, state) {
+              return LoadingOverlay(
+                isLoading: state is RegisterUserLoading,
+                loadingMessage: 'Creating your account...',
+                child: _buildRegisterUserForm(context),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -328,7 +337,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                       child: ElevatedButton(
                                         onPressed: state is RegisterUserLoading
                                             ? null
-                                            : () => _handleRegisterUser(context),
+                                            : () =>
+                                                  _handleRegisterUser(context),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.transparent,
                                           shadowColor: const Color.fromARGB(
@@ -347,16 +357,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                           ),
                                         ),
                                         child: state is RegisterUserLoading
-                                            ? const SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                        Color
-                                                      >(Colors.white),
-                                                ),
+                                            ? const LoadingWidget(
+                                                size: 20,
+                                                color: Colors.white,
+                                                showMessage: false,
                                               )
                                             : Text(
                                                 'Create Account',
