@@ -93,9 +93,10 @@ class InvitationValidationBloc extends Bloc<InvitationValidationEvent, Invitatio
 
     await invitationResult.fold(
       (failure) async {
-        // Check if invitation is expired
+        // Check if invitation is expired or not found
         final isExpired = failure.message.toLowerCase().contains('expired') ||
-            failure.message.toLowerCase().contains('not found');
+            failure.message.toLowerCase().contains('not found') ||
+            failure.message.toLowerCase().contains('invalid');
         
         emit(InvitationValidationFailure(
           message: _mapFailureToMessage(failure),
@@ -128,7 +129,7 @@ class InvitationValidationBloc extends Bloc<InvitationValidationEvent, Invitatio
         await userExistsResult.fold(
           (failure) async {
             emit(InvitationValidationFailure(
-              message: 'Failed to check user existence: ${failure.message}',
+              message: _mapFailureToMessage(failure),
               isExpired: false,
             ));
           },
@@ -153,7 +154,7 @@ class InvitationValidationBloc extends Bloc<InvitationValidationEvent, Invitatio
 
     result.fold(
       (failure) => emit(InvitationValidationFailure(
-        message: 'Failed to check user existence: ${failure.message}',
+        message: _mapFailureToMessage(failure),
         isExpired: false,
       )),
       (userExists) {
@@ -167,10 +168,8 @@ class InvitationValidationBloc extends Bloc<InvitationValidationEvent, Invitatio
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
       case ServerFailure:
-        if (failure.message.toLowerCase().contains('not found')) {
-          return 'Invitation not found or has expired';
-        }
-        return 'Server error occurred. Please try again.';
+        // Return the exact error message from the API
+        return failure.message;
       case NetworkFailure:
         return 'Network error. Please check your connection.';
       case CacheFailure:
