@@ -55,5 +55,52 @@
       "hint": "Note: Your organization might have specific approval policies. Only upload or edit content that has been approved by your team. Handle structures and data in this protected Verse carefully and responsibly.",
       "cta": "I understand my role – let's start"
     }
+  },
+  "dashboard": {
+    "greeting": "Hello, Dirk!",
+    "description": "Great to have you back! Let's revolutionize the world of publishing together and bring your content to life.",
+    "sidebar": {
+      "channels": "Your Channels",
+      "my_channels": "My",
+      "company": "Company",
+      "publishing": "Publishing",
+      "add_channel": "+ Add Channel",
+      "assets": "Your Assets",
+      "employee_images": "Employee Images",
+      "company_materials": "Company Materials",
+      "add_assets": "+ Add Assets",
+      "verses": "Your Verses",
+      "settings": "Settings",
+      "links": "Links",
+      "help_support": "Help & Support",
+      "add_more": "+ Add More"
+    },
+    "search": {
+      "title": "What are you looking for?",
+      "placeholder": "Enter search term"
+    },
+    "frequent": {
+      "title": "You have frequently searched for:",
+      "item1": "The Summer - A new campaign",
+      "item2": "Handball - Luminous balls"
+    },
+    "upload": {
+      "title": "Would you like to upload one?",
+      "button": "+ Choose image for data"
+    },
+    "footer": {
+      "message": "BryteVerse© by Publify is the future in Publishing.",
+      "feature1": "We can your world",
+      "feature2": "We can your content",
+      "feature3": "We can your reach",
+      "feature4": "We can your efficiency",
+      "feature5": "We can your future",
+      "social_media": "Social Media",
+      "materials_links": "Materials & Links",
+      "contact": "Contact",
+      "career": "Career",
+      "privacy": "Privacy",
+      "imprint": "Imprint"
+    }
   }
 }

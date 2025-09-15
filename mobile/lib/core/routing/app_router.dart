@@ -6,7 +6,9 @@ import 'package:mobile/features/Authentication/presentation/pages/login_page.dar
 import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/invitation_validation_page.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
+import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
+import 'package:mobile/features/dashboard/presentation/pages/dashboard_page.dart';
 
 /// App router configuration using go_router
 class AppRouter {
@@ -64,6 +66,12 @@ class AppRouter {
       name: Routelists.getToKnowRole,
       pageBuilder: (context, state) =>
           _buildPage(context, state, GetToKnowRole()),
+    ),
+    GoRoute(
+      path: '/${Routelists.dashboard}',
+      name: Routelists.dashboard,
+      pageBuilder: (context, state) =>
+          _buildPage(context, state, const DashboardPage()),
     ),
   ];
 

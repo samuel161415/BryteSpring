@@ -55,5 +55,52 @@
       "hint": "Hinweis: In Deiner Organisation können spezifische Freigaberichtlinien gelten. Bitte achte darauf, Inhalte nur zu bearbeiten oder hochzuladen, wenn sie mit Deinem Team abgestimmt sind. Bitte gehe sorgfältig mit den Strukturen und Daten in diesem geschützten Verse um und handle verantwortungsvoll.",
       "cta": "Rolle verstanden & loslegen"
     }
+  },
+  "dashboard": {
+    "greeting": "Hallo, Dirk!",
+    "description": "Schön, dass Du zurück bist! Lass uns gemeinsam die Welt des Publizierens revolutionieren und Deine Inhalte zum Leben erwecken.",
+    "sidebar": {
+      "channels": "Deine Kanäle",
+      "my_channels": "Meine",
+      "company": "Unternehmen",
+      "publishing": "Publishing",
+      "add_channel": "+ Kanal hinzufügen",
+      "assets": "Deine Assets",
+      "employee_images": "Mitarbeiterbilder",
+      "company_materials": "Unternehmensmaterialien",
+      "add_assets": "+ Assets hinzufügen",
+      "verses": "Deine Verse",
+      "settings": "Einstellungen",
+      "links": "Verknüpfungen",
+      "help_support": "Hilfe & Support",
+      "add_more": "+ Mehr hinzufügen"
+    },
+    "search": {
+      "title": "Wonach suchst Du?",
+      "placeholder": "Suchbegriff eingeben"
+    },
+    "frequent": {
+      "title": "Das hast Du häufig gesucht:",
+      "item1": "Den Sommer - Eine neue Kampagne",
+      "item2": "Handball - Leuchtende Bälle"
+    },
+    "upload": {
+      "title": "Möchtest Du einen hochladen?",
+      "button": "+ Bild zum Daten wählen"
+    },
+    "footer": {
+      "message": "BryteVerse© by Publify ist die Zukunft im Publishing.",
+      "feature1": "Wir können Deine Welt",
+      "feature2": "Wir können Deine Inhalte",
+      "feature3": "Wir können Deine Reichweite",
+      "feature4": "Wir können Deine Effizienz",
+      "feature5": "Wir können Deine Zukunft",
+      "social_media": "Social Media",
+      "materials_links": "Materialien & Links",
+      "contact": "Kontakt",
+      "career": "Karriere",
+      "privacy": "Datenschutz",
+      "imprint": "Impressum"
+    }
   }
 }

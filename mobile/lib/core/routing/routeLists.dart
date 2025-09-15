@@ -8,4 +8,5 @@ class Routelists {
   static const joinVerse = 'joinVerse';
   static const getToKnowRole = 'getToKnowRole';
   static const invitationValidation = 'invitationValidation';
+  static const dashboard = 'dashboard';
 }
