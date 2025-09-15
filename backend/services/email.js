@@ -45,10 +45,7 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
   `;
 
   try {
-    console.log("Sending invitation email to:", to);
-    console.log("From email:", fromEmail || FROM_ADDRESS);
-    console.log("Subject:", subject);
-    console.log("HTML:", html);
+
     const transporter = getTransporter();
   
     const response= await transporter.sendMail({
@@ -63,7 +60,6 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
     //   subject,
     //   html,
     // });
-    console.log("Response:", response);
     return { ok: true };
   } catch (err) {
     console.error('Failed to send invitation email:', err?.message || err);

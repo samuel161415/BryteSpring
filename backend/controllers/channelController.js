@@ -12,17 +12,12 @@ exports.debugUserRole = async (req, res) => {
     const userId = req.user._id;
     const { verse_id } = req.params;
 
-    console.log('Debug - User ID:', userId);
-    console.log('Debug - Verse ID:', verse_id);
-
     // Test 1: Find UserRole without population
     const userRoleWithoutPopulate = await UserRole.findOne({ 
       user_id: userId, 
       verse_id,
       is_active: true 
     });
-
-    console.log('Debug - UserRole without populate:', userRoleWithoutPopulate);
 
     // Test 2: Find UserRole with population
     const userRoleWithPopulate = await UserRole.findOne({ 
@@ -31,16 +26,10 @@ exports.debugUserRole = async (req, res) => {
       is_active: true 
     }).populate('role_id');
 
-    console.log('Debug - UserRole with populate:', userRoleWithPopulate);
-    console.log('Debug - Role data:', userRoleWithPopulate && userRoleWithPopulate.role_id ? {
-      name: userRoleWithPopulate.role_id.name,
-      permissions: userRoleWithPopulate.role_id.permissions
-    } : 'No role data');
 
     // Test 3: Find Role directly
     if (userRoleWithoutPopulate && userRoleWithoutPopulate.role_id) {
       const directRole = await Role.findById(userRoleWithoutPopulate.role_id);
-      console.log('Debug - Direct Role lookup:', directRole);
     }
 
     res.json({
@@ -86,12 +75,6 @@ exports.createChannel = async (req, res) => {
       is_active: true 
     }).populate('role_id');
 
-    console.log('UserRole found:', userRole ? 'Yes' : 'No');
-    console.log('Role populated:', userRole && userRole.role_id ? 'Yes' : 'No');
-    console.log('Role data:', userRole && userRole.role_id ? {
-      name: userRole.role_id.name,
-      permissions: userRole.role_id.permissions
-    } : 'No role data');
 
     if (!userRole || !userRole.role_id) {
       return res.status(403).json({ message: 'You do not have permission to create folders in this verse' });

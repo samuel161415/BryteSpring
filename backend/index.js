@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -11,6 +12,22 @@ const indexRouter = require('./routes');
 const verseRouter = require('./routes/verse');
 const invitationRouter = require('./routes/invitation');
 const channelRouter = require('./routes/channel');
+const dashboardRouter = require('./routes/dashboard');
+
+// CORS configuration
+
+
+const corsOptions = {
+  origin: true, // ✅ Allow ALL origins
+  credentials: true, // ✅ Allow cookies and authorization headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  exposedHeaders: ['Authorization'],
+  optionsSuccessStatus: 200
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
 // Middleware
 app.use(express.json());
@@ -20,6 +37,7 @@ app.use('/', indexRouter);
 app.use('/verse', verseRouter);
 app.use('/invitation', invitationRouter);
 app.use('/channel', channelRouter);
+app.use('/dashboard', dashboardRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -20,7 +20,6 @@ const { validationResult } = require('express-validator');
 // Create initial verse (for superadmin)
 // Create initial verse (for superadmin)
 exports.createInitialVerse = async (req, res) => {
-  console.log("Creating initial verse");
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -164,16 +163,28 @@ exports.completeVerseSetup = async (req, res) => {
         return res.status(404).json({ message: 'Verse not found' });
       }
   
-      // Check if user has permission to complete setup
-      if (verse.created_by.toString() !== adminId.toString()) {
-        return res.status(403).json({ message: 'Not authorized to complete setup for this verse' });
+      // Check if user has Administrator role for this verse
+      const userRole = await UserRole.findOne({ 
+        user_id: adminId, 
+        verse_id: verse_id,
+        is_active: true 
+      }).populate('role_id');
+
+      if (!userRole || !userRole.role_id) {
+        return res.status(403).json({ message: 'You do not have access to this verse' });
       }
-  
+
+      // Check if user has Administrator role
+      const role = userRole.role_id;
+      if (role.name !== 'Administrator') {
+        return res.status(403).json({ message: 'Only Administrators can complete verse setup' });
+      }
+ 
       // Check if verse setup is already complete
       if (verse.is_setup_complete) {
         return res.status(400).json({ message: 'Verse setup is already complete' });
       }
-  
+
       // Check if subdomain is available
       if (subdomain) {
         const existingVerse = await Verse.findOne({ 
@@ -184,7 +195,7 @@ exports.completeVerseSetup = async (req, res) => {
           return res.status(400).json({ message: 'Subdomain already taken' });
         }
       }
-  
+
       // Update verse with provided data
       verse.name = name || verse.name;
       if (typeof subdomain === 'string' && subdomain.trim().length > 0) {
