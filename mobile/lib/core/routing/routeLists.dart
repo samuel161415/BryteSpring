@@ -7,4 +7,5 @@ class Routelists {
   static const almostJoinVerse = 'almostJoinVerse';
   static const joinVerse = 'joinVerse';
   static const getToKnowRole = 'getToKnowRole';
+  static const invitationValidation = 'invitationValidation';
 }

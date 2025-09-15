@@ -8,9 +8,7 @@ class InvitationUseCase {
 
   InvitationUseCase(this.repository);
 
-  Future<Either<Failure, InvitationEntity>> getInvitationByToken(
-    String token,
-  ) {
+  Future<Either<Failure, InvitationEntity>> getInvitationByToken(String token) {
     return repository.getInvitationByToken(token);
   }
 }

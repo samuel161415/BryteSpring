@@ -1,10 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/core/routing/routeLists.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
+import 'package:mobile/features/Authentication/presentation/pages/invitation_validation_page.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
-import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
 
 /// App router configuration using go_router
@@ -29,8 +30,23 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.resetPassword}',
       name: Routelists.resetPassword,
-      pageBuilder: (context, state) =>
-          _buildPage(context, state, const ResetPasswordPage()),
+      pageBuilder: (context, state) => _buildPage(
+        context,
+        state,
+        ResetPasswordPage(invitation: state.extra as InvitationEntity),
+      ),
+    ),
+    GoRoute(
+      path: '/invitation-validation/:token',
+      name: Routelists.invitationValidation,
+      pageBuilder: (context, state) {
+        final token = state.pathParameters['token']!;
+        return _buildPage(
+          context,
+          state,
+          InvitationValidationPage(token: token),
+        );
+      },
     ),
     GoRoute(
       path: '/${Routelists.almostJoinVerse}',

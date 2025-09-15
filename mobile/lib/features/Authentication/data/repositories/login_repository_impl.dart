@@ -77,4 +77,29 @@ class LoginRepositoryImpl implements LoginRepository {
       return Left(ServerFailure('Get current user error: $e'));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> checkUserExists(String email) async {
+    try {
+      final response = await dioClient.get('/api/users/email/$email');
+
+      if (response.statusCode == 200) {
+        // User exists
+        return const Right(true);
+      } else if (response.statusCode == 404) {
+        // User doesn't exist
+        return const Right(false);
+      } else {
+        return Left(ServerFailure('Check user failed: ${response.statusCode}'));
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        // User doesn't exist
+        return const Right(false);
+      }
+      return Left(ServerFailure('Network error: ${e.message}'));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
 }
