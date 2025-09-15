@@ -37,7 +37,6 @@ async function getAccessToken() {
     const expiresIn = response.data.expires_in || 3600; // Default to 1 hour
     tokenExpiry = new Date(Date.now() + (expiresIn - 60) * 1000); // Subtract 60 seconds for safety
 
-    console.log('CleverReach access token obtained successfully');
     return accessToken;
   } catch (error) {
     console.error('Failed to get CleverReach access token:', error.response?.data || error.message);
@@ -102,7 +101,7 @@ async function ensureInvitationGroup() {
   }
 }
 
-/**
+/*
  * Send invitation email using CleverReach
  */
 async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, fromEmail }) {
@@ -194,7 +193,6 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
           }
         }
       );
-      console.log(`Added recipient ${to} to CleverReach group ${groupId}`);
     } catch (error) {
       // Recipient might already exist, continue with sending
       if (error.response?.status !== 409) { // 409 = Conflict (already exists)
@@ -204,8 +202,6 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
 
     // Use the working CleverReach approach: Create mailing and send it
     try {
-      console.log('Creating CleverReach mailing...');
-      
       // Step 1: Create a mailing
       const mailingResponse = await axios.post(
         `${CLEVERREACH_BASE_URL}/mailings.json`,
@@ -226,7 +222,6 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
         }
       );
 
-      console.log('CleverReach mailing created:', mailingResponse.data);
       const mailingId = mailingResponse.data.id;
 
       // Step 2: Send the mailing to specific recipients
@@ -244,7 +239,6 @@ async function sendInvitationEmail({ to, verseName, roleName, token, subdomain, 
         }
       );
 
-      console.log('CleverReach email sent successfully:', sendResponse.data);
       return { ok: true, type: 'mailing', mailingId: mailingId };
 
     } catch (error) {
