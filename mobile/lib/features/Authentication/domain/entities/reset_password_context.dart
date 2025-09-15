@@ -7,10 +7,7 @@ class ResetPasswordContext extends Equatable {
   final VerseJoinEntity verse;
   final User user;
 
-  const ResetPasswordContext({
-    required this.verse,
-    required this.user,
-  });
+  const ResetPasswordContext({required this.verse, required this.user});
 
   factory ResetPasswordContext.fromJson(Map<String, dynamic> json) {
     return ResetPasswordContext(
@@ -20,10 +17,7 @@ class ResetPasswordContext extends Equatable {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'verse': verse.toJson(),
-      'user': user.toJson(),
-    };
+    return {'verse': verse.toJson(), 'user': user.toJson()};
   }
 
   @override

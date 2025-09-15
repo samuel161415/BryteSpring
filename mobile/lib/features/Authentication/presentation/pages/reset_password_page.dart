@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
-import 'package:mobile/features/Authentication/domain/entities/reset_password_context.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/Authentication/domain/entities/reset_password_entity.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/reset_password_bloc.dart';
 
 class ResetPasswordPage extends StatefulWidget {
-  final ResetPasswordContext context;
-  const ResetPasswordPage({super.key, required this.context});
+  final InvitationEntity invitation;
+  const ResetPasswordPage({super.key, required this.invitation});
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
@@ -28,7 +28,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   void _handleResetPassword() {
     if (_formKey.currentState!.validate()) {
       final request = ResetPasswordRequest(
-        email: widget.context.user.email,
+        email: widget.invitation.email,
         password: _passwordController.text,
         confirmPassword: _confirmController.text,
       );
@@ -120,8 +120,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                 radius: 20,
                                 backgroundColor: Colors.white.withOpacity(0.2),
                                 child: Text(
-                                  widget.context.user.firstName.isNotEmpty
-                                      ? widget.context.user.firstName[0].toUpperCase()
+                                  widget.invitation.firstName.isNotEmpty
+                                      ? widget.invitation.firstName[0]
+                                            .toUpperCase()
                                       : 'U',
                                   style: const TextStyle(
                                     color: Colors.black,
@@ -136,7 +137,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Welcome, ${widget.context.user.firstName}!',
+                                      'Welcome, ${widget.invitation.firstName}!',
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 20,
@@ -144,12 +145,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                       ),
                                     ),
                                     Text(
-                                      'Set your password to start using ${widget.context.verse.name}',
+                                      'Set your password to complete your invitation',
                                       style: const TextStyle(
                                         color: Colors.black87,
                                         fontSize: 14,
                                       ),
                                     ),
+                                    if (widget.invitation.position.isNotEmpty)
+                                      Text(
+                                        'Position: ${widget.invitation.position}',
+                                        style: const TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 12,
+                                        ),
+                                      ),
                                   ],
                                 ),
                               ),
