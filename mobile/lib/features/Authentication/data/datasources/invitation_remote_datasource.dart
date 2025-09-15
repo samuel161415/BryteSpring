@@ -40,6 +40,8 @@ class InvitationRemoteDataSourceImpl implements InvitationRemoteDataSource {
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         return Left(ServerFailure('Invitation not found'));
+      } else if (e.type == DioExceptionType.connectionError) {
+        return Left(ServerFailure('Cannot connect to server. Please check if the backend server is running.'));
       }
       return Left(ServerFailure('Network error: ${e.message}'));
     } catch (e) {
