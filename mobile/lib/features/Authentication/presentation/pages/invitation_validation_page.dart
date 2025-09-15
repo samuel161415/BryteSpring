@@ -33,27 +33,15 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
       child: BlocListener<InvitationValidationBloc, InvitationValidationState>(
         listener: (context, state) {
           if (state is InvitationValidationSuccess) {
-            if (state.userExists) {
-              // User exists, redirect to login
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'You already have an account. Please log in to continue.',
-                  ),
-                  backgroundColor: Colors.orange,
-                ),
-              );
-              context.goNamed(Routelists.login);
-            } else {
-              // User doesn't exist, go to reset password page
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ResetPasswordPage(invitation: state.invitation),
-                ),
-              );
-            }
+            // Always go to reset password page
+            // The reset password page will handle existing users appropriately
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ResetPasswordPage(invitation: state.invitation),
+              ),
+            );
           }
         },
         child: Scaffold(

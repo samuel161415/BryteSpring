@@ -81,7 +81,7 @@ class LoginRepositoryImpl implements LoginRepository {
   @override
   Future<Either<Failure, bool>> checkUserExists(String email) async {
     try {
-      final response = await dioClient.get('/api/users/email/$email');
+      final response = await dioClient.get('/user/email/$email');
 
       if (response.statusCode == 200) {
         // User exists
@@ -95,6 +95,10 @@ class LoginRepositoryImpl implements LoginRepository {
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         // User doesn't exist
+        return const Right(false);
+      } else if (e.response?.statusCode == 401) {
+        // Unauthorized - this endpoint requires auth
+        // For now, assume user doesn't exist and let them proceed to registration
         return const Right(false);
       }
       return Left(ServerFailure('Network error: ${e.message}'));

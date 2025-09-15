@@ -70,7 +70,8 @@ class InvitationValidationFailure extends InvitationValidationState {
 }
 
 // BLoC
-class InvitationValidationBloc extends Bloc<InvitationValidationEvent, InvitationValidationState> {
+class InvitationValidationBloc
+    extends Bloc<InvitationValidationEvent, InvitationValidationState> {
   final InvitationUseCase invitationUseCase;
   final LoginRepository loginRepository;
 
@@ -89,56 +90,56 @@ class InvitationValidationBloc extends Bloc<InvitationValidationEvent, Invitatio
     emit(InvitationValidationLoading());
 
     // First, get the invitation by token
-    final invitationResult = await invitationUseCase.getInvitationByToken(event.token);
+    final invitationResult = await invitationUseCase.getInvitationByToken(
+      event.token,
+    );
 
     await invitationResult.fold(
       (failure) async {
         // Check if invitation is expired or not found
-        final isExpired = failure.message.toLowerCase().contains('expired') ||
+        final isExpired =
+            failure.message.toLowerCase().contains('expired') ||
             failure.message.toLowerCase().contains('not found') ||
             failure.message.toLowerCase().contains('invalid');
-        
-        emit(InvitationValidationFailure(
-          message: _mapFailureToMessage(failure),
-          isExpired: isExpired,
-        ));
+
+        emit(
+          InvitationValidationFailure(
+            message: _mapFailureToMessage(failure),
+            isExpired: isExpired,
+          ),
+        );
       },
       (invitation) async {
         // Check if invitation is expired by date
-        if (invitation.expiresAt != null && 
+        if (invitation.expiresAt != null &&
             invitation.expiresAt!.isBefore(DateTime.now())) {
-          emit(const InvitationValidationFailure(
-            message: 'This invitation has expired',
-            isExpired: true,
-          ));
+          emit(
+            const InvitationValidationFailure(
+              message: 'This invitation has expired',
+              isExpired: true,
+            ),
+          );
           return;
         }
 
         // Check if invitation is already accepted
         if (invitation.isAccepted) {
-          emit(const InvitationValidationFailure(
-            message: 'This invitation has already been accepted',
-            isExpired: false,
-          ));
+          emit(
+            const InvitationValidationFailure(
+              message: 'This invitation has already been accepted',
+              isExpired: false,
+            ),
+          );
           return;
         }
 
-        // Now check if user exists
-        final userExistsResult = await loginRepository.checkUserExists(invitation.email);
-        
-        await userExistsResult.fold(
-          (failure) async {
-            emit(InvitationValidationFailure(
-              message: _mapFailureToMessage(failure),
-              isExpired: false,
-            ));
-          },
-          (userExists) async {
-            emit(InvitationValidationSuccess(
-              invitation: invitation,
-              userExists: userExists,
-            ));
-          },
+        // Skip user existence check since it requires authentication
+        // Always go to reset password page - it will handle existing users
+        emit(
+          InvitationValidationSuccess(
+            invitation: invitation,
+            userExists: false, // Always false to go to reset password
+          ),
         );
       },
     );
@@ -153,12 +154,14 @@ class InvitationValidationBloc extends Bloc<InvitationValidationEvent, Invitatio
     final result = await loginRepository.checkUserExists(event.email);
 
     result.fold(
-      (failure) => emit(InvitationValidationFailure(
-        message: _mapFailureToMessage(failure),
-        isExpired: false,
-      )),
+      (failure) => emit(
+        InvitationValidationFailure(
+          message: _mapFailureToMessage(failure),
+          isExpired: false,
+        ),
+      ),
       (userExists) {
-        // This event is typically used for re-checking, 
+        // This event is typically used for re-checking,
         // but we need the invitation data to emit success
         // For now, we'll just handle the failure case
       },

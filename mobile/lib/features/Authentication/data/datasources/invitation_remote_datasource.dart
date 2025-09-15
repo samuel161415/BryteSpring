@@ -18,7 +18,7 @@ class InvitationRemoteDataSourceImpl implements InvitationRemoteDataSource {
     String token,
   ) async {
     try {
-      final response = await dioClient.get('/api/invitations/token/$token');
+      final response = await dioClient.get('/invitation/$token');
 
       if (response.statusCode == 200) {
         final responseData = response.data;
