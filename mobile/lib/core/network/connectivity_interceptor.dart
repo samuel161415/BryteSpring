@@ -11,9 +11,9 @@ class ConnectivityInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     // Check connectivity before making request
-    final connectivityResult = await _connectivity.checkConnectivity();
+    final connectivityResults = await _connectivity.checkConnectivity();
 
-    if (connectivityResult == ConnectivityResult.none) {
+    if (connectivityResults.contains(ConnectivityResult.none)) {
       if (kDebugMode) {
         print('❌ No internet connection available');
       }
