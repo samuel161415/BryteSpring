@@ -66,7 +66,8 @@ class ResetPasswordFailure extends ResetPasswordState {
 class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
   final ResetPasswordUseCase resetPasswordUseCase;
 
-  ResetPasswordBloc({required this.resetPasswordUseCase}) : super(ResetPasswordInitial()) {
+  ResetPasswordBloc({required this.resetPasswordUseCase})
+    : super(ResetPasswordInitial()) {
     on<ResetPasswordSubmitted>(_onResetPasswordSubmitted);
     on<ForgotPasswordSubmitted>(_onForgotPasswordSubmitted);
     on<ResetPasswordReset>(_onResetPasswordReset);

@@ -10,12 +10,16 @@ class ResetPasswordRepositoryImpl implements ResetPasswordRepository {
   ResetPasswordRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, ResetPasswordResponse>> resetPassword(ResetPasswordRequest request) async {
+  Future<Either<Failure, ResetPasswordResponse>> resetPassword(
+    ResetPasswordRequest request,
+  ) async {
     return await remoteDataSource.resetPassword(request);
   }
 
   @override
-  Future<Either<Failure, ResetPasswordResponse>> forgotPassword(String email) async {
+  Future<Either<Failure, ResetPasswordResponse>> forgotPassword(
+    String email,
+  ) async {
     return await remoteDataSource.forgotPassword(email);
   }
 }

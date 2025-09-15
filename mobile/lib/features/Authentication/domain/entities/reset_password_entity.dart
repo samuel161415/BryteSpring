@@ -16,10 +16,7 @@ class ResetPasswordRequest extends Equatable {
   List<Object?> get props => [email, password, confirmPassword];
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-    };
+    return {'email': email, 'password': password};
   }
 }
 

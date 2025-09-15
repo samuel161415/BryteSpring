@@ -22,13 +22,13 @@
     "footer_link_imprint": "Imprint"
   },
   "reset_password": {
-    "title": "Set a new password",
-    "subtitle": "Choose a strong password and confirm it to continue.",
+    "title": "Set Your Password",
+    "subtitle": "Choose a secure password to protect your account",
     "password_label": "New password",
     "password_hint": "Enter new password",
     "confirm_label": "Confirm password",
     "confirm_hint": "Re-enter new password",
-    "send_button": "Reset password",
+    "send_button": "Set Password",
     "back_to_login": "Back to login"
   },
   "app_footer": {

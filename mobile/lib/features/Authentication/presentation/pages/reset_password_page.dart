@@ -4,12 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
+import 'package:mobile/features/Authentication/domain/entities/reset_password_context.dart';
 import 'package:mobile/features/Authentication/domain/entities/reset_password_entity.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/reset_password_bloc.dart';
 
 class ResetPasswordPage extends StatefulWidget {
-  final String email;
-  const ResetPasswordPage({super.key, required this.email});
+  final ResetPasswordContext context;
+  const ResetPasswordPage({super.key, required this.context});
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
@@ -27,11 +28,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   void _handleResetPassword() {
     if (_formKey.currentState!.validate()) {
       final request = ResetPasswordRequest(
-        email: widget.email,
+        email: widget.context.user.email,
         password: _passwordController.text,
         confirmPassword: _confirmController.text,
       );
-      
+
       context.read<ResetPasswordBloc>().add(ResetPasswordSubmitted(request));
     }
   }
@@ -46,9 +47,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ResetPasswordBloc(
-        resetPasswordUseCase: sl(),
-      ),
+      create: (context) => ResetPasswordBloc(resetPasswordUseCase: sl()),
       child: BlocListener<ResetPasswordBloc, ResetPasswordState>(
         listener: (context, state) {
           if (state is ResetPasswordSuccess) {
@@ -114,6 +113,49 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          // Personalized greeting
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.white.withOpacity(0.2),
+                                child: Text(
+                                  widget.context.user.firstName.isNotEmpty
+                                      ? widget.context.user.firstName[0].toUpperCase()
+                                      : 'U',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Welcome, ${widget.context.user.firstName}!',
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Set your password to start using ${widget.context.verse.name}',
+                                      style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
                           Text(
                             'reset_password.title'.tr(),
                             textAlign: TextAlign.center,
@@ -123,7 +165,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               fontWeight: FontWeight.w900,
                             ),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 8),
                           Text(
                             'reset_password.subtitle'.tr(),
                             textAlign: TextAlign.center,
@@ -242,7 +284,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                 child: Stack(
                                   children: [
                                     Container(
-                                      margin: const EdgeInsets.only(top: 4, left: 4),
+                                      margin: const EdgeInsets.only(
+                                        top: 4,
+                                        left: 4,
+                                      ),
                                       height: 48,
                                       decoration: BoxDecoration(
                                         border: Border.all(
@@ -277,9 +322,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                             124,
                                           ),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
                                           ),
-                                          minimumSize: const Size.fromHeight(48),
+                                          minimumSize: const Size.fromHeight(
+                                            48,
+                                          ),
                                         ),
                                         child: state is ResetPasswordLoading
                                             ? const SizedBox(
@@ -287,11 +336,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                                 width: 20,
                                                 child: CircularProgressIndicator(
                                                   strokeWidth: 2,
-                                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(Colors.white),
                                                 ),
                                               )
                                             : Text(
-                                                'reset_password.send_button'.tr(),
+                                                'reset_password.send_button'
+                                                    .tr(),
                                                 style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 16,

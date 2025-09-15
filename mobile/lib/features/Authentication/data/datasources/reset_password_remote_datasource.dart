@@ -5,17 +5,22 @@ import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/features/Authentication/domain/entities/reset_password_entity.dart';
 
 abstract class ResetPasswordRemoteDataSource {
-  Future<Either<Failure, ResetPasswordResponse>> resetPassword(ResetPasswordRequest request);
+  Future<Either<Failure, ResetPasswordResponse>> resetPassword(
+    ResetPasswordRequest request,
+  );
   Future<Either<Failure, ResetPasswordResponse>> forgotPassword(String email);
 }
 
-class ResetPasswordRemoteDataSourceImpl implements ResetPasswordRemoteDataSource {
+class ResetPasswordRemoteDataSourceImpl
+    implements ResetPasswordRemoteDataSource {
   final DioClient dioClient;
 
   ResetPasswordRemoteDataSourceImpl({required this.dioClient});
 
   @override
-  Future<Either<Failure, ResetPasswordResponse>> resetPassword(ResetPasswordRequest request) async {
+  Future<Either<Failure, ResetPasswordResponse>> resetPassword(
+    ResetPasswordRequest request,
+  ) async {
     try {
       final response = await dioClient.put(
         '/api/users/reset-password',
@@ -26,7 +31,9 @@ class ResetPasswordRemoteDataSourceImpl implements ResetPasswordRemoteDataSource
         final resetResponse = ResetPasswordResponse.fromJson(response.data);
         return Right(resetResponse);
       } else {
-        return Left(ServerFailure('Reset password failed: ${response.statusCode}'));
+        return Left(
+          ServerFailure('Reset password failed: ${response.statusCode}'),
+        );
       }
     } on DioException catch (e) {
       return Left(ServerFailure('Network error: ${e.message}'));
@@ -36,7 +43,9 @@ class ResetPasswordRemoteDataSourceImpl implements ResetPasswordRemoteDataSource
   }
 
   @override
-  Future<Either<Failure, ResetPasswordResponse>> forgotPassword(String email) async {
+  Future<Either<Failure, ResetPasswordResponse>> forgotPassword(
+    String email,
+  ) async {
     try {
       final response = await dioClient.post(
         '/api/users/forgot-password',
@@ -47,7 +56,9 @@ class ResetPasswordRemoteDataSourceImpl implements ResetPasswordRemoteDataSource
         final resetResponse = ResetPasswordResponse.fromJson(response.data);
         return Right(resetResponse);
       } else {
-        return Left(ServerFailure('Forgot password failed: ${response.statusCode}'));
+        return Left(
+          ServerFailure('Forgot password failed: ${response.statusCode}'),
+        );
       }
     } on DioException catch (e) {
       return Left(ServerFailure('Network error: ${e.message}'));

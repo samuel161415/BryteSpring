@@ -8,7 +8,9 @@ class ResetPasswordUseCase {
 
   ResetPasswordUseCase(this.repository);
 
-  Future<Either<Failure, ResetPasswordResponse>> resetPassword(ResetPasswordRequest request) {
+  Future<Either<Failure, ResetPasswordResponse>> resetPassword(
+    ResetPasswordRequest request,
+  ) {
     return repository.resetPassword(request);
   }
 
