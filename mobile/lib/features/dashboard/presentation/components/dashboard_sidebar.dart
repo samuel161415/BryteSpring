@@ -8,7 +8,7 @@ class DashboardSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 280,
+      // width: 280,
       color: Colors.white,
       padding: const EdgeInsets.all(24),
       child: Column(

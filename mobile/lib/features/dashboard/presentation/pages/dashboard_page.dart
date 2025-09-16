@@ -30,7 +30,7 @@ class _DashboardPageState extends State<DashboardPage> {
             width: screenSize.width > 1200 ? 1200 : screenSize.width * 0.95,
             margin: const EdgeInsets.symmetric(vertical: 20.0),
             decoration: BoxDecoration(
-              color: AppTheme.surface,
+              color: AppTheme.primary,
               borderRadius: BorderRadius.circular(24.0),
               boxShadow: [
                 BoxShadow(
@@ -60,8 +60,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
                         // Dashboard Content
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Sidebar
                               const DashboardSidebar(),
@@ -76,6 +77,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             ],
                           ),
                         ),
+                        const SizedBox(height: 24),
                       ],
                     ),
                   ),

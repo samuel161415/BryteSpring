@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/app_router.dart';
 import 'package:mobile/core/services/auth_service.dart';
+import 'package:mobile/features/Authentication/presentation/bloc/register_user_bloc.dart';
+import 'package:mobile/features/Authentication/presentation/bloc/invitation_validation_bloc.dart';
+import 'package:mobile/features/Authentication/presentation/bloc/reset_password_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +24,23 @@ void main() async {
       fallbackLocale: const Locale('de'),
       startLocale: const Locale('de'),
       saveLocale: true,
-      child: const MyApp(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<RegisterUserBloc>(
+            create: (context) => RegisterUserBloc(registerUserUseCase: sl()),
+          ),
+          BlocProvider<InvitationValidationBloc>(
+            create: (context) => InvitationValidationBloc(
+              invitationUseCase: sl(),
+              loginRepository: sl(),
+            ),
+          ),
+          BlocProvider<ResetPasswordBloc>(
+            create: (context) => ResetPasswordBloc(resetPasswordUseCase: sl()),
+          ),
+        ],
+        child: const MyApp(),
+      ),
     ),
   );
 }

@@ -40,17 +40,17 @@ class User {
       lastName: json['last_name'] ?? '',
       avatarUrl: json['avatar_url'] ?? '',
       isActive: json['is_active'] ?? true,
-      lastLogin: json['last_login'] != null 
-          ? DateTime.parse(json['last_login']) 
+      lastLogin: json['last_login'] != null
+          ? DateTime.parse(json['last_login'])
           : DateTime.now(),
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at']) 
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
           : DateTime.now(),
-      updatedAt: json['updated_at'] != null 
-          ? DateTime.parse(json['updated_at']) 
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
           : DateTime.now(),
-      joinedVerse: json['joined_verse'] != null 
-          ? List<String>.from(json['joined_verse']) 
+      joinedVerse: json['joined_verse'] != null
+          ? List<String>.from(json['joined_verse'])
           : <String>[],
       token: json['token'] ?? '',
       refreshToken: json['refresh_token'] ?? json['token'] ?? '',

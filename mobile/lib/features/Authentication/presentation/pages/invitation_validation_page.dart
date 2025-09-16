@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
-import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/invitation_validation_bloc.dart';
-import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 
 class InvitationValidationPage extends StatefulWidget {
   final String token;
@@ -19,96 +17,97 @@ class InvitationValidationPage extends StatefulWidget {
 }
 
 class _InvitationValidationPageState extends State<InvitationValidationPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Trigger invitation validation when page loads
+    context.read<InvitationValidationBloc>().add(ValidateInvitation(widget.token));
+  }
+
   void _handleLanguageChanged() {
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => InvitationValidationBloc(
-        invitationUseCase: sl(),
-        loginRepository: sl(),
-      )..add(ValidateInvitation(widget.token)),
-      child: BlocListener<InvitationValidationBloc, InvitationValidationState>(
-        listener: (context, state) {
-          if (state is InvitationValidationSuccess) {
-            // Always go to reset password page
-            // The reset password page will handle existing users appropriately
-            context.pushNamed(
-              Routelists.resetPassword,
-              extra: state.invitation,
-            );
-          }
-        },
-        child: Scaffold(
-          backgroundColor: AppTheme.background,
-          body: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                width: MediaQuery.of(context).size.width > 500
-                    ? 500
-                    : MediaQuery.of(context).size.width * 0.9,
-                margin: const EdgeInsets.symmetric(vertical: 20.0),
-                decoration: BoxDecoration(
-                  color: AppTheme.surface,
-                  borderRadius: BorderRadius.circular(24.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.5),
-                      blurRadius: 25,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(32.0),
-                      child: Column(
-                        children: [
-                          // Logo or Icon
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [AppTheme.secondary, AppTheme.primary],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(40),
+    return BlocListener<InvitationValidationBloc, InvitationValidationState>(
+      listener: (context, state) {
+        if (state is InvitationValidationSuccess) {
+          // Always go to reset password page
+          // The reset password page will handle existing users appropriately
+          context.pushNamed(
+            Routelists.resetPassword,
+            extra: state.invitation,
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppTheme.background,
+        body: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width > 500
+                  ? 500
+                  : MediaQuery.of(context).size.width * 0.9,
+              margin: const EdgeInsets.symmetric(vertical: 20.0),
+              decoration: BoxDecoration(
+                color: AppTheme.surface,
+                borderRadius: BorderRadius.circular(24.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    blurRadius: 25,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Column(
+                      children: [
+                        // Logo or Icon
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [AppTheme.secondary, AppTheme.primary],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
                             ),
-                            child: const Icon(
-                              Icons.mail_outline,
-                              color: Colors.white,
-                              size: 40,
-                            ),
+                            borderRadius: BorderRadius.circular(40),
                           ),
-                          const SizedBox(height: 24),
+                          child: const Icon(
+                            Icons.mail_outline,
+                            color: Colors.white,
+                            size: 40,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
 
-                          // Content based on state
-                          BlocBuilder<
-                            InvitationValidationBloc,
-                            InvitationValidationState
-                          >(
-                            builder: (context, state) {
-                              if (state is InvitationValidationLoading) {
-                                return _buildLoadingContent();
-                              } else if (state is InvitationValidationFailure) {
-                                return _buildErrorContent(state);
-                              } else {
-                                return _buildInitialContent();
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                        // Content based on state
+                        BlocBuilder<
+                          InvitationValidationBloc,
+                          InvitationValidationState
+                        >(
+                          builder: (context, state) {
+                            if (state is InvitationValidationLoading) {
+                              return _buildLoadingContent();
+                            } else if (state is InvitationValidationFailure) {
+                              return _buildErrorContent(state);
+                            } else {
+                              return _buildInitialContent();
+                            }
+                          },
+                        ),
+                      ],
                     ),
-                    AppFooter(onLanguageChanged: _handleLanguageChanged),
-                  ],
-                ),
+                  ),
+                  AppFooter(onLanguageChanged: _handleLanguageChanged),
+                ],
               ),
             ),
           ),
