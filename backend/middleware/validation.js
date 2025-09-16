@@ -113,3 +113,51 @@ exports.validateChannelUpdate = [
     .isInt({ min: 1, max: 10 })
     .withMessage('Max depth must be between 1 and 10')
 ];
+
+exports.validateRoleCreation = [
+  body('verse_id')
+    .isMongoId()
+    .withMessage('Valid verse ID is required'),
+  body('name')
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Role name must be between 1-50 characters')
+    .isIn(['Administrator', 'Editor', 'Expert'])
+    .withMessage('Role name must be one of: Administrator, Editor, Expert'),
+  body('description')
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage('Description must be less than 500 characters'),
+  body('permissions')
+    .optional()
+    .isObject()
+    .withMessage('Permissions must be an object'),
+  body('is_system_role')
+    .optional()
+    .isBoolean()
+    .withMessage('System role flag must be a boolean value')
+];
+
+exports.validateRoleUpdate = [
+  body('name')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage('Role name must be between 1-50 characters')
+    .isIn(['Administrator', 'Editor', 'Expert'])
+    .withMessage('Role name must be one of: Administrator, Editor, Expert'),
+  body('description')
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage('Description must be less than 500 characters'),
+  body('permissions')
+    .optional()
+    .isObject()
+    .withMessage('Permissions must be an object'),
+  body('is_system_role')
+    .optional()
+    .isBoolean()
+    .withMessage('System role flag must be a boolean value')
+];

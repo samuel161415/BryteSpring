@@ -13,6 +13,7 @@ const verseRouter = require('./routes/verse');
 const invitationRouter = require('./routes/invitation');
 const channelRouter = require('./routes/channel');
 const dashboardRouter = require('./routes/dashboard');
+const roleRouter = require('./routes/role');
 
 // CORS configuration
 
@@ -38,6 +39,7 @@ app.use('/verse', verseRouter);
 app.use('/invitation', invitationRouter);
 app.use('/channel', channelRouter);
 app.use('/dashboard', dashboardRouter);
+app.use('/role', roleRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
