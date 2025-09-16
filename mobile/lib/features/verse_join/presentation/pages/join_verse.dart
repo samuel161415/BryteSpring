@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/join_verse_widget.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 
 class JoinVerse extends StatefulWidget {
-  const JoinVerse({super.key});
+  final InvitationEntity invitation;
+
+  const JoinVerse({
+    super.key,
+    required this.invitation,
+  });
 
   @override
   State<JoinVerse> createState() => _JoinVerseState();
@@ -40,7 +46,7 @@ class _JoinVerseState extends State<JoinVerse> {
             ),
             child: Column(
               children: [
-                JoinVerseComponent(),
+                JoinVerseComponent(invitation: widget.invitation),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
             ),

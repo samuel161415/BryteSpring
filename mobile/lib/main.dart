@@ -8,6 +8,7 @@ import 'package:mobile/features/Authentication/presentation/bloc/register_user_b
 import 'package:mobile/features/Authentication/presentation/bloc/invitation_validation_bloc.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/reset_password_bloc.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
+import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +42,9 @@ void main() async {
           ),
           BlocProvider<ChannelBloc>(
             create: (context) => ChannelBloc(channelUseCase: sl()),
+          ),
+          BlocProvider<JoinVerseBloc>(
+            create: (context) => JoinVerseBloc(verseJoinUseCase: sl()),
           ),
         ],
         child: const MyApp(),

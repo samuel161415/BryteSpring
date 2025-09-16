@@ -2,10 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routing/routeLists.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 
 class JoinVerseAlmostComponent extends StatefulWidget {
-  const JoinVerseAlmostComponent({super.key});
+  final InvitationEntity invitation;
+  const JoinVerseAlmostComponent({super.key, required this.invitation});
 
   @override
   State<JoinVerseAlmostComponent> createState() =>

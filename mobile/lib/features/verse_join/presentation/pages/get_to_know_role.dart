@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/get_to_know_role_widget.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 
 class GetToKnowRole extends StatefulWidget {
-  const GetToKnowRole({super.key});
+  final InvitationEntity invitation;
+
+  const GetToKnowRole({
+    super.key,
+    required this.invitation,
+  });
 
   @override
   State<GetToKnowRole> createState() => _GetToKnowRoleState();
@@ -40,7 +46,7 @@ class _GetToKnowRoleState extends State<GetToKnowRole> {
             ),
             child: Column(
               children: [
-                GetToKnowRoleWidget(),
+                GetToKnowRoleWidget(invitation: widget.invitation),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
             ),

@@ -112,19 +112,43 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.almostJoinVerse}',
       name: Routelists.almostJoinVerse,
-      pageBuilder: (context, state) =>
-          _buildPage(context, state, JoinVerseAlmostDone()),
+      pageBuilder: (context, state) => _buildPage(
+        context,
+        state,
+        JoinVerseAlmostDone(invitation: state.extra as InvitationEntity),
+      ),
     ),
     GoRoute(
       path: '/${Routelists.joinVerse}',
       name: Routelists.joinVerse,
-      pageBuilder: (context, state) => _buildPage(context, state, JoinVerse()),
+      pageBuilder: (context, state) {
+        final invitation = state.extra as InvitationEntity?;
+        if (invitation == null) {
+          // If no invitation provided, redirect to login
+          return _buildPage(context, state, LoginPage());
+        }
+        return _buildPage(
+          context,
+          state,
+          JoinVerse(invitation: invitation),
+        );
+      },
     ),
     GoRoute(
       path: '/${Routelists.getToKnowRole}',
       name: Routelists.getToKnowRole,
-      pageBuilder: (context, state) =>
-          _buildPage(context, state, GetToKnowRole()),
+      pageBuilder: (context, state) {
+        final invitation = state.extra as InvitationEntity?;
+        if (invitation == null) {
+          // If no invitation provided, redirect to login
+          return _buildPage(context, state, LoginPage());
+        }
+        return _buildPage(
+          context,
+          state,
+          GetToKnowRole(invitation: invitation),
+        );
+      },
     ),
     GoRoute(
       path: '/${Routelists.dashboard}',

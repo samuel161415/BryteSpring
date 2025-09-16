@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/verse_join/presentation/components/join_verse_almost_widget.dart';
 
 class JoinVerseAlmostDone extends StatefulWidget {
-  const JoinVerseAlmostDone({super.key});
+  final InvitationEntity invitation;
+  const JoinVerseAlmostDone({super.key, required this.invitation});
 
   @override
   State<JoinVerseAlmostDone> createState() => _JoinVerseAlmostDoneState();
@@ -40,7 +42,7 @@ class _JoinVerseAlmostDoneState extends State<JoinVerseAlmostDone> {
             ),
             child: Column(
               children: [
-                JoinVerseAlmostComponent(),
+                JoinVerseAlmostComponent(invitation: widget.invitation),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
             ),

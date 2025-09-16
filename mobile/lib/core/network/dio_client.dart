@@ -9,9 +9,8 @@ class DioClient {
   DioClient({required this.dio}) {
     // Configure Dio
     dio.options = BaseOptions(
-      baseUrl: kDebugMode 
-          ? 'http://localhost:3000'  // Local development
-          : 'https://bryte-spring.vercel.app', // Production
+      baseUrl: // Local development
+          'https://bryte-spring.vercel.app', // Production
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),

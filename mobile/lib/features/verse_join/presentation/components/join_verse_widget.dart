@@ -3,9 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 
 class JoinVerseComponent extends StatefulWidget {
-  const JoinVerseComponent({super.key});
+  final InvitationEntity invitation;
+
+  const JoinVerseComponent({
+    super.key,
+    required this.invitation,
+  });
 
   @override
   State<JoinVerseComponent> createState() => _JoinVerseComponentState();
@@ -58,7 +64,10 @@ class _JoinVerseComponentState extends State<JoinVerseComponent> {
               SizedBox(height: 36),
               GestureDetector(
                 onTap: () {
-                  context.pushNamed(Routelists.getToKnowRole);
+                  context.pushNamed(
+                    Routelists.getToKnowRole,
+                    extra: widget.invitation,
+                  );
                 },
                 child: Container(
                   width: 200,
