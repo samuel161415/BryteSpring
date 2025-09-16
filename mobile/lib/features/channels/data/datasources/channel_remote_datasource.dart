@@ -36,9 +36,9 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
   ) async {
     try {
       print('🔍 Loading channel structure for verse: $verseId');
-      print('🌐 Making request to: /api/verse/$verseId/channels');
-      
-      final response = await dioClient.get('/api/verse/$verseId/channels');
+      print('🌐 Making request to: /channel/verse/$verseId/structure');
+
+      final response = await dioClient.get('/channel/verse/$verseId/structure');
 
       if (response.statusCode == 200) {
         final channelStructure = ChannelStructureResponse.fromJson(
@@ -57,11 +57,13 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
       print('📊 Status Code: ${e.response?.statusCode}');
       print('📄 Response Data: ${e.response?.data}');
       print('🔗 Request URL: ${e.requestOptions.uri}');
-      
+
       if (e.response?.statusCode == 403) {
         return Left(ServerFailure('You do not have access to this verse'));
       } else if (e.response?.statusCode == 404) {
-        return Left(ServerFailure('Verse not found or endpoint does not exist'));
+        return Left(
+          ServerFailure('Verse not found or endpoint does not exist'),
+        );
       }
       return Left(ServerFailure('Network error: ${e.message}'));
     } catch (e) {
@@ -75,7 +77,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
     String channelId,
   ) async {
     try {
-      final response = await dioClient.get('/api/channel/$channelId/contents');
+      final response = await dioClient.get('/channel/$channelId/contents');
 
       if (response.statusCode == 200) {
         final channel = ChannelEntity.fromJson(response.data['channel']);
@@ -120,7 +122,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
         if (description != null) 'description': description,
       };
 
-      final response = await dioClient.post('/api/channel', data: data);
+      final response = await dioClient.post('/channel', data: data);
 
       if (response.statusCode == 201) {
         final channel = ChannelEntity.fromJson(response.data['channel']);
@@ -153,7 +155,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
   ) async {
     try {
       final response = await dioClient.put(
-        '/api/channel/$channelId',
+        '/channel/$channelId',
         data: updates,
       );
 
@@ -186,7 +188,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
   @override
   Future<Either<Failure, void>> deleteChannel(String channelId) async {
     try {
-      final response = await dioClient.delete('/api/channel/$channelId');
+      final response = await dioClient.delete('/channel/$channelId');
 
       if (response.statusCode == 200) {
         return const Right(null);
