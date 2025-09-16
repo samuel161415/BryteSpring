@@ -23,6 +23,10 @@ import 'package:mobile/features/verse_join/data/datasources/verse_join_remote_da
 import 'package:mobile/features/verse_join/data/repositories/verse_join_repository_impl.dart';
 import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
 import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
+import 'package:mobile/features/channels/data/datasources/channel_remote_datasource.dart';
+import 'package:mobile/features/channels/data/repositories/channel_repository_impl.dart';
+import 'package:mobile/features/channels/domain/repositories/channel_repository.dart';
+import 'package:mobile/features/channels/domain/usecases/channel_usecase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GetIt sl = GetIt.instance;
@@ -85,12 +89,22 @@ Future<void> init() async {
     ),
   );
 
+  // Channel dependencies
+  sl.registerLazySingleton<ChannelRemoteDataSource>(
+    () => ChannelRemoteDataSourceImpl(dioClient: sl()),
+  );
+
+  sl.registerLazySingleton<ChannelRepository>(
+    () => ChannelRepositoryImpl(remoteDataSource: sl()),
+  );
+
   // Use cases
   sl.registerLazySingleton(() => InvitationUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUserUseCase(repository: sl()));
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerseJoinUseCase(sl()));
+  sl.registerLazySingleton(() => ChannelUseCase(repository: sl()));
 
   // Services
   sl.registerLazySingleton(() => AuthService(sl()));

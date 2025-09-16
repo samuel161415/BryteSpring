@@ -21,7 +21,9 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
   void initState() {
     super.initState();
     // Trigger invitation validation when page loads
-    context.read<InvitationValidationBloc>().add(ValidateInvitation(widget.token));
+    context.read<InvitationValidationBloc>().add(
+      ValidateInvitation(widget.token),
+    );
   }
 
   void _handleLanguageChanged() {
@@ -35,10 +37,7 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
         if (state is InvitationValidationSuccess) {
           // Always go to reset password page
           // The reset password page will handle existing users appropriately
-          context.pushNamed(
-            Routelists.resetPassword,
-            extra: state.invitation,
-          );
+          context.pushNamed(Routelists.resetPassword, extra: state.invitation);
         }
       },
       child: Scaffold(

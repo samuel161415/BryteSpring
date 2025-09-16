@@ -1,66 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/constant.dart';
+import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/features/Authentication/domain/entities/user.dart';
+import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
+import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
+import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
 
-class DashboardSidebar extends StatelessWidget {
+class DashboardSidebar extends StatefulWidget {
   const DashboardSidebar({super.key});
 
   @override
+  State<DashboardSidebar> createState() => _DashboardSidebarState();
+}
+
+class _DashboardSidebarState extends State<DashboardSidebar> {
+  User? currentUser;
+  String? currentVerseId;
+  List<ChannelEntity> channels = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserAndChannels();
+  }
+
+  Future<void> _loadUserAndChannels() async {
+    try {
+      final loginRepository = sl<LoginRepository>();
+      final userResult = await loginRepository.getCurrentUser();
+      
+      userResult.fold(
+        (failure) {
+          // Handle error
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to load user: ${failure.message}')),
+            );
+          }
+        },
+        (user) {
+          if (user != null && user.joinedVerse.isNotEmpty) {
+            setState(() {
+              currentUser = user;
+              currentVerseId = user.joinedVerse.first; // Use first joined verse
+            });
+            
+            // Load channels for the first joined verse
+            context.read<ChannelBloc>().add(LoadChannelStructure(user.joinedVerse.first));
+          }
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error loading user: $e')),
+        );
+      }
+    }
+  }
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      // width: 280,
-      color: Colors.white,
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Deine Kanäle
-          _buildSection(
-            title: 'dashboard.sidebar.channels'.tr(),
-            items: [
-              'dashboard.sidebar.my_channels'.tr(),
-              'dashboard.sidebar.company'.tr(),
-              'dashboard.sidebar.publishing'.tr(),
-            ],
-            addButtonText: 'dashboard.sidebar.add_channel'.tr(),
-          ),
+    return BlocListener<ChannelBloc, ChannelState>(
+      listener: (context, state) {
+        if (state is ChannelStructureLoaded) {
+          setState(() {
+            channels = state.structure.structure;
+          });
+        } else if (state is ChannelFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to load channels: ${state.message}')),
+          );
+        }
+      },
+      child: BlocBuilder<ChannelBloc, ChannelState>(
+        builder: (context, state) {
+          return Container(
+            // width: 280,
+            color: Colors.white,
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Deine Kanäle
+                _buildSection(
+                  title: 'dashboard.sidebar.channels'.tr(),
+                  items: _buildChannelItems(),
+                  addButtonText: 'dashboard.sidebar.add_channel'.tr(),
+                ),
 
-          const SizedBox(height: 32),
+                const SizedBox(height: 32),
 
-          // Deine Assets
-          _buildSection(
-            title: 'dashboard.sidebar.assets'.tr(),
-            items: [
-              'dashboard.sidebar.employee_images'.tr(),
-              'dashboard.sidebar.company_materials'.tr(),
-            ],
-            addButtonText: 'dashboard.sidebar.add_assets'.tr(),
-          ),
+                // Deine Assets
+                _buildSection(
+                  title: 'dashboard.sidebar.assets'.tr(),
+                  items: [
+                    'dashboard.sidebar.employee_images'.tr(),
+                    'dashboard.sidebar.company_materials'.tr(),
+                  ],
+                  addButtonText: 'dashboard.sidebar.add_assets'.tr(),
+                ),
 
-          const SizedBox(height: 32),
+                const SizedBox(height: 32),
 
-          // Deine Verse
-          _buildSection(
-            title: 'dashboard.sidebar.verses'.tr(),
-            items: [],
-            addButtonText: '',
-            customWidget: _buildVerseSection(),
-          ),
+                // Deine Verse
+                _buildSection(
+                  title: 'dashboard.sidebar.verses'.tr(),
+                  items: [],
+                  addButtonText: '',
+                  customWidget: _buildVerseSection(),
+                ),
 
-          const SizedBox(height: 32),
+                const SizedBox(height: 32),
 
-          // Einstellungen
-          _buildSection(
-            title: 'dashboard.sidebar.settings'.tr(),
-            items: [
-              'dashboard.sidebar.links'.tr(),
-              'dashboard.sidebar.help_support'.tr(),
-            ],
-            addButtonText: 'dashboard.sidebar.add_more'.tr(),
-          ),
-        ],
+                // Einstellungen
+                _buildSection(
+                  title: 'dashboard.sidebar.settings'.tr(),
+                  items: [
+                    'dashboard.sidebar.links'.tr(),
+                    'dashboard.sidebar.help_support'.tr(),
+                  ],
+                  addButtonText: 'dashboard.sidebar.add_more'.tr(),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
+  }
+
+  List<String> _buildChannelItems() {
+    if (channels.isEmpty) {
+      return ['dashboard.sidebar.no_channels'.tr()];
+    }
+    
+    return channels.map((channel) => channel.name).toList();
   }
 
   Widget _buildSection({

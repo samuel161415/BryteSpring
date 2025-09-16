@@ -70,24 +70,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           context.goNamed(Routelists.dashboard);
         } else if (state is RegisterUserFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
         }
       },
       child: Builder(
-        builder: (context) =>
-            BlocBuilder<RegisterUserBloc, RegisterUserState>(
-              builder: (context, state) {
-                return LoadingOverlay(
-                  isLoading: state is RegisterUserLoading,
-                  loadingMessage: 'Creating your account...',
-                  child: _buildRegisterUserForm(context),
-                );
-              },
-            ),
+        builder: (context) => BlocBuilder<RegisterUserBloc, RegisterUserState>(
+          builder: (context, state) {
+            return LoadingOverlay(
+              isLoading: state is RegisterUserLoading,
+              loadingMessage: 'Creating your account...',
+              child: _buildRegisterUserForm(context),
+            );
+          },
+        ),
       ),
     );
   }
