@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const Invitation = require("../models/Invitation");
 const UserRole = require("../models/UserRole");
+const UserInvitation = require("../models/UserInvitation");
 const Verse = require("../models/Verse");
 const ActivityLog = require("../models/ActivityLog");
 
@@ -74,6 +75,17 @@ const registerUser = async (req, res) => {
 
     // Handle invitation scenarios
     if (invitation_token && invitation) {
+      // Create UserInvitation junction record for future login reference
+      try {
+        await UserInvitation.create({
+          user_id: user._id,
+          invitation_id: invitation._id
+        });
+      } catch (e) {
+        console.error('Error creating UserInvitation:', e);
+        // Continue even if junction creation fails
+      }
+
       if (is_verse_setup) {
         // Scenario 1: User is completing verse setup (admin completing verse creation)
         // Immediately add to verse and create user role
@@ -163,12 +175,66 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user._id),
+      
+      // Get pending invitations for this user (if any)
+      const userInvitations = await UserInvitation.find({
+        user_id: user._id
+      })
+      .populate({
+        path: 'invitation_id',
+        populate: [
+          { path: 'verse_id', select: 'name subdomain organization_name is_setup_complete' },
+          { path: 'role_id', select: 'name description permissions' }
+        ]
+      })
+      .sort({ created_at: -1 });
+
+      // Filter for verses that user hasn't joined yet
+      const pendingInvitations = userInvitations.filter(ui => {
+        if (!ui.invitation_id || !ui.invitation_id.verse_id) return false;
+        return !user.joined_verse.some(verseId => 
+          verseId.toString() === ui.invitation_id.verse_id._id.toString()
+        );
       });
+
+      // Build response with pending invitations
+      const response = {
+        _id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        avatar_url: user.avatar_url,
+        joined_verse: user.joined_verse,
+        token: generateToken(user._id)
+      };
+
+      // Add pending invitations if any
+      if (pendingInvitations.length > 0) {
+        response.pending_invitations = pendingInvitations.map(ui => ({
+          invitation_token: ui.invitation_id.token,
+          verse_id: ui.invitation_id.verse_id._id,
+          // verse: {
+          //   _id: ui.invitation_id.verse_id._id,
+          //   name: ui.invitation_id.verse_id.name,
+          //   subdomain: ui.invitation_id.verse_id.subdomain,
+          //   organization_name: ui.invitation_id.verse_id.organization_name,
+          //   is_setup_complete: ui.invitation_id.verse_id.is_setup_complete
+          // },
+          // role: {
+          //   _id: ui.invitation_id.role_id._id,
+          //   name: ui.invitation_id.role_id.name,
+          //   description: ui.invitation_id.role_id.description,
+          //   permissions: ui.invitation_id.role_id.permissions
+          // },
+          // first_name: ui.invitation_id.first_name,
+          // last_name: ui.invitation_id.last_name,
+          // position: ui.invitation_id.position,
+          // invited_at: ui.invitation_id.created_at,
+          // expires_at: ui.invitation_id.expires_at
+        }));
+      }
+
+      res.json(response);
     } else {
       res.status(401).json({ message: "Invalid email or password" });
     }
