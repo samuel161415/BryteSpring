@@ -222,7 +222,9 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('dashboard.sidebar.add_channel'.tr()),
-        content: const Text('Add channel functionality will be implemented here.'),
+        content: const Text(
+          'Add channel functionality will be implemented here.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
