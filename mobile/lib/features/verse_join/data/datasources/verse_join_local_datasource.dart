@@ -16,10 +16,24 @@ class VerseJoinLocalDataSource {
       final now = DateTime.now();
       final entity = VerseJoinEntity(
         id: verseId,
-        name:
-            'Verse $verseId', // This would come from API in real implementation
+        name: 'Verse $verseId', // This would come from API in real implementation
+        adminEmail: 'admin@example.com', // Placeholder
         subdomain: 'verse-$verseId', // Generate subdomain
+        organizationName: 'Organization $verseId', // Placeholder
+        branding: const BrandingEntity(
+          primaryColor: '#3B82F6',
+          colorName: 'Primary Blue',
+        ),
+        settings: const SettingsEntity(
+          isPublic: false,
+          allowInvites: true,
+          maxUsers: 50,
+          storageLimit: 10737418240,
+        ),
+        isSetupComplete: true, // Assume complete for local testing
+        isActive: true,
         createdAt: now,
+        updatedAt: now,
         createdBy: 'local-user', // Placeholder for local user
       );
 

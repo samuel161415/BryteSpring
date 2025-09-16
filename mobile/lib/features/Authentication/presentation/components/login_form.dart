@@ -78,7 +78,9 @@ class _LoginFormState extends State<LoginForm> {
   Future<void> _checkVerseSetupAndRedirect() async {
     try {
       final verseJoinUseCase = sl<VerseJoinUseCase>();
-      final verseResult = await verseJoinUseCase.getVerse(widget.invitation!.verseId);
+      final verseResult = await verseJoinUseCase.getVerse(
+        widget.invitation!.verseId,
+      );
 
       verseResult.fold(
         (failure) {
@@ -103,7 +105,9 @@ class _LoginFormState extends State<LoginForm> {
             // TODO: Implement verse setup flow later
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Verse "${verse.name}" setup is not complete yet. Please wait for the admin to complete the setup.'),
+                content: Text(
+                  'Verse "${verse.name}" setup is not complete yet. Please wait for the admin to complete the setup.',
+                ),
                 backgroundColor: Colors.blue,
                 duration: const Duration(seconds: 5),
               ),
