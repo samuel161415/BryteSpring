@@ -54,6 +54,11 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             context.read<ChannelBloc>().add(
               LoadChannelStructure(user.joinedVerse.first),
             );
+          } else {
+            // If no user or no joined verses, load with hardcoded verse ID for testing
+            context.read<ChannelBloc>().add(
+              LoadChannelStructure('68c3e2d6f58c817ebed1ca74'),
+            );
           }
         },
       );

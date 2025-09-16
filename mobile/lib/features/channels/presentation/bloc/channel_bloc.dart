@@ -65,10 +65,7 @@ class UpdateChannel extends ChannelEvent {
   final String channelId;
   final Map<String, dynamic> updates;
 
-  const UpdateChannel({
-    required this.channelId,
-    required this.updates,
-  });
+  const UpdateChannel({required this.channelId, required this.updates});
 
   @override
   List<Object?> get props => [channelId, updates];
@@ -158,6 +155,12 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     LoadChannelStructure event,
     Emitter<ChannelState> emit,
   ) async {
+    // Validate verseId
+    if (event.verseId.isEmpty) {
+      emit(const ChannelFailure('Verse ID cannot be empty'));
+      return;
+    }
+    
     emit(ChannelLoading());
     
     final result = await channelUseCase.getVerseChannelStructure(event.verseId);
@@ -173,9 +176,9 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     Emitter<ChannelState> emit,
   ) async {
     emit(ChannelLoading());
-    
+
     final result = await channelUseCase.getChannelContents(event.channelId);
-    
+
     result.fold(
       (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
       (channel) => emit(ChannelContentsLoaded(channel)),
@@ -187,7 +190,7 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     Emitter<ChannelState> emit,
   ) async {
     emit(ChannelLoading());
-    
+
     final result = await channelUseCase.createChannel(
       verseId: event.verseId,
       name: event.name,
@@ -197,7 +200,7 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
       isPublic: event.isPublic,
       description: event.description,
     );
-    
+
     result.fold(
       (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
       (channel) => emit(ChannelCreated(channel)),
@@ -209,9 +212,12 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     Emitter<ChannelState> emit,
   ) async {
     emit(ChannelLoading());
-    
-    final result = await channelUseCase.updateChannel(event.channelId, event.updates);
-    
+
+    final result = await channelUseCase.updateChannel(
+      event.channelId,
+      event.updates,
+    );
+
     result.fold(
       (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
       (channel) => emit(ChannelUpdated(channel)),
@@ -223,9 +229,9 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     Emitter<ChannelState> emit,
   ) async {
     emit(ChannelLoading());
-    
+
     final result = await channelUseCase.deleteChannel(event.channelId);
-    
+
     result.fold(
       (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
       (_) => emit(ChannelDeleted()),

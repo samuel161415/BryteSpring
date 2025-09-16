@@ -22,41 +22,46 @@ class AppRouter {
   late final GoRouter router = GoRouter(
     initialLocation: '/',
     routes: _routes,
-    debugLogDiagnostics: false,
+    debugLogDiagnostics: true,
     redirect: (context, state) {
-      final authService = sl<AuthService>();
+      try {
+        final authService = sl<AuthService>();
 
-      // Wait for auth service to initialize
-      if (!authService.isInitialized) {
-        return null; // Let the app initialize
-      }
+        // Wait for auth service to initialize
+        if (!authService.isInitialized) {
+          return null; // Let the app initialize
+        }
 
-      final isAuthenticated = authService.isAuthenticated;
-      final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
-      final isDashboardRoute =
-          state.matchedLocation == '/${Routelists.dashboard}';
+        final isAuthenticated = authService.isAuthenticated;
+        final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
+        final isDashboardRoute =
+            state.matchedLocation == '/${Routelists.dashboard}';
 
-      // If user is authenticated and trying to access login, redirect to dashboard
-      if (isAuthenticated && isLoginRoute) {
-        return '/${Routelists.dashboard}';
-      }
+        // If user is authenticated and trying to access login, redirect to dashboard
+        if (isAuthenticated && isLoginRoute) {
+          return '/${Routelists.dashboard}';
+        }
 
-      // If user is not authenticated and trying to access dashboard, redirect to login
-      if (!isAuthenticated && isDashboardRoute) {
+        // If user is not authenticated and trying to access dashboard, redirect to login
+        if (!isAuthenticated && isDashboardRoute) {
+          return '/${Routelists.login}';
+        }
+
+        // If user is not authenticated and on root, redirect to login
+        if (!isAuthenticated && state.matchedLocation == '/') {
+          return '/${Routelists.login}';
+        }
+
+        // If user is authenticated and on root, redirect to dashboard
+        if (isAuthenticated && state.matchedLocation == '/') {
+          return '/${Routelists.dashboard}';
+        }
+
+        return null; // No redirect needed
+      } catch (e) {
+        // If there's any error, redirect to login as fallback
         return '/${Routelists.login}';
       }
-
-      // If user is not authenticated and on root, redirect to login
-      if (!isAuthenticated && state.matchedLocation == '/') {
-        return '/${Routelists.login}';
-      }
-
-      // If user is authenticated and on root, redirect to dashboard
-      if (isAuthenticated && state.matchedLocation == '/') {
-        return '/${Routelists.dashboard}';
-      }
-
-      return null; // No redirect needed
     },
   );
 
@@ -75,17 +80,28 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.resetPassword}',
       name: Routelists.resetPassword,
-      pageBuilder: (context, state) => _buildPage(
-        context,
-        state,
-        ResetPasswordPage(invitation: state.extra as InvitationEntity),
-      ),
+      pageBuilder: (context, state) {
+        final invitation = state.extra as InvitationEntity?;
+        if (invitation == null) {
+          // If no invitation provided, redirect to login
+          return _buildPage(context, state, LoginPage());
+        }
+        return _buildPage(
+          context,
+          state,
+          ResetPasswordPage(invitation: invitation),
+        );
+      },
     ),
     GoRoute(
       path: '/invitation-validation/:token',
       name: Routelists.invitationValidation,
       pageBuilder: (context, state) {
-        final token = state.pathParameters['token']!;
+        final token = state.pathParameters['token'];
+        if (token == null || token.isEmpty) {
+          // If no token provided, redirect to login
+          return _buildPage(context, state, LoginPage());
+        }
         return _buildPage(
           context,
           state,
