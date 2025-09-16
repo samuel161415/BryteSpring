@@ -5,7 +5,9 @@ import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 
 abstract class ChannelRemoteDataSource {
-  Future<Either<Failure, ChannelStructureResponse>> getVerseChannelStructure(String verseId);
+  Future<Either<Failure, ChannelStructureResponse>> getVerseChannelStructure(
+    String verseId,
+  );
   Future<Either<Failure, ChannelEntity>> getChannelContents(String channelId);
   Future<Either<Failure, ChannelEntity>> createChannel({
     required String verseId,
@@ -16,7 +18,10 @@ abstract class ChannelRemoteDataSource {
     bool? isPublic,
     String? description,
   });
-  Future<Either<Failure, ChannelEntity>> updateChannel(String channelId, Map<String, dynamic> updates);
+  Future<Either<Failure, ChannelEntity>> updateChannel(
+    String channelId,
+    Map<String, dynamic> updates,
+  );
   Future<Either<Failure, void>> deleteChannel(String channelId);
 }
 
@@ -26,38 +31,61 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
   ChannelRemoteDataSourceImpl({required this.dioClient});
 
   @override
-  Future<Either<Failure, ChannelStructureResponse>> getVerseChannelStructure(String verseId) async {
+  Future<Either<Failure, ChannelStructureResponse>> getVerseChannelStructure(
+    String verseId,
+  ) async {
     try {
-      final response = await dioClient.get('/verse/$verseId/channels');
+      print('🔍 Loading channel structure for verse: $verseId');
+      print('🌐 Making request to: /api/verse/$verseId/channels');
+      
+      final response = await dioClient.get('/api/verse/$verseId/channels');
 
       if (response.statusCode == 200) {
-        final channelStructure = ChannelStructureResponse.fromJson(response.data);
+        final channelStructure = ChannelStructureResponse.fromJson(
+          response.data,
+        );
         return Right(channelStructure);
       } else {
-        return Left(ServerFailure('Failed to get channel structure: ${response.statusCode}'));
+        return Left(
+          ServerFailure(
+            'Failed to get channel structure: ${response.statusCode}',
+          ),
+        );
       }
     } on DioException catch (e) {
+      print('❌ DioException: ${e.type}');
+      print('📊 Status Code: ${e.response?.statusCode}');
+      print('📄 Response Data: ${e.response?.data}');
+      print('🔗 Request URL: ${e.requestOptions.uri}');
+      
       if (e.response?.statusCode == 403) {
         return Left(ServerFailure('You do not have access to this verse'));
       } else if (e.response?.statusCode == 404) {
-        return Left(ServerFailure('Verse not found'));
+        return Left(ServerFailure('Verse not found or endpoint does not exist'));
       }
       return Left(ServerFailure('Network error: ${e.message}'));
     } catch (e) {
+      print('💥 Unexpected error: $e');
       return Left(ServerFailure('Unexpected error: $e'));
     }
   }
 
   @override
-  Future<Either<Failure, ChannelEntity>> getChannelContents(String channelId) async {
+  Future<Either<Failure, ChannelEntity>> getChannelContents(
+    String channelId,
+  ) async {
     try {
-      final response = await dioClient.get('/channel/$channelId/contents');
+      final response = await dioClient.get('/api/channel/$channelId/contents');
 
       if (response.statusCode == 200) {
         final channel = ChannelEntity.fromJson(response.data['channel']);
         return Right(channel);
       } else {
-        return Left(ServerFailure('Failed to get channel contents: ${response.statusCode}'));
+        return Left(
+          ServerFailure(
+            'Failed to get channel contents: ${response.statusCode}',
+          ),
+        );
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 403) {
@@ -92,20 +120,25 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
         if (description != null) 'description': description,
       };
 
-      final response = await dioClient.post('/channel', data: data);
+      final response = await dioClient.post('/api/channel', data: data);
 
       if (response.statusCode == 201) {
         final channel = ChannelEntity.fromJson(response.data['channel']);
         return Right(channel);
       } else {
-        return Left(ServerFailure('Failed to create channel: ${response.statusCode}'));
+        return Left(
+          ServerFailure('Failed to create channel: ${response.statusCode}'),
+        );
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
-        final message = e.response?.data['message'] ?? 'Failed to create channel';
+        final message =
+            e.response?.data['message'] ?? 'Failed to create channel';
         return Left(ServerFailure(message));
       } else if (e.response?.statusCode == 403) {
-        return Left(ServerFailure('Insufficient permissions to create channels'));
+        return Left(
+          ServerFailure('Insufficient permissions to create channels'),
+        );
       }
       return Left(ServerFailure('Network error: ${e.message}'));
     } catch (e) {
@@ -114,22 +147,33 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
   }
 
   @override
-  Future<Either<Failure, ChannelEntity>> updateChannel(String channelId, Map<String, dynamic> updates) async {
+  Future<Either<Failure, ChannelEntity>> updateChannel(
+    String channelId,
+    Map<String, dynamic> updates,
+  ) async {
     try {
-      final response = await dioClient.put('/channel/$channelId', data: updates);
+      final response = await dioClient.put(
+        '/api/channel/$channelId',
+        data: updates,
+      );
 
       if (response.statusCode == 200) {
         final channel = ChannelEntity.fromJson(response.data['channel']);
         return Right(channel);
       } else {
-        return Left(ServerFailure('Failed to update channel: ${response.statusCode}'));
+        return Left(
+          ServerFailure('Failed to update channel: ${response.statusCode}'),
+        );
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
-        final message = e.response?.data['message'] ?? 'Failed to update channel';
+        final message =
+            e.response?.data['message'] ?? 'Failed to update channel';
         return Left(ServerFailure(message));
       } else if (e.response?.statusCode == 403) {
-        return Left(ServerFailure('Insufficient permissions to update channels'));
+        return Left(
+          ServerFailure('Insufficient permissions to update channels'),
+        );
       } else if (e.response?.statusCode == 404) {
         return Left(ServerFailure('Channel not found'));
       }
@@ -142,19 +186,24 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
   @override
   Future<Either<Failure, void>> deleteChannel(String channelId) async {
     try {
-      final response = await dioClient.delete('/channel/$channelId');
+      final response = await dioClient.delete('/api/channel/$channelId');
 
       if (response.statusCode == 200) {
         return const Right(null);
       } else {
-        return Left(ServerFailure('Failed to delete channel: ${response.statusCode}'));
+        return Left(
+          ServerFailure('Failed to delete channel: ${response.statusCode}'),
+        );
       }
     } on DioException catch (e) {
       if (e.response?.statusCode == 400) {
-        final message = e.response?.data['message'] ?? 'Failed to delete channel';
+        final message =
+            e.response?.data['message'] ?? 'Failed to delete channel';
         return Left(ServerFailure(message));
       } else if (e.response?.statusCode == 403) {
-        return Left(ServerFailure('Insufficient permissions to delete channels'));
+        return Left(
+          ServerFailure('Insufficient permissions to delete channels'),
+        );
       } else if (e.response?.statusCode == 404) {
         return Left(ServerFailure('Channel not found'));
       }

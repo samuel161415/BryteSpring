@@ -160,11 +160,11 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
       emit(const ChannelFailure('Verse ID cannot be empty'));
       return;
     }
-    
+
     emit(ChannelLoading());
-    
+
     final result = await channelUseCase.getVerseChannelStructure(event.verseId);
-    
+
     result.fold(
       (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
       (structure) => emit(ChannelStructureLoaded(structure)),
