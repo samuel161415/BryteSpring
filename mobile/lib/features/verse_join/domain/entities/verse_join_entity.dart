@@ -9,6 +9,7 @@ class VerseJoinEntity extends Equatable {
   final Map<String, dynamic>? settings;
   final DateTime createdAt;
   final String createdBy; // ObjectId reference to Users._id
+  final bool isSetupComplete; // New field for setup completion status
 
   const VerseJoinEntity({
     required this.id,
@@ -18,6 +19,7 @@ class VerseJoinEntity extends Equatable {
     this.settings,
     required this.createdAt,
     required this.createdBy,
+    required this.isSetupComplete,
   });
 
   factory VerseJoinEntity.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class VerseJoinEntity extends Equatable {
           : null,
       createdAt: DateTime.parse(json['created_at'] ?? json['createdAt']),
       createdBy: json['created_by'] ?? json['createdBy'],
+      isSetupComplete: json['is_setup_complete'] ?? false,
     );
   }
 
@@ -45,6 +48,7 @@ class VerseJoinEntity extends Equatable {
       'settings': settings,
       'created_at': createdAt.toIso8601String(),
       'created_by': createdBy,
+      'is_setup_complete': isSetupComplete,
     };
   }
 
@@ -57,5 +61,6 @@ class VerseJoinEntity extends Equatable {
     settings,
     createdAt,
     createdBy,
+    isSetupComplete,
   ];
 }

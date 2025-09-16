@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/Authentication/presentation/components/login_form.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  final InvitationEntity? invitation;
+  LoginPage({super.key, this.invitation});
 
   @override
   State<LoginPage> createState() => _LoginPageState();

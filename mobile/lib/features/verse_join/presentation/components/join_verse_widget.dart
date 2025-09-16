@@ -8,10 +8,7 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 class JoinVerseComponent extends StatefulWidget {
   final InvitationEntity invitation;
 
-  const JoinVerseComponent({
-    super.key,
-    required this.invitation,
-  });
+  const JoinVerseComponent({super.key, required this.invitation});
 
   @override
   State<JoinVerseComponent> createState() => _JoinVerseComponentState();

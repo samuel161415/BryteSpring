@@ -5,9 +5,12 @@ import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/services/auth_service.dart';
 import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
+import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  final InvitationEntity? invitation;
+  const LoginForm({super.key, this.invitation});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -50,9 +53,15 @@ class _LoginFormState extends State<LoginForm> {
             SnackBar(content: Text('Login failed: ${failure.message}')),
           );
         },
-        (user) {
-          // Login successful, redirect to dashboard
-          context.go('/${Routelists.dashboard}');
+        (user) async {
+          // Login successful
+          if (widget.invitation != null) {
+            // Check verse setup status if invitation is provided
+            await _checkVerseSetupAndRedirect();
+          } else {
+            // Normal login flow - redirect to dashboard
+            context.go('/${Routelists.dashboard}');
+          }
         },
       );
     } catch (e) {
@@ -63,6 +72,56 @@ class _LoginFormState extends State<LoginForm> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _checkVerseSetupAndRedirect() async {
+    try {
+      final verseJoinUseCase = sl<VerseJoinUseCase>();
+      final verseResult = await verseJoinUseCase.getVerse(widget.invitation!.verseId);
+
+      verseResult.fold(
+        (failure) {
+          // If verse fetch fails, show error and redirect to dashboard
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to fetch verse: ${failure.message}'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+          context.go('/${Routelists.dashboard}');
+        },
+        (verse) {
+          if (verse.isSetupComplete) {
+            // Verse setup is complete, redirect to almost join page
+            context.pushNamed(
+              Routelists.almostJoinVerse,
+              extra: widget.invitation,
+            );
+          } else {
+            // Verse setup is not complete, for now do nothing
+            // TODO: Implement verse setup flow later
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Verse "${verse.name}" setup is not complete yet. Please wait for the admin to complete the setup.'),
+                backgroundColor: Colors.blue,
+                duration: const Duration(seconds: 5),
+              ),
+            );
+            // Redirect to dashboard for now
+            context.go('/${Routelists.dashboard}');
+          }
+        },
+      );
+    } catch (e) {
+      // Handle any unexpected errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error checking verse status: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      context.go('/${Routelists.dashboard}');
     }
   }
 

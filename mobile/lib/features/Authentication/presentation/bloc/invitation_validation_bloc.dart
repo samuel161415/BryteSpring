@@ -59,10 +59,12 @@ class InvitationValidationSuccess extends InvitationValidationState {
 class InvitationValidationFailure extends InvitationValidationState {
   final String message;
   final bool isExpired;
+  final InvitationEntity? invitation;
 
   const InvitationValidationFailure({
     required this.message,
     this.isExpired = false,
+    this.invitation,
   });
 
   @override
@@ -125,8 +127,9 @@ class InvitationValidationBloc
         // Check if invitation is already accepted
         if (invitation.isAccepted) {
           emit(
-            const InvitationValidationFailure(
+            InvitationValidationFailure(
               message: 'This invitation has already been accepted',
+              invitation: invitation,
               isExpired: false,
             ),
           );

@@ -7,10 +7,7 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 class GetToKnowRole extends StatefulWidget {
   final InvitationEntity invitation;
 
-  const GetToKnowRole({
-    super.key,
-    required this.invitation,
-  });
+  const GetToKnowRole({super.key, required this.invitation});
 
   @override
   State<GetToKnowRole> createState() => _GetToKnowRoleState();

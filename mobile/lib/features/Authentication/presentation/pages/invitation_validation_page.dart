@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/invitation_validation_bloc.dart';
 
 class InvitationValidationPage extends StatefulWidget {
@@ -183,7 +184,10 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              context.goNamed(Routelists.login);
+              context.goNamed(
+                Routelists.almostJoinVerse,
+                extra: state.invitation,
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primary,

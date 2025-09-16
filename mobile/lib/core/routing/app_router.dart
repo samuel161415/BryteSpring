@@ -127,11 +127,7 @@ class AppRouter {
           // If no invitation provided, redirect to login
           return _buildPage(context, state, LoginPage());
         }
-        return _buildPage(
-          context,
-          state,
-          JoinVerse(invitation: invitation),
-        );
+        return _buildPage(context, state, JoinVerse(invitation: invitation));
       },
     ),
     GoRoute(

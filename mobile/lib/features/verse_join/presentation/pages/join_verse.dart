@@ -7,10 +7,7 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 class JoinVerse extends StatefulWidget {
   final InvitationEntity invitation;
 
-  const JoinVerse({
-    super.key,
-    required this.invitation,
-  });
+  const JoinVerse({super.key, required this.invitation});
 
   @override
   State<JoinVerse> createState() => _JoinVerseState();

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
@@ -10,10 +11,7 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 class GetToKnowRoleWidget extends StatefulWidget {
   final InvitationEntity invitation;
 
-  const GetToKnowRoleWidget({
-    super.key,
-    required this.invitation,
-  });
+  const GetToKnowRoleWidget({super.key, required this.invitation});
 
   @override
   State<GetToKnowRoleWidget> createState() => _GetToKnowRoleWidgetState();
@@ -32,7 +30,7 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
               backgroundColor: Colors.green,
             ),
           );
-          
+
           // Navigate to dashboard
           context.goNamed(Routelists.dashboard);
         } else if (state is JoinVerseFailure) {
@@ -65,7 +63,10 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
                     SizedBox(height: 24),
                     Text(
                       'join_verse.greeting_name'.tr(),
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                     SizedBox(height: 36),
 
@@ -76,10 +77,16 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
                     SizedBox(height: 24),
                     Text(
                       'join_verse.role.title'.tr(),
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     SizedBox(height: 12),
-                    Text('join_verse.role.intro'.tr(), textAlign: TextAlign.center),
+                    Text(
+                      'join_verse.role.intro'.tr(),
+                      textAlign: TextAlign.center,
+                    ),
                     SizedBox(height: 16),
                     _ChecklistItem(text: 'join_verse.role.bullet_1'.tr()),
                     _ChecklistItem(text: 'join_verse.role.bullet_2'.tr()),
@@ -93,13 +100,17 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
                     ),
                     const SizedBox(height: 24),
                     InkWell(
-                      onTap: state is JoinVerseLoading ? null : _handleJoinVerse,
+                      onTap: state is JoinVerseLoading
+                          ? null
+                          : _handleJoinVerse,
                       child: Container(
                         width: 230,
                         height: 40,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.black, width: 4),
-                          color: state is JoinVerseLoading ? Colors.grey[200] : null,
+                          color: state is JoinVerseLoading
+                              ? Colors.grey[200]
+                              : null,
                         ),
                         child: Center(
                           child: state is JoinVerseLoading
@@ -108,7 +119,9 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
                                   height: 20,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.black,
+                                    ),
                                   ),
                                 )
                               : Text('join_verse.role.cta'.tr()),
