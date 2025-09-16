@@ -7,6 +7,7 @@ import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
+import 'package:mobile/features/channels/presentation/components/channel_tree_view.dart';
 
 class DashboardSidebar extends StatefulWidget {
   const DashboardSidebar({super.key});
@@ -30,13 +31,15 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     try {
       final loginRepository = sl<LoginRepository>();
       final userResult = await loginRepository.getCurrentUser();
-      
+
       userResult.fold(
         (failure) {
           // Handle error
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Failed to load user: ${failure.message}')),
+              SnackBar(
+                content: Text('Failed to load user: ${failure.message}'),
+              ),
             );
           }
         },
@@ -46,20 +49,23 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
               currentUser = user;
               currentVerseId = user.joinedVerse.first; // Use first joined verse
             });
-            
+
             // Load channels for the first joined verse
-            context.read<ChannelBloc>().add(LoadChannelStructure(user.joinedVerse.first));
+            context.read<ChannelBloc>().add(
+              LoadChannelStructure(user.joinedVerse.first),
+            );
           }
         },
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading user: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error loading user: $e')));
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ChannelBloc, ChannelState>(
@@ -70,7 +76,9 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
           });
         } else if (state is ChannelFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to load channels: ${state.message}')),
+            SnackBar(
+              content: Text('Failed to load channels: ${state.message}'),
+            ),
           );
         }
       },
@@ -84,11 +92,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Deine Kanäle
-                _buildSection(
-                  title: 'dashboard.sidebar.channels'.tr(),
-                  items: _buildChannelItems(),
-                  addButtonText: 'dashboard.sidebar.add_channel'.tr(),
-                ),
+                _buildChannelSection(),
 
                 const SizedBox(height: 32),
 
@@ -135,8 +139,105 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     if (channels.isEmpty) {
       return ['dashboard.sidebar.no_channels'.tr()];
     }
-    
+
     return channels.map((channel) => channel.name).toList();
+  }
+
+  Widget _buildChannelSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header with title and add button
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'dashboard.sidebar.channels'.tr(),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                // TODO: Implement add channel functionality
+                _showAddChannelDialog();
+              },
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                alignment: Alignment.centerLeft,
+              ),
+              child: Text(
+                'dashboard.sidebar.add_channel'.tr(),
+                style: TextStyle(
+                  color: AppTheme.primary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 12),
+
+        // Channel tree view
+        Container(
+          constraints: const BoxConstraints(maxHeight: 300),
+          child: SingleChildScrollView(
+            child: ChannelTreeView(
+              channels: channels,
+              onChannelTap: _handleChannelTap,
+              onFolderTap: _handleFolderTap,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _handleChannelTap(ChannelEntity channel) {
+    // TODO: Navigate to channel content or show channel details
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Selected channel: ${channel.name}'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _handleFolderTap(ChannelEntity folder) {
+    // TODO: Handle folder tap (maybe show folder info or navigate)
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Selected folder: ${folder.name}'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showAddChannelDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('dashboard.sidebar.add_channel'.tr()),
+        content: const Text('Add channel functionality will be implemented here.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              // TODO: Implement actual add channel logic
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildSection({
