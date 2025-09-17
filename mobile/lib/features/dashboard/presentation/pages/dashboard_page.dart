@@ -28,10 +28,10 @@ class _DashboardPageState extends State<DashboardPage> {
   Future<void> _loadDashboardData() async {
     try {
       final loginRepository = sl<LoginRepository>();
-      
+
       // Load current user
       final userResult = await loginRepository.getCurrentUser();
-      
+
       userResult.fold(
         (failure) {
           // Handle error
@@ -48,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
             setState(() {
               currentVerseId = user.joinedVerse.first;
             });
-            
+
             // Load dashboard data for the first joined verse
             context.read<DashboardBloc>().add(
               LoadDashboardData(currentVerseId!),

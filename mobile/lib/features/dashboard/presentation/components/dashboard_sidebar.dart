@@ -41,10 +41,10 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   Future<void> _loadUserAndChannels() async {
     try {
       final loginRepository = sl<LoginRepository>();
-      
+
       // Load current user
       final userResult = await loginRepository.getCurrentUser();
-      
+
       userResult.fold(
         (failure) {
           // Handle error
@@ -65,7 +65,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                 currentVerseId = user.joinedVerse.first;
               }
             });
-            
+
             // Load channels for the first joined verse
             if (currentVerseId != null) {
               context.read<ChannelBloc>().add(

@@ -34,6 +34,12 @@
   "app_footer": {
     "relevant_links": "Relevant Links"
   },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "next": "Next"
+  },
   "join_verse": {
     "greeting_name": "Hello, Stephan!",
     "invited_title": "You are invited!",
@@ -70,7 +76,36 @@
     "select_channel_error": "Please select a channel first",
     "folder_created_success": "Folder created successfully!",
     "folder_creation_error": "Failed to create folder",
-    "add_folder": "Add Folder"
+    "add_folder": "Add Folder",
+    "change_name": "Change Name",
+    "change_contents": "Change Contents",
+    "folder_inheritance_info": "Corporate Design is freely accessible to all users of your organization and inherits these properties to 'Employee Photos'.",
+    "yes_correct": "Yes, that is correct",
+    "select_other_folder": "Select another folder",
+    "content_type_question": "Which contents are stored here?",
+    "images": "Images",
+    "texts": "Texts",
+    "data": "Data",
+    "documents": "Documents",
+    "tip_title": "Tip:",
+    "tip_channel_selection": "Please make sure you have selected the correct channel.",
+    "tip_unique_name": "Please ensure you choose a unique name.",
+    "edit_folder_name": "Edit Folder Name",
+    "edit_description": "Edit Description",
+    "folder_created_success_message": "Great, Stephan, that worked!",
+    "view_channel_button": "Alright, view channel",
+    "bryteverse_slogan": "BryteVerse® by Publify is the future in publishing.",
+    "feature_no_data_send": "we do not send data",
+    "feature_no_data_store": "we do not store data",
+    "feature_content_manage": "we can manage your content in one of 3",
+    "feature_content_share": "we can share your content",
+    "feature_content_organize": "we can organize your content",
+    "social_media": "Social Media",
+    "relevant_links": "Relevant Links",
+    "contact": "Contact",
+    "imprint": "Imprint",
+    "privacy": "Privacy",
+    "terms": "Terms and Conditions"
   },
   "dashboard": {
     "greeting": "Hello, Dirk!",

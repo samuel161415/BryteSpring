@@ -10,4 +10,5 @@ class Routelists {
   static const invitationValidation = 'invitationValidation';
   static const dashboard = 'dashboard';
   static const createFolder = 'createFolder';
+  static const createFolderConfirmation = 'createFolderConfirmation';
 }

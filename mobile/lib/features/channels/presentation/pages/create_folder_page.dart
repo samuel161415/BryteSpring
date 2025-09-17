@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
+import 'package:mobile/core/routing/routeLists.dart';
 
 class CreateFolderPage extends StatefulWidget {
   final String? parentChannelId;
@@ -29,6 +31,13 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
   String? _selectedChannelName;
   bool _isPublic = true;
   bool _isLoading = false;
+  int _currentStep = 0;
+
+  // Content type selections
+  bool _isImages = false;
+  bool _isTexts = false;
+  bool _isData = false;
+  bool _isDocuments = false;
 
   @override
   void initState() {
@@ -37,6 +46,9 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
     _selectedChannelName = widget.parentChannelId != null
         ? 'Corporate Design'
         : null;
+    _folderNameController.text = 'Mitarbeiterfotos'; // Pre-fill with example
+    _descriptionController.text =
+        'Inhalte sind vorwiegend Bilder'; // Pre-fill with example
   }
 
   @override
@@ -48,6 +60,22 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
 
   void _handleLanguageChanged() {
     setState(() {});
+  }
+
+  void _nextStep() {
+    if (_currentStep < 2) {
+      setState(() {
+        _currentStep++;
+      });
+    }
+  }
+
+  void _previousStep() {
+    if (_currentStep > 0) {
+      setState(() {
+        _currentStep--;
+      });
+    }
   }
 
   void _showChannelSelectionDialog() {
@@ -135,13 +163,14 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
             setState(() {
               _isLoading = false;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('channels.folder_created_success'.tr()),
-                backgroundColor: Colors.green,
-              ),
+            // Navigate to confirmation page instead of showing snackbar
+            context.goNamed(
+              Routelists.createFolderConfirmation,
+              extra: {
+                'folderName': _folderNameController.text.trim(),
+                'channelName': _selectedChannelName ?? 'Channel',
+              },
             );
-            Navigator.of(context).pop();
           } else if (state is ChannelFailure) {
             setState(() {
               _isLoading = false;
@@ -238,195 +267,630 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title
-            Text(
-              'channels.create_folder'.tr(),
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            // Channel Selection Field
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey[300]!),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _selectedChannelName != null
-                          ? 'channels.channel_label'.tr() +
-                                ': $_selectedChannelName'
-                          : 'channels.select_channel'.tr(),
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: _selectedChannelName != null
-                            ? Colors.black87
-                            : Colors.grey[600],
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: _showChannelSelectionDialog,
-                    child: Text(
-                      'channels.change_channel'.tr(),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.teal[600],
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Folder Name Input Field
-            TextFormField(
-              controller: _folderNameController,
-              decoration: InputDecoration(
-                hintText: 'channels.folder_name_placeholder'.tr(),
-                hintStyle: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.teal[300]!),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.teal[300]!),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.teal[600]!, width: 2),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-              ),
-              style: const TextStyle(fontSize: 16),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'channels.folder_name_required'.tr();
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 24),
-
-            // Description Input Field (Optional)
-            TextFormField(
-              controller: _descriptionController,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'channels.folder_description_placeholder'.tr(),
-                hintStyle: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.teal[600]!, width: 2),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-              ),
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-
-            // Visibility Toggle
+            // Title with close button
             Row(
               children: [
-                Checkbox(
-                  value: _isPublic,
-                  onChanged: (value) {
-                    setState(() {
-                      _isPublic = value ?? true;
-                    });
-                  },
-                  activeColor: Colors.teal[600],
+                Expanded(
+                  child: Text(
+                    'channels.create_folder'.tr(),
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
                 ),
-                Text(
-                  'channels.make_public'.tr(),
-                  style: const TextStyle(fontSize: 16),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 24,
+                    color: Colors.black87,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 32),
 
-            // Instructional Tip
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[200]!),
+            // Step-by-step content
+            _buildStepContent(),
+
+            const SizedBox(height: 32),
+
+            // Navigation buttons
+            _buildNavigationButtons(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStepContent() {
+    switch (_currentStep) {
+      case 0:
+        return _buildStep1();
+      case 1:
+        return _buildStep2();
+      case 2:
+        return _buildStep3();
+      default:
+        return _buildStep1();
+    }
+  }
+
+  Widget _buildStep1() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Channel Selection Field
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _selectedChannelName != null
+                      ? 'channels.channel_label'.tr() +
+                            ': $_selectedChannelName'
+                      : 'channels.select_channel'.tr(),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: _selectedChannelName != null
+                        ? Colors.black87
+                        : Colors.grey[600],
+                  ),
+                ),
               ),
-              child: Text(
-                'channels.create_folder_tip'.tr(),
+              GestureDetector(
+                onTap: _showChannelSelectionDialog,
+                child: Text(
+                  'channels.change_channel'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Folder Name Input Field
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.teal[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _folderNameController.text,
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              ),
+              GestureDetector(
+                onTap: _showNameEditDialog,
+                child: Text(
+                  'channels.change_name'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Content Description Field
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _descriptionController.text,
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              ),
+              GestureDetector(
+                onTap: _showDescriptionEditDialog,
+                child: Text(
+                  'channels.change_contents'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Information text
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            'channels.folder_inheritance_info'.tr(),
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[700],
+              height: 1.4,
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Checkboxes
+        Column(
+          children: [
+            Row(
+              children: [
+                Checkbox(
+                  value: true, // Default checked
+                  onChanged: (value) {},
+                  activeColor: Colors.teal[600],
+                ),
+                Text(
+                  'channels.yes_correct'.tr(),
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  value: false,
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 0; // Go back to channel selection
+                    });
+                  },
+                  activeColor: Colors.teal[600],
+                ),
+                Text(
+                  'channels.select_other_folder'.tr(),
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStep2() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Channel Selection Field
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _selectedChannelName != null
+                      ? 'channels.channel_label'.tr() +
+                            ': $_selectedChannelName'
+                      : 'channels.select_channel'.tr(),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: _selectedChannelName != null
+                        ? Colors.black87
+                        : Colors.grey[600],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: _showChannelSelectionDialog,
+                child: Text(
+                  'channels.change_channel'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Folder Name Input Field
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.teal[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _folderNameController.text,
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              ),
+              GestureDetector(
+                onTap: _showNameEditDialog,
+                child: Text(
+                  'channels.change_name'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 32),
+
+        // Content type question
+        Text(
+          'channels.content_type_question'.tr(),
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Content type checkboxes
+        Row(
+          children: [
+            Expanded(
+              child: _buildContentTypeCheckbox(
+                'channels.images'.tr(),
+                _isImages,
+                (value) {
+                  setState(() {
+                    _isImages = value ?? false;
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: _buildContentTypeCheckbox(
+                'channels.texts'.tr(),
+                _isTexts,
+                (value) {
+                  setState(() {
+                    _isTexts = value ?? false;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildContentTypeCheckbox('channels.data'.tr(), _isData, (
+                value,
+              ) {
+                setState(() {
+                  _isData = value ?? false;
+                });
+              }),
+            ),
+            Expanded(
+              child: _buildContentTypeCheckbox(
+                'channels.documents'.tr(),
+                _isDocuments,
+                (value) {
+                  setState(() {
+                    _isDocuments = value ?? false;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStep3() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Channel Selection Field
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _selectedChannelName != null
+                      ? 'channels.channel_label'.tr() +
+                            ': $_selectedChannelName'
+                      : 'channels.select_channel'.tr(),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: _selectedChannelName != null
+                        ? Colors.black87
+                        : Colors.grey[600],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: _showChannelSelectionDialog,
+                child: Text(
+                  'channels.change_channel'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Folder Name Input Field
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.teal[300]!),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _folderNameController.text,
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              ),
+              GestureDetector(
+                onTap: _showNameEditDialog,
+                child: Text(
+                  'channels.change_name'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Tips section
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'channels.tip_title'.tr(),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[700],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'channels.tip_channel_selection'.tr(),
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[700],
                   height: 1.4,
                 ),
               ),
-            ),
-            const SizedBox(height: 32),
-
-            // Create Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleCreateFolder,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _isLoading
-                      ? Colors.grey[400]
-                      : Colors.teal[600],
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
+              const SizedBox(height: 4),
+              Text(
+                'channels.tip_unique_name'.tr(),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                  height: 1.4,
                 ),
-                child: _isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        'channels.create_folder_button'.tr(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContentTypeCheckbox(
+    String label,
+    bool value,
+    Function(bool?) onChanged,
+  ) {
+    return Row(
+      children: [
+        Checkbox(
+          value: value,
+          onChanged: onChanged,
+          activeColor: Colors.teal[600],
+        ),
+        Expanded(child: Text(label, style: const TextStyle(fontSize: 16))),
+      ],
+    );
+  }
+
+  Widget _buildNavigationButtons() {
+    return Row(
+      children: [
+        if (_currentStep > 0)
+          Expanded(
+            child: ElevatedButton(
+              onPressed: _previousStep,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[200],
+                foregroundColor: Colors.black87,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                elevation: 0,
+              ),
+              child: Text(
+                'common.back'.tr(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ],
+          ),
+        if (_currentStep > 0) const SizedBox(width: 16),
+        Expanded(
+          child: ElevatedButton(
+            onPressed: _isLoading ? null : _getNextButtonAction(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isLoading ? Colors.grey[400] : Colors.teal[600],
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 0,
+            ),
+            child: _isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : Text(
+                    _getNextButtonText(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+          ),
         ),
+      ],
+    );
+  }
+
+  String _getNextButtonText() {
+    if (_currentStep == 2) {
+      return 'channels.create_folder_button'.tr();
+    }
+    return 'common.next'.tr();
+  }
+
+  VoidCallback? _getNextButtonAction() {
+    if (_currentStep == 2) {
+      return _handleCreateFolder;
+    }
+    return _nextStep;
+  }
+
+  void _showNameEditDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('channels.edit_folder_name'.tr()),
+        content: TextFormField(
+          controller: _folderNameController,
+          decoration: InputDecoration(
+            hintText: 'channels.folder_name_placeholder'.tr(),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('common.cancel'.tr()),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text('common.save'.tr()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDescriptionEditDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('channels.edit_description'.tr()),
+        content: TextFormField(
+          controller: _descriptionController,
+          maxLines: 3,
+          decoration: InputDecoration(
+            hintText: 'channels.folder_description_placeholder'.tr(),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('common.cancel'.tr()),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            child: Text('common.save'.tr()),
+          ),
+        ],
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
 import 'package:mobile/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:mobile/features/channels/presentation/pages/create_folder_page.dart';
+import 'package:mobile/features/channels/presentation/pages/create_folder_confirmation_page.dart';
 
 /// App router configuration using go_router
 class AppRouter {
@@ -164,26 +165,44 @@ class AppRouter {
       pageBuilder: (context, state) =>
           _buildPage(context, state, const DashboardPage()),
     ),
-    GoRoute(
-      path: '/${Routelists.createFolder}',
-      name: Routelists.createFolder,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        final parentChannelId = extra?['parentChannelId'] as String?;
-        final verseId = extra?['verseId'] as String?;
-
-        if (verseId == null) {
-          // If no verse ID provided, redirect to dashboard
-          return _buildPage(context, state, const DashboardPage());
-        }
-
-        return _buildPage(
-          context,
-          state,
-          CreateFolderPage(parentChannelId: parentChannelId, verseId: verseId),
-        );
-      },
-    ),
+        GoRoute(
+          path: '/${Routelists.createFolder}',
+          name: Routelists.createFolder,
+          pageBuilder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>?;
+            final parentChannelId = extra?['parentChannelId'] as String?;
+            final verseId = extra?['verseId'] as String?;
+            
+            if (verseId == null) {
+              // If no verse ID provided, redirect to dashboard
+              return _buildPage(context, state, const DashboardPage());
+            }
+            
+            return _buildPage(
+              context,
+              state,
+              CreateFolderPage(parentChannelId: parentChannelId, verseId: verseId),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/${Routelists.createFolderConfirmation}',
+          name: Routelists.createFolderConfirmation,
+          pageBuilder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>?;
+            final folderName = extra?['folderName'] as String? ?? 'Folder';
+            final channelName = extra?['channelName'] as String? ?? 'Channel';
+            
+            return _buildPage(
+              context,
+              state,
+              CreateFolderConfirmationPage(
+                folderName: folderName,
+                channelName: channelName,
+              ),
+            );
+          },
+        ),
   ];
 
   static Page<dynamic> _buildPage(

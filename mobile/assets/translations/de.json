@@ -34,6 +34,12 @@
   "app_footer": {
     "relevant_links": "Relevante Links"
   },
+  "common": {
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "back": "Zurück",
+    "next": "Weiter"
+  },
   "join_verse": {
     "greeting_name": "Hallo, Stephan!",
     "invited_title": "Du bist eingeladen!",
@@ -70,7 +76,36 @@
     "select_channel_error": "Bitte wähle zuerst einen Kanal aus",
     "folder_created_success": "Ordner erfolgreich erstellt!",
     "folder_creation_error": "Fehler beim Erstellen des Ordners",
-    "add_folder": "Ordner hinzufügen"
+    "add_folder": "Ordner hinzufügen",
+    "change_name": "Namen ändern",
+    "change_contents": "Inhalte ändern",
+    "folder_inheritance_info": "Corporate Design ist für alle Nutzer Deiner Organisation uneingeschränkt zugänglich und vererbt diese Eigenschaften auf 'Mitarbeiterfotos'.",
+    "yes_correct": "Ja, das ist richtig",
+    "select_other_folder": "Anderen Ordner wählen",
+    "content_type_question": "Welche Inhalte werden hier abgelegt?",
+    "images": "Bilder",
+    "texts": "Texte",
+    "data": "Daten",
+    "documents": "Dokumente",
+    "tip_title": "Tipp:",
+    "tip_channel_selection": "Bitte achte darauf, dass Du den richtigen Kanal ausgewählt hast.",
+    "tip_unique_name": "Bitte stelle sicher, dass Du einen eindeutigen Namen auswählst.",
+    "edit_folder_name": "Ordnername bearbeiten",
+    "edit_description": "Beschreibung bearbeiten",
+    "folder_created_success_message": "Prima, Stephan, das hat geklappt!",
+    "view_channel_button": "Alles klar Kanal ansehen",
+    "bryteverse_slogan": "BryteVerse® by Publify ist die Zukunft im Publishing.",
+    "feature_no_data_send": "wir senden keine Daten",
+    "feature_no_data_store": "wir speichern keine Daten",
+    "feature_content_manage": "wir können deine Inhalte in einem von 3",
+    "feature_content_share": "wir können deine Inhalte teilen",
+    "feature_content_organize": "wir können deine Inhalte organisieren",
+    "social_media": "Social Media",
+    "relevant_links": "Relevante Links",
+    "contact": "Kontakt",
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "terms": "AGB"
   },
   "dashboard": {
     "greeting": "Hallo, Dirk!",
