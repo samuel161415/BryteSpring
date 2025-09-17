@@ -4,7 +4,7 @@ import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
-import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
+import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/dashboard/presentation/components/dashboard_sidebar.dart';
 import 'package:mobile/features/dashboard/presentation/components/dashboard_main_content_new.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -27,32 +27,31 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<void> _loadDashboardData() async {
     try {
-      final verseJoinRepository = sl<VerseJoinRepository>();
-
-      // Load joined verses and use the first one
-      final joinedVersesResult = await verseJoinRepository.getJoinedVerses();
-
-      joinedVersesResult.fold(
+      final loginRepository = sl<LoginRepository>();
+      
+      // Load current user
+      final userResult = await loginRepository.getCurrentUser();
+      
+      userResult.fold(
         (failure) {
-          // Handle error - no joined verses
+          // Handle error
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('No joined verses found: ${failure.message}'),
-                backgroundColor: Colors.orange,
+                content: Text('Failed to load user: ${failure.message}'),
               ),
             );
           }
         },
-        (joinedVerses) {
-          if (joinedVerses.isNotEmpty) {
+        (user) {
+          if (user != null && user.joinedVerse.isNotEmpty) {
             setState(() {
-              currentVerseId = joinedVerses.first.id;
+              currentVerseId = user.joinedVerse.first;
             });
-
+            
             // Load dashboard data for the first joined verse
             context.read<DashboardBloc>().add(
-              LoadDashboardData(joinedVerses.first.id),
+              LoadDashboardData(currentVerseId!),
             );
           } else {
             if (mounted) {
@@ -141,7 +140,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                   Expanded(
                                     child: Container(
                                       color: Colors.white,
-                                      child: DashboardMainContent(verseId: currentVerseId),
+                                      child: DashboardMainContent(
+                                        verseId: currentVerseId,
+                                      ),
                                     ),
                                   ),
                                 ],

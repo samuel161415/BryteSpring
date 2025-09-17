@@ -7,7 +7,6 @@ import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/channel_tree_shimmer.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
-import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
 import 'package:mobile/features/channels/presentation/components/channel_tree_view.dart';
@@ -42,11 +41,10 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   Future<void> _loadUserAndChannels() async {
     try {
       final loginRepository = sl<LoginRepository>();
-      final verseJoinRepository = sl<VerseJoinRepository>();
-
+      
       // Load current user
       final userResult = await loginRepository.getCurrentUser();
-
+      
       userResult.fold(
         (failure) {
           // Handle error
@@ -58,52 +56,31 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             );
           }
         },
-        (user) async {
+        (user) {
           if (user != null) {
             setState(() {
               currentUser = user;
+              // Use the first joined verse from user data
+              if (user.joinedVerse.isNotEmpty) {
+                currentVerseId = user.joinedVerse.first;
+              }
             });
-
-            // Load joined verses from repository
-            final joinedVersesResult = await verseJoinRepository
-                .getJoinedVerses();
-
-            joinedVersesResult.fold(
-              (failure) {
-                // Handle error - no joined verses
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'No joined verses found: ${failure.message}',
-                      ),
-                      backgroundColor: Colors.orange,
-                    ),
-                  );
-                }
-              },
-              (joinedVerses) {
-                if (joinedVerses.isNotEmpty) {
-                  setState(() {
-                    currentVerseId = joinedVerses.first.id;
-                  });
-
-                  // Load channels for the first joined verse
-                  context.read<ChannelBloc>().add(
-                    LoadChannelStructure(joinedVerses.first.id),
-                  );
-                } else {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('No joined verses found'),
-                        backgroundColor: Colors.orange,
-                      ),
-                    );
-                  }
-                }
-              },
-            );
+            
+            // Load channels for the first joined verse
+            if (currentVerseId != null) {
+              context.read<ChannelBloc>().add(
+                LoadChannelStructure(currentVerseId!),
+              );
+            } else {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('No joined verses found'),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+              }
+            }
           }
         },
       );
@@ -260,42 +237,39 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         const SizedBox(height: 16),
 
         // Add Folder Button
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              if (currentVerseId != null) {
-                context.pushNamed(
-                  Routelists.createFolder,
-                  extra: {'verseId': currentVerseId!},
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'No verse selected. Please join a verse first.',
-                    ),
-                    backgroundColor: Colors.orange,
+        InkWell(
+          onTap: () {
+            if (currentVerseId != null) {
+              context.pushNamed(
+                Routelists.createFolder,
+                extra: {'verseId': currentVerseId!},
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'No verse selected. Please join a verse first.',
                   ),
-                );
-              }
-            },
-            icon: Icon(Icons.add, size: 16, color: Colors.white),
-            label: Text(
-              'channels.add_folder'.tr(),
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal[600],
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              elevation: 0,
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            }
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              children: [
+                Icon(Icons.add, size: 16, color: Colors.teal[600]),
+                const SizedBox(width: 8),
+                Text(
+                  'channels.add_folder'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.teal[600],
+                  ),
+                ),
+              ],
             ),
           ),
         ),

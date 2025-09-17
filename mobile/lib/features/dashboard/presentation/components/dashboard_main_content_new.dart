@@ -8,7 +8,7 @@ import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart'
 
 class DashboardMainContent extends StatefulWidget {
   final String? verseId;
-  
+
   const DashboardMainContent({super.key, this.verseId});
 
   @override
@@ -37,13 +37,13 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  state.isOffline ? Icons.cloud_off : Icons.error_outline, 
-                  size: 64, 
-                  color: state.isOffline ? Colors.orange[300] : Colors.red[300]
+                  state.isOffline ? Icons.cloud_off : Icons.error_outline,
+                  size: 64,
+                  color: state.isOffline ? Colors.orange[300] : Colors.red[300],
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  state.isOffline 
+                  state.isOffline
                       ? 'dashboard.error.offline'.tr()
                       : 'dashboard.error.loading_dashboard'.tr(),
                   style: TextStyle(
@@ -60,20 +60,24 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: widget.verseId != null ? () {
-                    // Reload dashboard data
-                    context.read<DashboardBloc>().add(
-                      LoadDashboardData(widget.verseId!),
-                    );
-                  } : null,
+                  onPressed: widget.verseId != null
+                      ? () {
+                          // Reload dashboard data
+                          context.read<DashboardBloc>().add(
+                            LoadDashboardData(widget.verseId!),
+                          );
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: state.isOffline ? Colors.orange[600] : Colors.teal[600],
+                    backgroundColor: state.isOffline
+                        ? Colors.orange[600]
+                        : Colors.teal[600],
                     foregroundColor: Colors.white,
                   ),
                   child: Text(
-                    state.isOffline 
+                    state.isOffline
                         ? 'dashboard.error.retry_offline'.tr()
-                        : 'dashboard.error.retry'.tr()
+                        : 'dashboard.error.retry'.tr(),
                   ),
                 ),
               ],
