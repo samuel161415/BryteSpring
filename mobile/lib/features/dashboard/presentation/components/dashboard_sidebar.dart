@@ -140,14 +140,6 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     );
   }
 
-  List<String> _buildChannelItems() {
-    if (channels.isEmpty) {
-      return ['dashboard.sidebar.no_channels'.tr()];
-    }
-
-    return channels.map((channel) => channel.name).toList();
-  }
-
   Widget _buildChannelSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,10 +183,13 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         Container(
           constraints: const BoxConstraints(maxHeight: 300),
           child: SingleChildScrollView(
-            child: ChannelTreeView(
-              channels: channels,
-              onChannelTap: _handleChannelTap,
-              onFolderTap: _handleFolderTap,
+            child: SizedBox(
+              width: double.infinity,
+              child: ChannelTreeView(
+                channels: channels,
+                onChannelTap: _handleChannelTap,
+                onFolderTap: _handleFolderTap,
+              ),
             ),
           ),
         ),
