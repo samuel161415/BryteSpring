@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:connectivity/connectivity.dart';
+// import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/core/network/dio_client.dart';
@@ -10,7 +10,6 @@ import 'package:mobile/features/Authentication/data/datasources/invitation_remot
 import 'package:mobile/features/Authentication/data/datasources/register_user_remote_datasource.dart';
 import 'package:mobile/features/Authentication/data/datasources/reset_password_remote_datasource.dart';
 import 'package:mobile/features/Authentication/data/repositories/invitation_repository_impl.dart';
-import 'package:mobile/features/Authentication/data/repositories/login_repository_impl.dart';
 import 'package:mobile/features/Authentication/data/repositories/register_user_repository_impl.dart';
 import 'package:mobile/features/Authentication/data/repositories/reset_password_repository_impl.dart';
 import 'package:mobile/features/Authentication/domain/repositories/invitation_repository.dart';
@@ -37,6 +36,8 @@ import 'package:mobile/features/dashboard/domain/repositories/dashboard_reposito
 import 'package:mobile/features/dashboard/domain/usecases/get_dashboard_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../features/Authentication/data/repositories/login_repository_impl.dart';
+
 final GetIt sl = GetIt.instance;
 
 Future<void> init() async {
@@ -48,7 +49,7 @@ Future<void> init() async {
   // Network
   sl.registerLazySingleton(() => Dio());
   sl.registerLazySingleton(() => DioClient(dio: sl()));
-  sl.registerLazySingleton(() => Connectivity());
+  // sl.registerLazySingleton(() => Connectivity());
 
   // Storage
   sl.registerLazySingleton(() => LocalStorage(sl.get<SharedPreferences>()));
