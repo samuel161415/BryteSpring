@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require('../utils/uuid');
 const path = require('path');
 
 // Configure DigitalOcean Spaces (S3-compatible)

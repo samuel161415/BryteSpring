@@ -5,14 +5,7 @@ const Role = require('../models/Role');
 const UserRole = require('../models/UserRole');
 const ActivityLog = require('../models/ActivityLog');
 const Invitation = require('../models/Invitation');
-// Try uuid/v4 first, fallback to crypto if it fails
-let uuidv4;
-try {
-  uuidv4 = require('uuid/v4');
-} catch (error) {
-  const crypto = require('crypto');
-  uuidv4 = () => crypto.randomUUID();
-}
+const { v4: uuidv4 } = require('../utils/uuid');
 // const { sendInvitationEmail } = require('../services/email'); // Old email service
 const { sendInvitationEmail } = require('../services/cleverEmail'); // New CleverReach service
 const { validationResult } = require('express-validator');
