@@ -88,7 +88,7 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                     else
                       const SizedBox(width: 20),
 
-                    // Folder/Channel icon
+                    // Folder icon (only for folders)
                     if (isFolder) ...[
                       const SizedBox(width: 4),
                       Icon(
@@ -97,14 +97,9 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                         color: Colors.orange[600],
                       ),
                       const SizedBox(width: 8),
-                    ] else if (!isSubItem) ...[
+                    ] else ...[
+                      // No icon for non-folder items
                       const SizedBox(width: 4),
-                      Icon(
-                        Icons.business,
-                        size: 16,
-                        color: Colors.grey[700],
-                      ),
-                      const SizedBox(width: 8),
                     ],
 
                     // Channel/Folder name

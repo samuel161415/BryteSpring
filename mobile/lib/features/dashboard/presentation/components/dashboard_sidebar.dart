@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/widgets/channel_tree_shimmer.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
@@ -29,32 +30,52 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   }
 
   void _loadSampleChannels() {
-    // Create sample hierarchical channel data
+    // Create sample hierarchical channel data with German translations
     final sampleChannels = [
       ChannelEntity(
         id: '1',
         verseId: '68c3e2d6f58c817ebed1ca74',
         name: 'Unternehmensdaten',
         type: 'folder',
-        description: 'Corporate data folder',
+        description: 'Unternehmensdaten Ordner',
         path: '/unternehmensdaten',
         assetTypes: [],
-        visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: false),
-        folderSettings: const ChannelFolderSettings(allowSubfolders: true, maxDepth: 5),
-        createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+        visibility: const ChannelVisibility(
+          isPublic: true,
+          inheritedFromParent: false,
+        ),
+        folderSettings: const ChannelFolderSettings(
+          allowSubfolders: true,
+          maxDepth: 5,
+        ),
+        createdBy: const CreatedBy(
+          id: '1',
+          firstName: 'Admin',
+          lastName: 'User',
+        ),
         createdAt: DateTime.now(),
         children: [
           ChannelEntity(
             id: '2',
             verseId: '68c3e2d6f58c817ebed1ca74',
-            name: 'Corporate Data',
+            name: 'Unternehmensdaten',
             type: 'folder',
-            description: 'Corporate data subfolder',
-            path: '/unternehmensdaten/corporate-data',
+            description: 'Unternehmensdaten Unterordner',
+            path: '/unternehmensdaten/unternehmensdaten',
             assetTypes: [],
-            visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: true),
-            folderSettings: const ChannelFolderSettings(allowSubfolders: true, maxDepth: 4),
-            createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+            visibility: const ChannelVisibility(
+              isPublic: true,
+              inheritedFromParent: true,
+            ),
+            folderSettings: const ChannelFolderSettings(
+              allowSubfolders: true,
+              maxDepth: 4,
+            ),
+            createdBy: const CreatedBy(
+              id: '1',
+              firstName: 'Admin',
+              lastName: 'User',
+            ),
             createdAt: DateTime.now(),
             children: [],
           ),
@@ -63,12 +84,22 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             verseId: '68c3e2d6f58c817ebed1ca74',
             name: 'Corporate Design',
             type: 'folder',
-            description: 'Corporate design subfolder',
+            description: 'Corporate Design Unterordner',
             path: '/unternehmensdaten/corporate-design',
             assetTypes: [],
-            visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: true),
-            folderSettings: const ChannelFolderSettings(allowSubfolders: true, maxDepth: 4),
-            createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+            visibility: const ChannelVisibility(
+              isPublic: true,
+              inheritedFromParent: true,
+            ),
+            folderSettings: const ChannelFolderSettings(
+              allowSubfolders: true,
+              maxDepth: 4,
+            ),
+            createdBy: const CreatedBy(
+              id: '1',
+              firstName: 'Admin',
+              lastName: 'User',
+            ),
             createdAt: DateTime.now(),
             children: [
               ChannelEntity(
@@ -76,12 +107,22 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                 verseId: '68c3e2d6f58c817ebed1ca74',
                 name: 'Logos',
                 type: 'folder',
-                description: 'Logo assets',
+                description: 'Logo Assets',
                 path: '/unternehmensdaten/corporate-design/logos',
                 assetTypes: ['image'],
-                visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: true),
-                folderSettings: const ChannelFolderSettings(allowSubfolders: false, maxDepth: 3),
-                createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+                visibility: const ChannelVisibility(
+                  isPublic: true,
+                  inheritedFromParent: true,
+                ),
+                folderSettings: const ChannelFolderSettings(
+                  allowSubfolders: false,
+                  maxDepth: 3,
+                ),
+                createdBy: const CreatedBy(
+                  id: '1',
+                  firstName: 'Admin',
+                  lastName: 'User',
+                ),
                 createdAt: DateTime.now(),
                 children: [],
               ),
@@ -90,12 +131,22 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                 verseId: '68c3e2d6f58c817ebed1ca74',
                 name: 'Brand Guidelines',
                 type: 'folder',
-                description: 'Brand guideline documents',
+                description: 'Brand Guidelines Dokumente',
                 path: '/unternehmensdaten/corporate-design/brand-guidelines',
                 assetTypes: ['document'],
-                visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: true),
-                folderSettings: const ChannelFolderSettings(allowSubfolders: false, maxDepth: 3),
-                createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+                visibility: const ChannelVisibility(
+                  isPublic: true,
+                  inheritedFromParent: true,
+                ),
+                folderSettings: const ChannelFolderSettings(
+                  allowSubfolders: false,
+                  maxDepth: 3,
+                ),
+                createdBy: const CreatedBy(
+                  id: '1',
+                  firstName: 'Admin',
+                  lastName: 'User',
+                ),
                 createdAt: DateTime.now(),
                 children: [],
               ),
@@ -257,15 +308,43 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
 
         const SizedBox(height: 12),
 
-        // Channel tree view
+        // Channel tree view with shimmer loading
         Container(
           constraints: const BoxConstraints(maxHeight: 300),
           width: double.infinity,
           child: SingleChildScrollView(
-            child: ChannelTreeView(
-              channels: channels,
-              onChannelTap: _handleChannelTap,
-              onFolderTap: _handleFolderTap,
+            child: BlocBuilder<ChannelBloc, ChannelState>(
+              builder: (context, state) {
+                if (state is ChannelLoading) {
+                  return const ChannelTreeShimmer();
+                } else if (state is ChannelStructureLoaded) {
+                  return ChannelTreeView(
+                    channels: state.structure.structure,
+                    onChannelTap: _handleChannelTap,
+                    onFolderTap: _handleFolderTap,
+                  );
+                } else if (state is ChannelFailure) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Text(
+                        'Fehler beim Laden der Kanäle: ${state.message}',
+                        style: TextStyle(
+                          color: Colors.red[600],
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  // Fallback to sample data or empty state
+                  return ChannelTreeView(
+                    channels: channels,
+                    onChannelTap: _handleChannelTap,
+                    onFolderTap: _handleFolderTap,
+                  );
+                }
+              },
             ),
           ),
         ),
