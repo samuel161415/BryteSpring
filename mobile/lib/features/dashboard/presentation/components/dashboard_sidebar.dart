@@ -415,9 +415,11 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         if (addButtonText.isNotEmpty) ...[
           const SizedBox(height: 12),
           InkWell(
-            onTap: onAddTap ?? () {
-              // TODO: Implement add functionality
-            },
+            onTap:
+                onAddTap ??
+                () {
+                  // TODO: Implement add functionality
+                },
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(

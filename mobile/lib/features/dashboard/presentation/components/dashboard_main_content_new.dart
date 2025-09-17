@@ -71,7 +71,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
             ),
           );
         } else if (state is DashboardLoaded) {
-          return _buildDashboardContent(state.dashboardData);
+          return _buildDashboardContent(state.dashboardData, state.isFromCache);
         } else {
           return Center(
             child: Text('dashboard.error.loading'.tr()),
@@ -81,7 +81,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
     );
   }
 
-  Widget _buildDashboardContent(DashboardEntity dashboardData) {
+  Widget _buildDashboardContent(DashboardEntity dashboardData, bool isFromCache) {
     final user = dashboardData.data.user;
     final verse = dashboardData.data.verse;
     final commonData = dashboardData.data.commonData;
@@ -91,6 +91,9 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Offline indicator
+          if (isFromCache) _buildOfflineIndicator(),
+          
           // Welcome Section
           _buildWelcomeSection(user, verse),
           
@@ -114,6 +117,54 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           
           // Upload Section
           _buildUploadSection(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOfflineIndicator() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.orange[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.orange[200]!),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.cloud_off,
+            size: 20,
+            color: Colors.orange[600],
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Offline-Modus: Daten aus dem Cache',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.orange[700],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              // Trigger refresh
+              context.read<DashboardBloc>().add(
+                RefreshDashboardData('68c3e2d6f58c817ebed1ca74'),
+              );
+            },
+            child: Text(
+              'Aktualisieren',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.orange[600],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ],
       ),
     );

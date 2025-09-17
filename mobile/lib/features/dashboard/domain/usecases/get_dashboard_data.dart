@@ -11,4 +11,19 @@ class GetDashboardData {
   Future<Either<Failure, DashboardEntity>> call(String verseId) async {
     return await repository.getDashboardData(verseId);
   }
+
+  /// Force refresh dashboard data from remote source
+  Future<Either<Failure, DashboardEntity>> refresh(String verseId) async {
+    return await repository.refreshDashboardData(verseId);
+  }
+
+  /// Clear cached dashboard data
+  Future<void> clearCache(String verseId) async {
+    await repository.clearCachedData(verseId);
+  }
+
+  /// Check if cached data is available
+  Future<bool> hasCachedData(String verseId) async {
+    return await repository.hasCachedData(verseId);
+  }
 }

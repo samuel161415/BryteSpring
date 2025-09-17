@@ -28,6 +28,7 @@ import 'package:mobile/features/channels/data/repositories/channel_repository_im
 import 'package:mobile/features/channels/domain/repositories/channel_repository.dart';
 import 'package:mobile/features/channels/domain/usecases/channel_usecase.dart';
 import 'package:mobile/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
+import 'package:mobile/features/dashboard/data/datasources/dashboard_local_datasource.dart';
 import 'package:mobile/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:mobile/features/dashboard/domain/usecases/get_dashboard_data.dart';
@@ -69,6 +70,10 @@ Future<void> init() async {
     () => DashboardRemoteDataSourceImpl(dioClient: sl()),
   );
 
+  sl.registerLazySingleton<DashboardLocalDataSource>(
+    () => DashboardLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+
   // Repositories - Auth is online-only, Verse is offline-first
   sl.registerLazySingleton<InvitationRepository>(
     () => InvitationRepositoryImpl(remoteDataSource: sl()),
@@ -107,7 +112,11 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<DashboardRepository>(
-    () => DashboardRepositoryImpl(remoteDataSource: sl()),
+    () => DashboardRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+      connectivity: sl(),
+    ),
   );
 
   // Use cases
