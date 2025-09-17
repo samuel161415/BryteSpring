@@ -25,6 +25,89 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   void initState() {
     super.initState();
     _loadUserAndChannels();
+    _loadSampleChannels(); // Add sample data for testing
+  }
+
+  void _loadSampleChannels() {
+    // Create sample hierarchical channel data
+    final sampleChannels = [
+      ChannelEntity(
+        id: '1',
+        verseId: '68c3e2d6f58c817ebed1ca74',
+        name: 'Unternehmensdaten',
+        type: 'folder',
+        description: 'Corporate data folder',
+        path: '/unternehmensdaten',
+        assetTypes: [],
+        visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: false),
+        folderSettings: const ChannelFolderSettings(allowSubfolders: true, maxDepth: 5),
+        createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+        createdAt: DateTime.now(),
+        children: [
+          ChannelEntity(
+            id: '2',
+            verseId: '68c3e2d6f58c817ebed1ca74',
+            name: 'Corporate Data',
+            type: 'folder',
+            description: 'Corporate data subfolder',
+            path: '/unternehmensdaten/corporate-data',
+            assetTypes: [],
+            visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: true),
+            folderSettings: const ChannelFolderSettings(allowSubfolders: true, maxDepth: 4),
+            createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+            createdAt: DateTime.now(),
+            children: [],
+          ),
+          ChannelEntity(
+            id: '3',
+            verseId: '68c3e2d6f58c817ebed1ca74',
+            name: 'Corporate Design',
+            type: 'folder',
+            description: 'Corporate design subfolder',
+            path: '/unternehmensdaten/corporate-design',
+            assetTypes: [],
+            visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: true),
+            folderSettings: const ChannelFolderSettings(allowSubfolders: true, maxDepth: 4),
+            createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+            createdAt: DateTime.now(),
+            children: [
+              ChannelEntity(
+                id: '4',
+                verseId: '68c3e2d6f58c817ebed1ca74',
+                name: 'Logos',
+                type: 'folder',
+                description: 'Logo assets',
+                path: '/unternehmensdaten/corporate-design/logos',
+                assetTypes: ['image'],
+                visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: true),
+                folderSettings: const ChannelFolderSettings(allowSubfolders: false, maxDepth: 3),
+                createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+                createdAt: DateTime.now(),
+                children: [],
+              ),
+              ChannelEntity(
+                id: '5',
+                verseId: '68c3e2d6f58c817ebed1ca74',
+                name: 'Brand Guidelines',
+                type: 'folder',
+                description: 'Brand guideline documents',
+                path: '/unternehmensdaten/corporate-design/brand-guidelines',
+                assetTypes: ['document'],
+                visibility: const ChannelVisibility(isPublic: true, inheritedFromParent: true),
+                folderSettings: const ChannelFolderSettings(allowSubfolders: false, maxDepth: 3),
+                createdBy: const CreatedBy(id: '1', firstName: 'Admin', lastName: 'User'),
+                createdAt: DateTime.now(),
+                children: [],
+              ),
+            ],
+          ),
+        ],
+      ),
+    ];
+
+    setState(() {
+      channels = sampleChannels;
+    });
   }
 
   Future<void> _loadUserAndChannels() async {
@@ -203,11 +286,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.add,
-                      size: 16,
-                      color: Colors.teal[600],
-                    ),
+                    Icon(Icons.add, size: 16, color: Colors.teal[600]),
                     const SizedBox(width: 8),
                     Text(
                       'Ordner hinzufügen',
@@ -234,11 +313,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.add,
-                      size: 16,
-                      color: Colors.teal[600],
-                    ),
+                    Icon(Icons.add, size: 16, color: Colors.teal[600]),
                     const SizedBox(width: 8),
                     Text(
                       'Asset hinzufügen',
@@ -277,7 +352,6 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
       ),
     );
   }
-
 
   Widget _buildSection({
     required String title,

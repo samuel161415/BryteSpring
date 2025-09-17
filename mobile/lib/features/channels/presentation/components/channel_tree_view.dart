@@ -24,6 +24,27 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
   final Set<String> _expandedItems = <String>{};
 
   @override
+  void initState() {
+    super.initState();
+    // Expand all folders by default to show sub-folders
+    _expandAllFolders();
+  }
+
+  @override
+  void didUpdateWidget(ChannelTreeView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Re-expand folders when channels change
+    if (oldWidget.channels != widget.channels) {
+      _expandAllFolders();
+    }
+  }
+
+  void _expandAllFolders() {
+    _expandedItems.clear();
+    _addAllFolderIds(widget.channels);
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.channels.isEmpty) {
       return Padding(
@@ -88,13 +109,17 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
   }
 
   void _handleItemTap(ChannelEntity channel) {
-    if (channel.type == 'folder') {
-      // Toggle folder expansion
+    if (channel.children.isNotEmpty) {
+      // Toggle expansion for items with children
       _toggleExpansion(channel.id);
-      // Call folder tap callback if provided
-      widget.onFolderTap?.call(channel);
+      // Call appropriate callback
+      if (channel.type == 'folder') {
+        widget.onFolderTap?.call(channel);
+      } else {
+        widget.onChannelTap?.call(channel);
+      }
     } else {
-      // Call channel tap callback
+      // Call channel tap callback for items without children
       widget.onChannelTap?.call(channel);
     }
   }
@@ -103,7 +128,7 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
   void expandAll() {
     setState(() {
       _expandedItems.clear();
-      _addAllChannelIds(widget.channels);
+      _addAllFolderIds(widget.channels);
     });
   }
 
@@ -114,11 +139,11 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
     });
   }
 
-  void _addAllChannelIds(List<ChannelEntity> channels) {
+  void _addAllFolderIds(List<ChannelEntity> channels) {
     for (final channel in channels) {
-      if (channel.children.isNotEmpty) {
+      if (channel.type == 'folder' && channel.children.isNotEmpty) {
         _expandedItems.add(channel.id);
-        _addAllChannelIds(channel.children);
+        _addAllFolderIds(channel.children);
       }
     }
   }

@@ -67,8 +67,8 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                         ),
                       ),
 
-                    // Expand/Collapse button for folders
-                    if (hasChildren && isFolder)
+                    // Expand/Collapse button for items with children
+                    if (hasChildren)
                       InkWell(
                         onTap: widget.onExpandToggle,
                         borderRadius: BorderRadius.circular(4),
@@ -85,7 +85,7 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                           ),
                         ),
                       )
-                    else if (isFolder)
+                    else
                       const SizedBox(width: 20),
 
                     // Folder/Channel icon
