@@ -22,6 +22,7 @@ class ChannelTreeView extends StatefulWidget {
 
 class _ChannelTreeViewState extends State<ChannelTreeView> {
   final Set<String> _expandedItems = <String>{};
+  String? _selectedItemId;
 
   @override
   void initState() {
@@ -84,6 +85,7 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
           channel: channel,
           level: level,
           isExpanded: isExpanded,
+          isSelected: _selectedItemId == channel.id,
           onTap: () => _handleItemTap(channel),
           onExpandToggle: hasChildren ? () => _toggleExpansion(channel.id) : null,
         ),
@@ -109,6 +111,10 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
   }
 
   void _handleItemTap(ChannelEntity channel) {
+    setState(() {
+      _selectedItemId = channel.id;
+    });
+
     if (channel.children.isNotEmpty) {
       // Toggle expansion for items with children
       _toggleExpansion(channel.id);

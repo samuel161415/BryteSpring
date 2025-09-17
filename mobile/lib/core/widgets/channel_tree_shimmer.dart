@@ -52,30 +52,6 @@ class ChannelTreeShimmer extends StatelessWidget {
               ),
             ),
 
-          // Expand/Collapse button shimmer
-          Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-
-          const SizedBox(width: 8),
-
-          // Folder icon shimmer
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          const SizedBox(width: 8),
-
           // Text shimmer
           Expanded(
             child: Container(

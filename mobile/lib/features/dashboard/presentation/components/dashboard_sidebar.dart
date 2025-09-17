@@ -329,10 +329,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                     child: Center(
                       child: Text(
                         'Fehler beim Laden der Kanäle: ${state.message}',
-                        style: TextStyle(
-                          color: Colors.red[600],
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.red[600], fontSize: 14),
                       ),
                     ),
                   );

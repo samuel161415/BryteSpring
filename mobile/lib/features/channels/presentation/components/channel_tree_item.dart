@@ -5,6 +5,7 @@ class ChannelTreeItem extends StatefulWidget {
   final ChannelEntity channel;
   final int level;
   final bool isExpanded;
+  final bool isSelected;
   final VoidCallback? onTap;
   final VoidCallback? onExpandToggle;
 
@@ -13,6 +14,7 @@ class ChannelTreeItem extends StatefulWidget {
     required this.channel,
     this.level = 0,
     this.isExpanded = false,
+    this.isSelected = false,
     this.onTap,
     this.onExpandToggle,
   });
@@ -26,7 +28,6 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
 
   @override
   Widget build(BuildContext context) {
-    final hasChildren = widget.channel.children.isNotEmpty;
     final isFolder = widget.channel.type == 'folder';
     final isSubItem = widget.level > 0;
 
@@ -67,49 +68,16 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                         ),
                       ),
 
-                    // Expand/Collapse button for items with children
-                    if (hasChildren)
-                      InkWell(
-                        onTap: widget.onExpandToggle,
-                        borderRadius: BorderRadius.circular(4),
-                        child: Container(
-                          width: 20,
-                          height: 20,
-                          alignment: Alignment.center,
-                          child: Icon(
-                            widget.isExpanded
-                                ? Icons.keyboard_arrow_down
-                                : Icons.keyboard_arrow_right,
-                            size: 16,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      )
-                    else
-                      const SizedBox(width: 20),
-
-                    // Folder icon (only for folders)
-                    if (isFolder) ...[
-                      const SizedBox(width: 4),
-                      Icon(
-                        widget.isExpanded ? Icons.folder_open : Icons.folder,
-                        size: 16,
-                        color: Colors.orange[600],
-                      ),
-                      const SizedBox(width: 8),
-                    ] else ...[
-                      // No icon for non-folder items
-                      const SizedBox(width: 4),
-                    ],
-
-                    // Channel/Folder name
+                    // Channel/Folder name with bold styling for selected/expanded
                     Expanded(
                       child: Text(
                         widget.channel.name,
                         style: TextStyle(
                           fontSize: 14,
-                          color: isFolder ? Colors.black87 : Colors.grey[700],
-                          fontWeight: isFolder ? FontWeight.w600 : FontWeight.normal,
+                          color: Colors.black87,
+                          fontWeight: (widget.isSelected || widget.isExpanded) 
+                              ? FontWeight.bold 
+                              : FontWeight.normal,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
