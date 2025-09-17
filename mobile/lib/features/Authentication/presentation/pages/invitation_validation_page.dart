@@ -142,6 +142,7 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
   }
 
   Widget _buildErrorContent(InvitationValidationFailure state) {
+    print(state.invitation?.email);
     return Column(
       children: [
         // Error Icon
@@ -184,10 +185,7 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-              context.goNamed(
-                Routelists.almostJoinVerse,
-                extra: state.invitation,
-              );
+              context.goNamed(Routelists.login, extra: state.invitation);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primary,

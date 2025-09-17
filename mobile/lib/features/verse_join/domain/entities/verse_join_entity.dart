@@ -112,8 +112,8 @@ class VerseJoinEntity extends Equatable {
       branding: BrandingEntity.fromJson(json['branding'] ?? {}),
       settings: SettingsEntity.fromJson(json['settings'] ?? {}),
       isSetupComplete: json['is_setup_complete'] ?? false,
-      setupCompletedAt: json['setup_completed_at'] != null 
-          ? DateTime.parse(json['setup_completed_at']) 
+      setupCompletedAt: json['setup_completed_at'] != null
+          ? DateTime.parse(json['setup_completed_at'])
           : null,
       setupCompletedBy: json['setup_completed_by'],
       isActive: json['is_active'] ?? true,

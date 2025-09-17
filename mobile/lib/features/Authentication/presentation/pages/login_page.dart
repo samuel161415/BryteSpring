@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 // LoginHeader(onLanguageChanged: _handleLanguageChanged),
-                LoginForm(),
+                LoginForm(invitation: widget.invitation),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
             ),

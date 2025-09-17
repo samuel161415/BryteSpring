@@ -28,6 +28,14 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    print('LoginForm initState - invitation: ${widget.invitation}');
+    _emailController.text = widget.invitation?.email ?? '';
+    print('LoginForm initState - email set to: ${_emailController.text}');
+  }
+
   Future<void> _handleLogin() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,11 +62,15 @@ class _LoginFormState extends State<LoginForm> {
           );
         },
         (user) async {
+          print('Login successful for user: ${user.email}');
+          print('Invitation present: ${widget.invitation != null}');
           // Login successful
           if (widget.invitation != null) {
+            print('Checking verse setup status...');
             // Check verse setup status if invitation is provided
             await _checkVerseSetupAndRedirect();
           } else {
+            print('No invitation, redirecting to dashboard');
             // Normal login flow - redirect to dashboard
             context.go('/${Routelists.dashboard}');
           }
@@ -76,6 +88,9 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> _checkVerseSetupAndRedirect() async {
+    print('_checkVerseSetupAndRedirect - invitation: ${widget.invitation}');
+    print('_checkVerseSetupAndRedirect - verseId: ${widget.invitation?.verseId}');
+    
     try {
       final verseJoinUseCase = sl<VerseJoinUseCase>();
       final verseResult = await verseJoinUseCase.getVerse(
@@ -84,6 +99,7 @@ class _LoginFormState extends State<LoginForm> {
 
       verseResult.fold(
         (failure) {
+          print('Verse fetch failed: ${failure.message}');
           // If verse fetch fails, show error and redirect to dashboard
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -94,8 +110,10 @@ class _LoginFormState extends State<LoginForm> {
           context.go('/${Routelists.dashboard}');
         },
         (verse) {
+          print('Verse fetched successfully: ${verse.name}, isSetupComplete: ${verse.isSetupComplete}');
           if (verse.isSetupComplete) {
             // Verse setup is complete, redirect to almost join page
+            print('Redirecting to almost join page');
             context.pushNamed(
               Routelists.almostJoinVerse,
               extra: widget.invitation,
@@ -103,6 +121,7 @@ class _LoginFormState extends State<LoginForm> {
           } else {
             // Verse setup is not complete, for now do nothing
             // TODO: Implement verse setup flow later
+            print('Verse setup not complete, showing message and redirecting to dashboard');
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -118,6 +137,7 @@ class _LoginFormState extends State<LoginForm> {
         },
       );
     } catch (e) {
+      print('Error in _checkVerseSetupAndRedirect: $e');
       // Handle any unexpected errors
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

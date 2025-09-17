@@ -75,7 +75,11 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.login}',
       name: Routelists.login,
-      pageBuilder: (context, state) => _buildPage(context, state, LoginPage()),
+      pageBuilder: (context, state) => _buildPage(
+        context,
+        state,
+        LoginPage(invitation: state.extra as InvitationEntity?),
+      ),
     ),
     GoRoute(
       path: '/${Routelists.resetPassword}',
