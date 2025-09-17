@@ -90,7 +90,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
       child: BlocBuilder<ChannelBloc, ChannelState>(
         builder: (context, state) {
           return Container(
-            // width: 280,
+            width: 280,
             color: Colors.white,
             padding: const EdgeInsets.all(24),
             child: Column(
