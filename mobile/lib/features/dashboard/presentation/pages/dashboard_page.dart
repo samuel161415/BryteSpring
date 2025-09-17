@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 import 'package:mobile/features/dashboard/presentation/components/dashboard_sidebar.dart';
-import 'package:mobile/features/dashboard/presentation/components/dashboard_main_content.dart';
+import 'package:mobile/features/dashboard/presentation/components/dashboard_main_content_new.dart';
+import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -13,6 +15,15 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Load dashboard data
+    context.read<DashboardBloc>().add(
+      LoadDashboardData('68c3e2d6f58c817ebed1ca74'),
+    );
+  }
+
   void _handleLanguageChanged() {
     // Force rebuild when language changes
     setState(() {});
@@ -72,13 +83,13 @@ class _DashboardPageState extends State<DashboardPage> {
                                   // Sidebar
                                   const DashboardSidebar(),
 
-                                  // Main content
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.white,
-                                      child: const DashboardMainContent(),
-                                    ),
-                                  ),
+                              // Main content
+                              Expanded(
+                                child: Container(
+                                  color: Colors.white,
+                                  child: const DashboardMainContent(),
+                                ),
+                              ),
                                 ],
                               ),
                             ),

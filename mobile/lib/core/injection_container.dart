@@ -27,6 +27,10 @@ import 'package:mobile/features/channels/data/datasources/channel_remote_datasou
 import 'package:mobile/features/channels/data/repositories/channel_repository_impl.dart';
 import 'package:mobile/features/channels/domain/repositories/channel_repository.dart';
 import 'package:mobile/features/channels/domain/usecases/channel_usecase.dart';
+import 'package:mobile/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
+import 'package:mobile/features/dashboard/data/repositories/dashboard_repository_impl.dart';
+import 'package:mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:mobile/features/dashboard/domain/usecases/get_dashboard_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final GetIt sl = GetIt.instance;
@@ -59,6 +63,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<VerseJoinRemoteDataSource>(
     () => VerseJoinRemoteDataSourceImpl(dioClient: sl()),
+  );
+
+  sl.registerLazySingleton<DashboardRemoteDataSource>(
+    () => DashboardRemoteDataSourceImpl(dioClient: sl()),
   );
 
   // Repositories - Auth is online-only, Verse is offline-first
@@ -98,6 +106,10 @@ Future<void> init() async {
     () => ChannelRepositoryImpl(remoteDataSource: sl()),
   );
 
+  sl.registerLazySingleton<DashboardRepository>(
+    () => DashboardRepositoryImpl(remoteDataSource: sl()),
+  );
+
   // Use cases
   sl.registerLazySingleton(() => InvitationUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUserUseCase(repository: sl()));
@@ -105,6 +117,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUseCase(repository: sl()));
   sl.registerLazySingleton(() => VerseJoinUseCase(sl()));
   sl.registerLazySingleton(() => ChannelUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetDashboardData(sl()));
 
   // Services
   sl.registerLazySingleton(() => AuthService(sl()));
