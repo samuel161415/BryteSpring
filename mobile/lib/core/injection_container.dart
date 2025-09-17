@@ -24,6 +24,7 @@ import 'package:mobile/features/verse_join/data/repositories/verse_join_reposito
 import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
 import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
 import 'package:mobile/features/channels/data/datasources/channel_remote_datasource.dart';
+import 'package:mobile/features/channels/data/datasources/channel_local_datasource.dart';
 import 'package:mobile/features/channels/data/repositories/channel_repository_impl.dart';
 import 'package:mobile/features/channels/domain/repositories/channel_repository.dart';
 import 'package:mobile/features/channels/domain/usecases/channel_usecase.dart';
@@ -107,8 +108,16 @@ Future<void> init() async {
     () => ChannelRemoteDataSourceImpl(dioClient: sl()),
   );
 
+  sl.registerLazySingleton<ChannelLocalDataSource>(
+    () => ChannelLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+
   sl.registerLazySingleton<ChannelRepository>(
-    () => ChannelRepositoryImpl(remoteDataSource: sl()),
+    () => ChannelRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+      connectivity: sl(),
+    ),
   );
 
   sl.registerLazySingleton<DashboardRepository>(

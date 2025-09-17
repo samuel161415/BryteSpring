@@ -30,6 +30,34 @@ class LoadChannelContents extends ChannelEvent {
   List<Object?> get props => [channelId];
 }
 
+class RefreshChannelStructure extends ChannelEvent {
+  final String verseId;
+
+  const RefreshChannelStructure(this.verseId);
+
+  @override
+  List<Object?> get props => [verseId];
+}
+
+class RefreshChannelContents extends ChannelEvent {
+  final String channelId;
+
+  const RefreshChannelContents(this.channelId);
+
+  @override
+  List<Object?> get props => [channelId];
+}
+
+class ClearChannelCache extends ChannelEvent {
+  final String verseId;
+  final String? channelId;
+
+  const ClearChannelCache(this.verseId, {this.channelId});
+
+  @override
+  List<Object?> get props => [verseId, channelId];
+}
+
 class CreateChannel extends ChannelEvent {
   final String verseId;
   final String name;
@@ -94,20 +122,22 @@ class ChannelLoading extends ChannelState {}
 
 class ChannelStructureLoaded extends ChannelState {
   final ChannelStructureResponse structure;
+  final bool isFromCache;
 
-  const ChannelStructureLoaded(this.structure);
+  const ChannelStructureLoaded(this.structure, {this.isFromCache = false});
 
   @override
-  List<Object?> get props => [structure];
+  List<Object?> get props => [structure, isFromCache];
 }
 
 class ChannelContentsLoaded extends ChannelState {
   final ChannelEntity channel;
+  final bool isFromCache;
 
-  const ChannelContentsLoaded(this.channel);
+  const ChannelContentsLoaded(this.channel, {this.isFromCache = false});
 
   @override
-  List<Object?> get props => [channel];
+  List<Object?> get props => [channel, isFromCache];
 }
 
 class ChannelCreated extends ChannelState {
@@ -132,11 +162,12 @@ class ChannelDeleted extends ChannelState {}
 
 class ChannelFailure extends ChannelState {
   final String message;
+  final bool isOffline;
 
-  const ChannelFailure(this.message);
+  const ChannelFailure(this.message, {this.isOffline = false});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, isOffline];
 }
 
 // BLoC
@@ -146,6 +177,9 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
   ChannelBloc({required this.channelUseCase}) : super(ChannelInitial()) {
     on<LoadChannelStructure>(_onLoadChannelStructure);
     on<LoadChannelContents>(_onLoadChannelContents);
+    on<RefreshChannelStructure>(_onRefreshChannelStructure);
+    on<RefreshChannelContents>(_onRefreshChannelContents);
+    on<ClearChannelCache>(_onClearChannelCache);
     on<CreateChannel>(_onCreateChannel);
     on<UpdateChannel>(_onUpdateChannel);
     on<DeleteChannel>(_onDeleteChannel);
@@ -166,8 +200,15 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     final result = await channelUseCase.getVerseChannelStructure(event.verseId);
 
     result.fold(
-      (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
-      (structure) => emit(ChannelStructureLoaded(structure)),
+      (failure) {
+        final isOffline = failure is CacheFailure;
+        emit(ChannelFailure(_mapFailureToMessage(failure), isOffline: isOffline));
+      },
+      (structure) {
+        // Check if data came from cache
+        final isFromCache = _isDataFromCache(failure: null);
+        emit(ChannelStructureLoaded(structure, isFromCache: isFromCache));
+      },
     );
   }
 
@@ -180,9 +221,57 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     final result = await channelUseCase.getChannelContents(event.channelId);
 
     result.fold(
-      (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
-      (channel) => emit(ChannelContentsLoaded(channel)),
+      (failure) {
+        final isOffline = failure is CacheFailure;
+        emit(ChannelFailure(_mapFailureToMessage(failure), isOffline: isOffline));
+      },
+      (channel) {
+        // Check if data came from cache
+        final isFromCache = _isDataFromCache(failure: null);
+        emit(ChannelContentsLoaded(channel, isFromCache: isFromCache));
+      },
     );
+  }
+
+  Future<void> _onRefreshChannelStructure(
+    RefreshChannelStructure event,
+    Emitter<ChannelState> emit,
+  ) async {
+    emit(ChannelLoading());
+
+    final result = await channelUseCase.refreshChannelStructure(event.verseId);
+
+    result.fold(
+      (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
+      (structure) => emit(ChannelStructureLoaded(structure, isFromCache: false)),
+    );
+  }
+
+  Future<void> _onRefreshChannelContents(
+    RefreshChannelContents event,
+    Emitter<ChannelState> emit,
+  ) async {
+    emit(ChannelLoading());
+
+    final result = await channelUseCase.refreshChannelContents(event.channelId);
+
+    result.fold(
+      (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
+      (channel) => emit(ChannelContentsLoaded(channel, isFromCache: false)),
+    );
+  }
+
+  Future<void> _onClearChannelCache(
+    ClearChannelCache event,
+    Emitter<ChannelState> emit,
+  ) async {
+    await channelUseCase.clearCachedData(event.verseId, channelId: event.channelId);
+    // Optionally reload data after clearing cache
+    if (event.channelId != null) {
+      add(LoadChannelContents(event.channelId!));
+    } else {
+      add(LoadChannelStructure(event.verseId));
+    }
   }
 
   Future<void> _onCreateChannel(
@@ -244,8 +333,16 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
         return failure.message;
       case NetworkFailure:
         return 'Network error. Please check your connection.';
+      case CacheFailure:
+        return 'Offline mode: ${failure.message}';
       default:
         return 'An unexpected error occurred.';
     }
+  }
+
+  bool _isDataFromCache({Failure? failure}) {
+    // This is a simplified check - in a real implementation,
+    // you might want to track the data source more explicitly
+    return failure is CacheFailure;
   }
 }

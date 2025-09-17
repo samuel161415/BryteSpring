@@ -43,4 +43,29 @@ class ChannelUseCase {
   Future<Either<Failure, void>> deleteChannel(String channelId) {
     return repository.deleteChannel(channelId);
   }
+
+  /// Force refresh channel structure from remote source
+  Future<Either<Failure, ChannelStructureResponse>> refreshChannelStructure(String verseId) {
+    return repository.refreshChannelStructure(verseId);
+  }
+
+  /// Force refresh channel contents from remote source
+  Future<Either<Failure, ChannelEntity>> refreshChannelContents(String channelId) {
+    return repository.refreshChannelContents(channelId);
+  }
+
+  /// Clear cached channel data
+  Future<void> clearCachedData(String verseId, {String? channelId}) {
+    return repository.clearCachedData(verseId, channelId: channelId);
+  }
+
+  /// Check if cached channel structure is available
+  Future<bool> hasCachedChannelStructure(String verseId) {
+    return repository.hasCachedChannelStructure(verseId);
+  }
+
+  /// Check if cached channel contents are available
+  Future<bool> hasCachedChannelContents(String channelId) {
+    return repository.hasCachedChannelContents(channelId);
+  }
 }

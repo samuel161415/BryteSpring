@@ -301,20 +301,32 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                 if (state is ChannelLoading) {
                   return const ChannelTreeShimmer();
                 } else if (state is ChannelStructureLoaded) {
-                  return ChannelTreeView(
-                    channels: state.structure.structure,
-                    onChannelTap: _handleChannelTap,
-                    onFolderTap: _handleFolderTap,
+                  return Column(
+                    children: [
+                      // Offline indicator for channels
+                      if (state.isFromCache) _buildChannelOfflineIndicator(),
+                      ChannelTreeView(
+                        channels: state.structure.structure,
+                        onChannelTap: _handleChannelTap,
+                        onFolderTap: _handleFolderTap,
+                      ),
+                    ],
                   );
                 } else if (state is ChannelFailure) {
                   return Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Center(
-                      child: Text(
-                        'dashboard.error.loading_channels'.tr() +
-                            ' ${state.message}',
-                        style: TextStyle(color: Colors.red[600], fontSize: 14),
-                      ),
+                    child: Column(
+                      children: [
+                        // Offline indicator for error state
+                        if (state.isOffline) _buildChannelOfflineIndicator(),
+                        Center(
+                          child: Text(
+                            'dashboard.error.loading_channels'.tr() +
+                                ' ${state.message}',
+                            style: TextStyle(color: Colors.red[600], fontSize: 14),
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 } else {
@@ -373,6 +385,54 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
       SnackBar(
         content: Text('Selected folder: ${folder.name}'),
         duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  Widget _buildChannelOfflineIndicator() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.orange[50],
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.orange[200]!),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.cloud_off,
+            size: 16,
+            color: Colors.orange[600],
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              'Offline: Kanäle aus Cache',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.orange[700],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              // Trigger channel refresh
+              context.read<ChannelBloc>().add(
+                RefreshChannelStructure('68c3e2d6f58c817ebed1ca74'),
+              );
+            },
+            child: Text(
+              'Aktualisieren',
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.orange[600],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
