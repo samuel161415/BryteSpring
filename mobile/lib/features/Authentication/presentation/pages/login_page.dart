@@ -13,6 +13,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    super.initState();
+    print('LoginPage initState - invitation: ${widget.invitation}');
+  }
+
   void _handleLanguageChanged() {
     // Force rebuild when language changes
     setState(() {});
@@ -45,7 +51,10 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 // LoginHeader(onLanguageChanged: _handleLanguageChanged),
-                LoginForm(invitation: widget.invitation),
+                LoginForm(
+                  key: ValueKey(widget.invitation?.id ?? 'no-invitation'),
+                  invitation: widget.invitation,
+                ),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
             ),

@@ -36,6 +36,19 @@ class _LoginFormState extends State<LoginForm> {
     print('LoginForm initState - email set to: ${_emailController.text}');
   }
 
+  @override
+  void didUpdateWidget(LoginForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print('LoginForm didUpdateWidget - old invitation: ${oldWidget.invitation}');
+    print('LoginForm didUpdateWidget - new invitation: ${widget.invitation}');
+    
+    // Update email if invitation changed
+    if (oldWidget.invitation != widget.invitation) {
+      _emailController.text = widget.invitation?.email ?? '';
+      print('LoginForm didUpdateWidget - email updated to: ${_emailController.text}');
+    }
+  }
+
   Future<void> _handleLogin() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -89,8 +102,10 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _checkVerseSetupAndRedirect() async {
     print('_checkVerseSetupAndRedirect - invitation: ${widget.invitation}');
-    print('_checkVerseSetupAndRedirect - verseId: ${widget.invitation?.verseId}');
-    
+    print(
+      '_checkVerseSetupAndRedirect - verseId: ${widget.invitation?.verseId}',
+    );
+
     try {
       final verseJoinUseCase = sl<VerseJoinUseCase>();
       final verseResult = await verseJoinUseCase.getVerse(
@@ -110,7 +125,9 @@ class _LoginFormState extends State<LoginForm> {
           context.go('/${Routelists.dashboard}');
         },
         (verse) {
-          print('Verse fetched successfully: ${verse.name}, isSetupComplete: ${verse.isSetupComplete}');
+          print(
+            'Verse fetched successfully: ${verse.name}, isSetupComplete: ${verse.isSetupComplete}',
+          );
           if (verse.isSetupComplete) {
             // Verse setup is complete, redirect to almost join page
             print('Redirecting to almost join page');
@@ -121,7 +138,9 @@ class _LoginFormState extends State<LoginForm> {
           } else {
             // Verse setup is not complete, for now do nothing
             // TODO: Implement verse setup flow later
-            print('Verse setup not complete, showing message and redirecting to dashboard');
+            print(
+              'Verse setup not complete, showing message and redirecting to dashboard',
+            );
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
