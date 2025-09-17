@@ -3,10 +3,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/widgets/channel_tree_shimmer.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
+import 'package:mobile/features/channels/presentation/components/channel_tree_view.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
 class DashboardSidebar extends StatefulWidget {
@@ -242,6 +244,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                     'dashboard.sidebar.company_materials'.tr(),
                   ],
                   addButtonText: 'dashboard.sidebar.add_assets'.tr(),
+                  onAddTap: _showAddAssetDialog,
                 ),
 
                 const SizedBox(height: 32),
@@ -289,12 +292,45 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         ),
         const SizedBox(height: 12),
 
-        // Channel items
-        _buildSidebarItem('Website'),
-        _buildSidebarItem('dashboard.company.data'.tr()),
-        _buildSidebarItem('Publishing'),
+        // Channel tree view with shimmer loading
+        Container(
+          constraints: const BoxConstraints(maxHeight: 300),
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: BlocBuilder<ChannelBloc, ChannelState>(
+              builder: (context, state) {
+                if (state is ChannelLoading) {
+                  return const ChannelTreeShimmer();
+                } else if (state is ChannelStructureLoaded) {
+                  return ChannelTreeView(
+                    channels: state.structure.structure,
+                    onChannelTap: _handleChannelTap,
+                    onFolderTap: _handleFolderTap,
+                  );
+                } else if (state is ChannelFailure) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Center(
+                      child: Text(
+                        'dashboard.error.loading_channels'.tr() + ' ${state.message}',
+                        style: TextStyle(color: Colors.red[600], fontSize: 14),
+                      ),
+                    ),
+                  );
+                } else {
+                  // Fallback to sample data or empty state
+                  return ChannelTreeView(
+                    channels: channels,
+                    onChannelTap: _handleChannelTap,
+                    onFolderTap: _handleFolderTap,
+                  );
+                }
+              },
+            ),
+          ),
+        ),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
 
         // Add channel button
         InkWell(
@@ -321,15 +357,22 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     );
   }
 
-  Widget _buildSidebarItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.black87,
-        ),
+  void _handleChannelTap(ChannelEntity channel) {
+    // TODO: Navigate to channel content or show channel details
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Selected channel: ${channel.name}'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _handleFolderTap(ChannelEntity folder) {
+    // TODO: Handle folder tap (maybe show folder info or navigate)
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Selected folder: ${folder.name}'),
+        duration: const Duration(seconds: 2),
       ),
     );
   }
@@ -340,6 +383,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     required List<String> items,
     required String addButtonText,
     Widget? customWidget,
+    VoidCallback? onAddTap,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,7 +416,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         if (addButtonText.isNotEmpty) ...[
           const SizedBox(height: 12),
           TextButton(
-            onPressed: () {
+            onPressed: onAddTap ?? () {
               // TODO: Implement add functionality
             },
             style: TextButton.styleFrom(
@@ -481,4 +525,21 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     );
   }
 
+  void _showAddAssetDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('dashboard.asset.add_dialog_title'.tr()),
+          content: Text('dashboard.asset.add_dialog_content'.tr()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('dashboard.folder.ok'.tr()),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
