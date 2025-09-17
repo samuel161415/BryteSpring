@@ -42,7 +42,7 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
             borderRadius: BorderRadius.circular(4),
             child: Container(
               padding: EdgeInsets.only(
-                left: isSubItem ? 16 + (widget.level * 16) : 0,
+                // left: isSubItem ? 16 + (widget.level * 16) : 0,
                 right: 16,
                 top: 6,
                 bottom: 6,
@@ -75,8 +75,8 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.black87,
-                          fontWeight: (widget.isSelected || widget.isExpanded) 
-                              ? FontWeight.bold 
+                          fontWeight: (widget.isSelected || widget.isExpanded)
+                              ? FontWeight.bold
                               : FontWeight.normal,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -86,7 +86,10 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                     // Additional info (optional)
                     if (widget.channel.children.isNotEmpty && isFolder)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(10),

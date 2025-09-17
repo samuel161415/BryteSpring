@@ -34,11 +34,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: Colors.red[300],
-                ),
+                Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
                 const SizedBox(height: 16),
                 Text(
                   'dashboard.error.loading_dashboard'.tr(),
@@ -51,10 +47,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                 const SizedBox(height: 8),
                 Text(
                   state.message,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
@@ -73,15 +66,16 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
         } else if (state is DashboardLoaded) {
           return _buildDashboardContent(state.dashboardData, state.isFromCache);
         } else {
-          return Center(
-            child: Text('dashboard.error.loading'.tr()),
-          );
+          return Center(child: Text('dashboard.error.loading'.tr()));
         }
       },
     );
   }
 
-  Widget _buildDashboardContent(DashboardEntity dashboardData, bool isFromCache) {
+  Widget _buildDashboardContent(
+    DashboardEntity dashboardData,
+    bool isFromCache,
+  ) {
     final user = dashboardData.data.user;
     final verse = dashboardData.data.verse;
     final commonData = dashboardData.data.commonData;
@@ -93,28 +87,28 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
         children: [
           // Offline indicator
           if (isFromCache) _buildOfflineIndicator(),
-          
+
           // Welcome Section
           _buildWelcomeSection(user, verse),
-          
+
           const SizedBox(height: 24),
-          
+
           // Notification Section
           _buildNotificationSection(),
-          
+
           const SizedBox(height: 32),
-          
+
           // Search Section
           _buildSearchSection(),
-          
+
           const SizedBox(height: 32),
-          
+
           // Recent Searches
           if (commonData.recentSearches.isNotEmpty) ...[
             _buildRecentSearchesSection(commonData.recentSearches),
             const SizedBox(height: 32),
           ],
-          
+
           // Upload Section
           _buildUploadSection(),
         ],
@@ -133,11 +127,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.cloud_off,
-            size: 20,
-            color: Colors.orange[600],
-          ),
+          Icon(Icons.cloud_off, size: 20, color: Colors.orange[600]),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -199,8 +189,8 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                   });
                 },
                 child: Icon(
-                  _isNotificationExpanded 
-                      ? Icons.keyboard_arrow_up 
+                  _isNotificationExpanded
+                      ? Icons.keyboard_arrow_up
                       : Icons.keyboard_arrow_down,
                   size: 20,
                   color: Colors.grey[600],
@@ -239,11 +229,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
         const SizedBox(height: 8),
         Text(
           'dashboard.greeting.welcome_back'.tr(),
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[600],
-            height: 1.5,
-          ),
+          style: TextStyle(fontSize: 16, color: Colors.grey[600], height: 1.5),
         ),
         const SizedBox(height: 16),
         Container(
@@ -258,11 +244,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.business,
-                color: AppTheme.primary,
-                size: 24,
-              ),
+              Icon(Icons.business, color: AppTheme.primary, size: 24),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -279,10 +261,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                     if (verse.organizationName != null)
                       Text(
                         verse.organizationName!,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
                   ],
                 ),
@@ -325,10 +304,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
             decoration: InputDecoration(
               hintText: 'dashboard.search.placeholder'.tr(),
               hintStyle: TextStyle(color: Colors.grey[500]),
-              prefixIcon: Icon(
-                Icons.search,
-                color: Colors.grey[500],
-              ),
+              prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -375,10 +351,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                 ),
                 child: Text(
                   search,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
               ),
             );
@@ -405,15 +378,13 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           onTap: () {
             // TODO: Implement file upload
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('dashboard.upload.coming_soon'.tr()),
-              ),
+              SnackBar(content: Text('dashboard.upload.coming_soon'.tr())),
             );
           },
           borderRadius: BorderRadius.circular(12),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
@@ -433,20 +404,20 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
             child: Column(
               children: [
                 // Image icon
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.image_outlined,
-                    size: 32,
-                    color: Colors.grey[400],
-                  ),
-                ),
-                const SizedBox(height: 12),
+                // Container(
+                //   width: 48,
+                //   height: 48,
+                //   decoration: BoxDecoration(
+                //     color: Colors.grey[100],
+                //     borderRadius: BorderRadius.circular(8),
+                //   ),
+                //   //   child: Icon(
+                //   //     Icons.image_outlined,
+                //   //     size: 32,
+                //   //     color: Colors.grey[400],
+                //   //   ),
+                // ),
+                // const SizedBox(height: 12),
                 Text(
                   'dashboard.upload.choose_file'.tr(),
                   style: TextStyle(
@@ -462,6 +433,4 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
       ],
     );
   }
-
-
 }

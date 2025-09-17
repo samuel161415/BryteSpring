@@ -9,4 +9,5 @@ class Routelists {
   static const getToKnowRole = 'getToKnowRole';
   static const invitationValidation = 'invitationValidation';
   static const dashboard = 'dashboard';
+  static const createFolder = 'createFolder';
 }

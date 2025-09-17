@@ -56,6 +56,22 @@
       "cta": "I understand my role – let's start"
     }
   },
+  "channels": {
+    "create_folder": "Create Folder",
+    "select_channel": "Select Channel",
+    "change_channel": "Change Channel",
+    "channel_label": "Channel",
+    "folder_name_placeholder": "+ What should the folder be called?",
+    "folder_name_required": "Folder name is required",
+    "folder_description_placeholder": "Folder description (optional)",
+    "make_public": "Make this folder public",
+    "create_folder_tip": "Tip: Please make sure you have selected the correct channel. Please ensure you choose a unique name.",
+    "create_folder_button": "Create Folder",
+    "select_channel_error": "Please select a channel first",
+    "folder_created_success": "Folder created successfully!",
+    "folder_creation_error": "Failed to create folder",
+    "add_folder": "Add Folder"
+  },
   "dashboard": {
     "greeting": "Hello, Dirk!",
     "description": "Great to have you back! Let's revolutionize the world of publishing together and bring your content to life.",

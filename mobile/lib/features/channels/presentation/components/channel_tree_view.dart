@@ -49,14 +49,11 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
   Widget build(BuildContext context) {
     if (widget.channels.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(0),
         child: Center(
           child: Text(
             'Keine Kanäle verfügbar',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
-            ),
+            style: TextStyle(color: Colors.grey[600], fontSize: 14),
           ),
         ),
       );
@@ -71,14 +68,16 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
     );
   }
 
-
-  List<Widget> _buildRecursiveTreeItems(List<ChannelEntity> channels, int level) {
+  List<Widget> _buildRecursiveTreeItems(
+    List<ChannelEntity> channels,
+    int level,
+  ) {
     List<Widget> items = [];
-    
+
     for (final channel in channels) {
       final hasChildren = channel.children.isNotEmpty;
       final isExpanded = _expandedItems.contains(channel.id);
-      
+
       // Add the current item
       items.add(
         ChannelTreeItem(
@@ -87,16 +86,18 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
           isExpanded: isExpanded,
           isSelected: _selectedItemId == channel.id,
           onTap: () => _handleItemTap(channel),
-          onExpandToggle: hasChildren ? () => _toggleExpansion(channel.id) : null,
+          onExpandToggle: hasChildren
+              ? () => _toggleExpansion(channel.id)
+              : null,
         ),
       );
-      
+
       // Add children if expanded
       if (isExpanded && hasChildren) {
         items.addAll(_buildRecursiveTreeItems(channel.children, level + 1));
       }
     }
-    
+
     return items;
   }
 

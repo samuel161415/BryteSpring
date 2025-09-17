@@ -202,7 +202,9 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     result.fold(
       (failure) {
         final isOffline = failure is CacheFailure;
-        emit(ChannelFailure(_mapFailureToMessage(failure), isOffline: isOffline));
+        emit(
+          ChannelFailure(_mapFailureToMessage(failure), isOffline: isOffline),
+        );
       },
       (structure) {
         // Check if data came from cache
@@ -223,7 +225,9 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     result.fold(
       (failure) {
         final isOffline = failure is CacheFailure;
-        emit(ChannelFailure(_mapFailureToMessage(failure), isOffline: isOffline));
+        emit(
+          ChannelFailure(_mapFailureToMessage(failure), isOffline: isOffline),
+        );
       },
       (channel) {
         // Check if data came from cache
@@ -243,7 +247,8 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
 
     result.fold(
       (failure) => emit(ChannelFailure(_mapFailureToMessage(failure))),
-      (structure) => emit(ChannelStructureLoaded(structure, isFromCache: false)),
+      (structure) =>
+          emit(ChannelStructureLoaded(structure, isFromCache: false)),
     );
   }
 
@@ -265,7 +270,10 @@ class ChannelBloc extends Bloc<ChannelEvent, ChannelState> {
     ClearChannelCache event,
     Emitter<ChannelState> emit,
   ) async {
-    await channelUseCase.clearCachedData(event.verseId, channelId: event.channelId);
+    await channelUseCase.clearCachedData(
+      event.verseId,
+      channelId: event.channelId,
+    );
     // Optionally reload data after clearing cache
     if (event.channelId != null) {
       add(LoadChannelContents(event.channelId!));

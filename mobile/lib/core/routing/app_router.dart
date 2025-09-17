@@ -11,6 +11,7 @@ import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.d
 import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
 import 'package:mobile/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:mobile/features/channels/presentation/pages/create_folder_page.dart';
 
 /// App router configuration using go_router
 class AppRouter {
@@ -162,6 +163,24 @@ class AppRouter {
       name: Routelists.dashboard,
       pageBuilder: (context, state) =>
           _buildPage(context, state, const DashboardPage()),
+    ),
+    GoRoute(
+      path: '/${Routelists.createFolder}',
+      name: Routelists.createFolder,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final parentChannelId = extra?['parentChannelId'] as String?;
+        final verseId = extra?['verseId'] as String? ?? '68c3e2d6f58c817ebed1ca74';
+        
+        return _buildPage(
+          context,
+          state,
+          CreateFolderPage(
+            parentChannelId: parentChannelId,
+            verseId: verseId,
+          ),
+        );
+      },
     ),
   ];
 

@@ -56,6 +56,22 @@
       "cta": "Rolle verstanden & loslegen"
     }
   },
+  "channels": {
+    "create_folder": "Ordner erstellen",
+    "select_channel": "Kanal auswählen",
+    "change_channel": "Kanal ändern",
+    "channel_label": "Kanal",
+    "folder_name_placeholder": "+ Wie soll der Ordner heißen?",
+    "folder_name_required": "Ordnername ist erforderlich",
+    "folder_description_placeholder": "Ordnerbeschreibung (optional)",
+    "make_public": "Diesen Ordner öffentlich machen",
+    "create_folder_tip": "Tipp: Bitte achte darauf, dass Du den richtigen Kanal ausgewählt hast. Bitte stelle sicher, dass Du einen eindeutigen Namen auswählst.",
+    "create_folder_button": "Ordner erstellen",
+    "select_channel_error": "Bitte wähle zuerst einen Kanal aus",
+    "folder_created_success": "Ordner erfolgreich erstellt!",
+    "folder_creation_error": "Fehler beim Erstellen des Ordners",
+    "add_folder": "Ordner hinzufügen"
+  },
   "dashboard": {
     "greeting": "Hallo, Dirk!",
     "description": "Schön, dass Du zurück bist! Lass uns gemeinsam die Welt des Publizierens revolutionieren und Deine Inhalte zum Leben erwecken.",

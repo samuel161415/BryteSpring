@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/channel_tree_shimmer.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
@@ -30,134 +32,9 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   }
 
   void _loadSampleChannels() {
-    // Create sample hierarchical channel data with German translations
-    final sampleChannels = [
-      ChannelEntity(
-        id: '1',
-        verseId: '68c3e2d6f58c817ebed1ca74',
-        name: 'Unternehmensdaten',
-        type: 'folder',
-        description: 'Unternehmensdaten Ordner',
-        path: '/unternehmensdaten',
-        assetTypes: [],
-        visibility: const ChannelVisibility(
-          isPublic: true,
-          inheritedFromParent: false,
-        ),
-        folderSettings: const ChannelFolderSettings(
-          allowSubfolders: true,
-          maxDepth: 5,
-        ),
-        createdBy: const CreatedBy(
-          id: '1',
-          firstName: 'Admin',
-          lastName: 'User',
-        ),
-        createdAt: DateTime.now(),
-        children: [
-          ChannelEntity(
-            id: '2',
-            verseId: '68c3e2d6f58c817ebed1ca74',
-            name: 'Unternehmensdaten',
-            type: 'folder',
-            description: 'Unternehmensdaten Unterordner',
-            path: '/unternehmensdaten/unternehmensdaten',
-            assetTypes: [],
-            visibility: const ChannelVisibility(
-              isPublic: true,
-              inheritedFromParent: true,
-            ),
-            folderSettings: const ChannelFolderSettings(
-              allowSubfolders: true,
-              maxDepth: 4,
-            ),
-            createdBy: const CreatedBy(
-              id: '1',
-              firstName: 'Admin',
-              lastName: 'User',
-            ),
-            createdAt: DateTime.now(),
-            children: [],
-          ),
-          ChannelEntity(
-            id: '3',
-            verseId: '68c3e2d6f58c817ebed1ca74',
-            name: 'Corporate Design',
-            type: 'folder',
-            description: 'Corporate Design Unterordner',
-            path: '/unternehmensdaten/corporate-design',
-            assetTypes: [],
-            visibility: const ChannelVisibility(
-              isPublic: true,
-              inheritedFromParent: true,
-            ),
-            folderSettings: const ChannelFolderSettings(
-              allowSubfolders: true,
-              maxDepth: 4,
-            ),
-            createdBy: const CreatedBy(
-              id: '1',
-              firstName: 'Admin',
-              lastName: 'User',
-            ),
-            createdAt: DateTime.now(),
-            children: [
-              ChannelEntity(
-                id: '4',
-                verseId: '68c3e2d6f58c817ebed1ca74',
-                name: 'Logos',
-                type: 'folder',
-                description: 'Logo Assets',
-                path: '/unternehmensdaten/corporate-design/logos',
-                assetTypes: ['image'],
-                visibility: const ChannelVisibility(
-                  isPublic: true,
-                  inheritedFromParent: true,
-                ),
-                folderSettings: const ChannelFolderSettings(
-                  allowSubfolders: false,
-                  maxDepth: 3,
-                ),
-                createdBy: const CreatedBy(
-                  id: '1',
-                  firstName: 'Admin',
-                  lastName: 'User',
-                ),
-                createdAt: DateTime.now(),
-                children: [],
-              ),
-              ChannelEntity(
-                id: '5',
-                verseId: '68c3e2d6f58c817ebed1ca74',
-                name: 'Brand Guidelines',
-                type: 'folder',
-                description: 'Brand Guidelines Dokumente',
-                path: '/unternehmensdaten/corporate-design/brand-guidelines',
-                assetTypes: ['document'],
-                visibility: const ChannelVisibility(
-                  isPublic: true,
-                  inheritedFromParent: true,
-                ),
-                folderSettings: const ChannelFolderSettings(
-                  allowSubfolders: false,
-                  maxDepth: 3,
-                ),
-                createdBy: const CreatedBy(
-                  id: '1',
-                  firstName: 'Admin',
-                  lastName: 'User',
-                ),
-                createdAt: DateTime.now(),
-                children: [],
-              ),
-            ],
-          ),
-        ],
-      ),
-    ];
-
+    // Sample channels removed - using real data from API
     setState(() {
-      channels = sampleChannels;
+      // channels = sampleChannels;
     });
   }
 
@@ -228,7 +105,6 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             color: Colors.white,
             padding: const EdgeInsets.all(24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Deine Kanäle
                 _buildChannelSection(),
@@ -293,7 +169,8 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
 
         // Channel tree view with shimmer loading
         Container(
-          constraints: const BoxConstraints(maxHeight: 300),
+          constraints: const BoxConstraints(maxHeight: 280),
+
           width: double.infinity,
           child: SingleChildScrollView(
             child: BlocBuilder<ChannelBloc, ChannelState>(
@@ -302,6 +179,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                   return const ChannelTreeShimmer();
                 } else if (state is ChannelStructureLoaded) {
                   return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Offline indicator for channels
                       if (state.isFromCache) _buildChannelOfflineIndicator(),
@@ -323,7 +201,10 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                           child: Text(
                             'dashboard.error.loading_channels'.tr() +
                                 ' ${state.message}',
-                            style: TextStyle(color: Colors.red[600], fontSize: 14),
+                            style: TextStyle(
+                              color: Colors.red[600],
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ],
@@ -344,24 +225,34 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
 
         const SizedBox(height: 16),
 
-        // Add channel button
-        InkWell(
-          onTap: _showAddFolderDialog,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                Icon(Icons.add, size: 16, color: Colors.teal[600]),
-                const SizedBox(width: 8),
-                Text(
-                  'dashboard.sidebar.add_channel'.tr(),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.teal[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+        // Add Folder Button
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              context.pushNamed(
+                Routelists.createFolder,
+                extra: {
+                  'verseId': '68c3e2d6f58c817ebed1ca74',
+                },
+              );
+            },
+            icon: Icon(Icons.add, size: 16, color: Colors.white),
+            label: Text(
+              'channels.add_folder'.tr(),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal[600],
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              elevation: 0,
             ),
           ),
         ),
@@ -400,11 +291,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.cloud_off,
-            size: 16,
-            color: Colors.orange[600],
-          ),
+          Icon(Icons.cloud_off, size: 16, color: Colors.orange[600]),
           const SizedBox(width: 6),
           Expanded(
             child: Text(
@@ -484,7 +371,6 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Row(
                 children: [
-                  Icon(Icons.add, size: 16, color: Colors.teal[600]),
                   const SizedBox(width: 8),
                   Text(
                     addButtonText,
@@ -568,24 +454,6 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
               ),
             ],
           ),
-        );
-      },
-    );
-  }
-
-  void _showAddFolderDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('dashboard.folder.add_dialog_title'.tr()),
-          content: Text('dashboard.folder.add_dialog_content'.tr()),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('dashboard.folder.ok'.tr()),
-            ),
-          ],
         );
       },
     );
