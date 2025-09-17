@@ -7,7 +7,9 @@ import 'package:mobile/features/dashboard/domain/entities/dashboard_entity.dart'
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
 class DashboardMainContent extends StatefulWidget {
-  const DashboardMainContent({super.key});
+  final String? verseId;
+  
+  const DashboardMainContent({super.key, this.verseId});
 
   @override
   State<DashboardMainContent> createState() => _DashboardMainContentState();
@@ -34,10 +36,16 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+                Icon(
+                  state.isOffline ? Icons.cloud_off : Icons.error_outline, 
+                  size: 64, 
+                  color: state.isOffline ? Colors.orange[300] : Colors.red[300]
+                ),
                 const SizedBox(height: 16),
                 Text(
-                  'dashboard.error.loading_dashboard'.tr(),
+                  state.isOffline 
+                      ? 'dashboard.error.offline'.tr()
+                      : 'dashboard.error.loading_dashboard'.tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -52,13 +60,21 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: widget.verseId != null ? () {
                     // Reload dashboard data
                     context.read<DashboardBloc>().add(
-                      LoadDashboardData('68c3e2d6f58c817ebed1ca74'),
+                      LoadDashboardData(widget.verseId!),
                     );
-                  },
-                  child: Text('dashboard.error.retry'.tr()),
+                  } : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: state.isOffline ? Colors.orange[600] : Colors.teal[600],
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text(
+                    state.isOffline 
+                        ? 'dashboard.error.retry_offline'.tr()
+                        : 'dashboard.error.retry'.tr()
+                  ),
                 ),
               ],
             ),

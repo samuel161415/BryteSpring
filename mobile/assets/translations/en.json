@@ -124,6 +124,8 @@
     "error": {
       "loading_dashboard": "Error loading dashboard data",
       "retry": "Try again",
+      "retry_offline": "Refresh",
+      "offline": "Offline Mode",
       "loading": "Loading dashboard...",
       "loading_channels": "Error loading channels:",
       "back_to_dashboard": "back to dashboard"

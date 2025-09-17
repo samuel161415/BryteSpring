@@ -124,6 +124,8 @@
     "error": {
       "loading_dashboard": "Fehler beim Laden der Dashboard-Daten",
       "retry": "Erneut versuchen",
+      "retry_offline": "Aktualisieren",
+      "offline": "Offline-Modus",
       "loading": "Dashboard wird geladen...",
       "loading_channels": "Fehler beim Laden der Kanäle:",
       "back_to_dashboard": "zurück zum Dashboard"

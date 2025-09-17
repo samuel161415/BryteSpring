@@ -43,7 +43,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     try {
       final loginRepository = sl<LoginRepository>();
       final verseJoinRepository = sl<VerseJoinRepository>();
-      
+
       // Load current user
       final userResult = await loginRepository.getCurrentUser();
 
@@ -63,17 +63,20 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             setState(() {
               currentUser = user;
             });
-            
+
             // Load joined verses from repository
-            final joinedVersesResult = await verseJoinRepository.getJoinedVerses();
-            
+            final joinedVersesResult = await verseJoinRepository
+                .getJoinedVerses();
+
             joinedVersesResult.fold(
               (failure) {
                 // Handle error - no joined verses
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('No joined verses found: ${failure.message}'),
+                      content: Text(
+                        'No joined verses found: ${failure.message}',
+                      ),
                       backgroundColor: Colors.orange,
                     ),
                   );
@@ -84,7 +87,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                   setState(() {
                     currentVerseId = joinedVerses.first.id;
                   });
-                  
+
                   // Load channels for the first joined verse
                   context.read<ChannelBloc>().add(
                     LoadChannelStructure(joinedVerses.first.id),
@@ -269,7 +272,9 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('No verse selected. Please join a verse first.'),
+                    content: Text(
+                      'No verse selected. Please join a verse first.',
+                    ),
                     backgroundColor: Colors.orange,
                   ),
                 );

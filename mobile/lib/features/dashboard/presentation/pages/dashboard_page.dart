@@ -28,10 +28,10 @@ class _DashboardPageState extends State<DashboardPage> {
   Future<void> _loadDashboardData() async {
     try {
       final verseJoinRepository = sl<VerseJoinRepository>();
-      
+
       // Load joined verses and use the first one
       final joinedVersesResult = await verseJoinRepository.getJoinedVerses();
-      
+
       joinedVersesResult.fold(
         (failure) {
           // Handle error - no joined verses
@@ -49,7 +49,7 @@ class _DashboardPageState extends State<DashboardPage> {
             setState(() {
               currentVerseId = joinedVerses.first.id;
             });
-            
+
             // Load dashboard data for the first joined verse
             context.read<DashboardBloc>().add(
               LoadDashboardData(joinedVerses.first.id),
@@ -141,7 +141,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   Expanded(
                                     child: Container(
                                       color: Colors.white,
-                                      child: const DashboardMainContent(),
+                                      child: DashboardMainContent(verseId: currentVerseId),
                                     ),
                                   ),
                                 ],
