@@ -122,33 +122,34 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
   }
 
   void _handleCreateFolder() async {
-    if (!_formKey.currentState!.validate()) return;
-    if (_selectedChannelId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('channels.select_channel_error'.tr()),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
+    context.pushNamed(Routelists.createFolderConfirmation);
+    // if (!_formKey.currentState!.validate()) return;
+    // if (_selectedChannelId == null) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('channels.select_channel_error'.tr()),
+    //       backgroundColor: Colors.red,
+    //     ),
+    //   );
+    //   return;
+    // }
 
-    setState(() {
-      _isLoading = true;
-    });
+    // setState(() {
+    //   _isLoading = true;
+    // });
 
-    context.read<ChannelBloc>().add(
-      CreateChannel(
-        verseId: widget.verseId,
-        name: _folderNameController.text.trim(),
-        parentChannelId: _selectedChannelId,
-        type: 'folder',
-        description: _descriptionController.text.trim().isEmpty
-            ? null
-            : _descriptionController.text.trim(),
-        isPublic: _isPublic,
-      ),
-    );
+    // context.read<ChannelBloc>().add(
+    //   CreateChannel(
+    //     verseId: widget.verseId,
+    //     name: _folderNameController.text.trim(),
+    //     parentChannelId: _selectedChannelId,
+    //     type: 'folder',
+    //     description: _descriptionController.text.trim().isEmpty
+    //         ? null
+    //         : _descriptionController.text.trim(),
+    //     isPublic: _isPublic,
+    //   ),
+    // );
   }
 
   @override

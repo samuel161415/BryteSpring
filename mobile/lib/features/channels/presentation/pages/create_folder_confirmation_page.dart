@@ -5,6 +5,9 @@ import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 import 'package:mobile/core/routing/routeLists.dart';
+import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/features/Authentication/domain/entities/user.dart';
+import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 
 class CreateFolderConfirmationPage extends StatefulWidget {
   final String folderName;
@@ -17,10 +20,48 @@ class CreateFolderConfirmationPage extends StatefulWidget {
   });
 
   @override
-  State<CreateFolderConfirmationPage> createState() => _CreateFolderConfirmationPageState();
+  State<CreateFolderConfirmationPage> createState() =>
+      _CreateFolderConfirmationPageState();
 }
 
-class _CreateFolderConfirmationPageState extends State<CreateFolderConfirmationPage> {
+class _CreateFolderConfirmationPageState
+    extends State<CreateFolderConfirmationPage> {
+  User? currentUser;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    try {
+      final loginRepository = sl<LoginRepository>();
+      final userResult = await loginRepository.getCurrentUser();
+      
+      userResult.fold(
+        (failure) {
+          print('Error loading user: ${failure.message}');
+          setState(() {
+            isLoading = false;
+          });
+        },
+        (user) {
+          setState(() {
+            currentUser = user;
+            isLoading = false;
+          });
+        },
+      );
+    } catch (e) {
+      print('Error in _loadCurrentUser: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   void _handleLanguageChanged() {
     setState(() {});
   }
@@ -111,36 +152,53 @@ class _CreateFolderConfirmationPageState extends State<CreateFolderConfirmationP
 
   Widget _buildSuccessContent() {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Success Message Section
+          SizedBox(height: 50),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                onTap: () {
+                  context.goNamed(Routelists.dashboard);
+                },
+                child: Icon(Icons.close, size: 32, color: Colors.black),
+              ),
+            ],
+          ),
+          SizedBox(height: 24),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(32),
+
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[200]!),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Success message
                 Text(
-                  'channels.folder_created_success_message'.tr(),
+                  isLoading 
+                      ? 'channels.folder_created_success_message'.tr()
+                      : 'channels.folder_created_success_message_with_name'.tr(
+                          namedArgs: {'name': currentUser?.firstName ?? 'User'}
+                        ),
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    fontSize: 40,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 40),
 
                 // View Channel Button
                 SizedBox(
-                  width: double.infinity,
+                  width: 300,
                   child: ElevatedButton(
                     onPressed: _viewChannel,
                     style: ElevatedButton.styleFrom(
@@ -148,8 +206,8 @@ class _CreateFolderConfirmationPageState extends State<CreateFolderConfirmationP
                       foregroundColor: Colors.black87,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: Colors.grey[300]!),
+                        // borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(color: Colors.black87, width: 3),
                       ),
                       elevation: 0,
                     ),
@@ -162,168 +220,14 @@ class _CreateFolderConfirmationPageState extends State<CreateFolderConfirmationP
                     ),
                   ),
                 ),
+                const SizedBox(height: 24),
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 150),
 
           // Information Section
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              color: Colors.teal[600],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Main slogan
-                Text(
-                  'channels.bryteverse_slogan'.tr(),
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Two column layout
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Left column - Features
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildFeatureItem('channels.feature_no_data_send'.tr()),
-                          _buildFeatureItem('channels.feature_no_data_store'.tr()),
-                          _buildFeatureItem('channels.feature_content_manage'.tr()),
-                          _buildFeatureItem('channels.feature_content_share'.tr()),
-                          _buildFeatureItem('channels.feature_content_organize'.tr()),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 24),
-
-                    // Right column - Social Media & Links
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Social Media
-                          Text(
-                            'channels.social_media'.tr(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              _buildSocialIcon('f'),
-                              const SizedBox(width: 12),
-                              _buildSocialIcon('in'),
-                              const SizedBox(width: 12),
-                              _buildSocialIcon('X'),
-                              const SizedBox(width: 12),
-                              _buildSocialIcon('V'),
-                            ],
-                          ),
-                          const SizedBox(height: 24),
-
-                          // Relevant Links
-                          Text(
-                            'channels.relevant_links'.tr(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildLinkItem('channels.contact'.tr()),
-                          _buildLinkItem('channels.imprint'.tr()),
-                          _buildLinkItem('channels.privacy'.tr()),
-                          _buildLinkItem('channels.terms'.tr()),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            margin: const EdgeInsets.only(top: 6, right: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white,
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSocialIcon(String icon) {
-    return Container(
-      width: 32,
-      height: 32,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Center(
-        child: Text(
-          icon,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.teal[600],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLinkItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 14,
-          color: Colors.white,
-          height: 1.4,
-        ),
       ),
     );
   }
