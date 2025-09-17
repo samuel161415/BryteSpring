@@ -3,12 +3,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
-import 'package:mobile/core/widgets/channel_tree_shimmer.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
-import 'package:mobile/features/channels/presentation/components/channel_tree_view.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
 class DashboardSidebar extends StatefulWidget {
@@ -262,10 +260,11 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                 _buildSection(
                   title: 'dashboard.sidebar.settings'.tr(),
                   items: [
+                    'dashboard.sidebar.settings'.tr(),
                     'dashboard.sidebar.links'.tr(),
-                    'dashboard.sidebar.help_support'.tr(),
+                    'Statistiken',
                   ],
-                  addButtonText: 'dashboard.sidebar.add_more'.tr(),
+                  addButtonText: '+ Nutzer hinzufügen',
                 ),
               ],
             ),
@@ -279,156 +278,62 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Back to Dashboard link
-        InkWell(
-          onTap: () {
-            // TODO: Navigate back to dashboard
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Text(
-              'dashboard.error.back_to_dashboard'.tr(),
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
-        ),
-
-        // Main heading - Unternehmensdaten
+        // Section title
         Text(
-          'dashboard.company.data'.tr(),
+          'dashboard.sidebar.channels'.tr(),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
           ),
         ),
-
         const SizedBox(height: 12),
 
-        // Channel tree view with shimmer loading
-        Container(
-          constraints: const BoxConstraints(maxHeight: 300),
-          width: double.infinity,
-          child: SingleChildScrollView(
-            child: BlocBuilder<ChannelBloc, ChannelState>(
-              builder: (context, state) {
-                if (state is ChannelLoading) {
-                  return const ChannelTreeShimmer();
-                } else if (state is ChannelStructureLoaded) {
-                  return ChannelTreeView(
-                    channels: state.structure.structure,
-                    onChannelTap: _handleChannelTap,
-                    onFolderTap: _handleFolderTap,
-                  );
-                } else if (state is ChannelFailure) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Center(
-                      child:                         Text(
-                          'dashboard.error.loading_channels'.tr() + ' ${state.message}',
-                          style: TextStyle(color: Colors.red[600], fontSize: 14),
-                        ),
-                    ),
-                  );
-                } else {
-                  // Fallback to sample data or empty state
-                  return ChannelTreeView(
-                    channels: channels,
-                    onChannelTap: _handleChannelTap,
-                    onFolderTap: _handleFolderTap,
-                  );
-                }
-              },
+        // Channel items
+        _buildSidebarItem('Website'),
+        _buildSidebarItem('dashboard.company.data'.tr()),
+        _buildSidebarItem('Publishing'),
+
+        const SizedBox(height: 8),
+
+        // Add channel button
+        InkWell(
+          onTap: _showAddFolderDialog,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                Icon(Icons.add, size: 16, color: Colors.teal[600]),
+                const SizedBox(width: 8),
+                Text(
+                  'dashboard.sidebar.add_channel'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.teal[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-
-        const SizedBox(height: 16),
-
-        // Action buttons
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Add folder button
-            InkWell(
-              onTap: () {
-                // TODO: Implement add folder functionality
-                _showAddFolderDialog();
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Icon(Icons.add, size: 16, color: Colors.teal[600]),
-                    const SizedBox(width: 8),
-                    Text(
-                      'dashboard.folder.add'.tr(),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.teal[600],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // Add asset button
-            InkWell(
-              onTap: () {
-                // TODO: Implement add asset functionality
-                _showAddAssetDialog();
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Icon(Icons.add, size: 16, color: Colors.teal[600]),
-                    const SizedBox(width: 8),
-                    Text(
-                      'dashboard.asset.add'.tr(),
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.teal[600],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ],
     );
   }
 
-  void _handleChannelTap(ChannelEntity channel) {
-    // TODO: Navigate to channel content or show channel details
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Selected channel: ${channel.name}'),
-        duration: const Duration(seconds: 2),
+  Widget _buildSidebarItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          color: Colors.black87,
+        ),
       ),
     );
   }
 
-  void _handleFolderTap(ChannelEntity folder) {
-    // TODO: Handle folder tap (maybe show folder info or navigate)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Selected folder: ${folder.name}'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
 
   Widget _buildSection({
     required String title,
@@ -576,21 +481,4 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     );
   }
 
-  void _showAddAssetDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('dashboard.asset.add_dialog_title'.tr()),
-          content: Text('dashboard.asset.add_dialog_content'.tr()),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('dashboard.folder.ok'.tr()),
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

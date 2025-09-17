@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:mobile/core/constant.dart';
+import 'package:mobile/core/widgets/dashboard_shimmer.dart';
 import 'package:mobile/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
@@ -14,6 +15,7 @@ class DashboardMainContent extends StatefulWidget {
 
 class _DashboardMainContentState extends State<DashboardMainContent> {
   final TextEditingController _searchController = TextEditingController();
+  bool _isNotificationExpanded = false;
 
   @override
   void dispose() {
@@ -26,9 +28,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (context, state) {
         if (state is DashboardLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const DashboardShimmer();
         } else if (state is DashboardFailure) {
           return Center(
             child: Column(
@@ -94,6 +94,11 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           // Welcome Section
           _buildWelcomeSection(user, verse),
           
+          const SizedBox(height: 24),
+          
+          // Notification Section
+          _buildNotificationSection(),
+          
           const SizedBox(height: 32),
           
           // Search Section
@@ -116,6 +121,60 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           // Recent Activity
           if (commonData.recentActivity.isNotEmpty) ...[
             _buildRecentActivitySection(commonData.recentActivity),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationSection() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Hinweis:',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[700],
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isNotificationExpanded = !_isNotificationExpanded;
+                  });
+                },
+                child: Icon(
+                  _isNotificationExpanded 
+                      ? Icons.keyboard_arrow_up 
+                      : Icons.keyboard_arrow_down,
+                  size: 20,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+          if (_isNotificationExpanded) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Stephan Tomat hat Deine Einladung angenommen und ist dem Verse als Experte beigetreten.',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+                height: 1.4,
+              ),
+            ),
           ],
         ],
       ),
