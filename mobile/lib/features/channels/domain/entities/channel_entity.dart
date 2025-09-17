@@ -1,5 +1,36 @@
 import 'package:equatable/equatable.dart';
 
+class CreatedBy extends Equatable {
+  final String id;
+  final String firstName;
+  final String lastName;
+
+  const CreatedBy({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+  });
+
+  factory CreatedBy.fromJson(Map<String, dynamic> json) {
+    return CreatedBy(
+      id: json['_id'] ?? '',
+      firstName: json['first_name'] ?? '',
+      lastName: json['last_name'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'first_name': firstName,
+      'last_name': lastName,
+    };
+  }
+
+  @override
+  List<Object?> get props => [id, firstName, lastName];
+}
+
 class ChannelEntity extends Equatable {
   final String id;
   final String verseId;
@@ -11,7 +42,7 @@ class ChannelEntity extends Equatable {
   final List<String> assetTypes;
   final ChannelVisibility visibility;
   final ChannelFolderSettings folderSettings;
-  final String createdBy;
+  final CreatedBy createdBy;
   final DateTime createdAt;
   final List<ChannelEntity> children;
 
@@ -43,7 +74,7 @@ class ChannelEntity extends Equatable {
       assetTypes: List<String>.from(json['asset_types'] ?? []),
       visibility: ChannelVisibility.fromJson(json['visibility'] ?? {}),
       folderSettings: ChannelFolderSettings.fromJson(json['folder_settings'] ?? {}),
-      createdBy: json['created_by'] ?? '',
+      createdBy: CreatedBy.fromJson(json['created_by'] ?? {}),
       createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
       children: (json['children'] as List<dynamic>?)
           ?.map((child) => ChannelEntity.fromJson(child))
@@ -63,7 +94,7 @@ class ChannelEntity extends Equatable {
       'asset_types': assetTypes,
       'visibility': visibility.toJson(),
       'folder_settings': folderSettings.toJson(),
-      'created_by': createdBy,
+      'created_by': createdBy.toJson(),
       'created_at': createdAt.toIso8601String(),
       'children': children.map((child) => child.toJson()).toList(),
     };
