@@ -144,37 +144,32 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Header with title and add button
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'dashboard.sidebar.channels'.tr(),
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+        // Back to Dashboard link
+        InkWell(
+          onTap: () {
+            // TODO: Navigate back to dashboard
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              'zurück zum Dashboard',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+                decoration: TextDecoration.underline,
               ),
             ),
-            TextButton(
-              onPressed: () {
-                // TODO: Implement add channel functionality
-                _showAddChannelDialog();
-              },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                alignment: Alignment.centerLeft,
-              ),
-              child: Text(
-                'dashboard.sidebar.add_channel'.tr(),
-                style: TextStyle(
-                  color: AppTheme.primary,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
+          ),
+        ),
+
+        // Main heading - Unternehmensdaten
+        Text(
+          'Unternehmensdaten',
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
 
         const SizedBox(height: 12),
@@ -190,6 +185,74 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
               onFolderTap: _handleFolderTap,
             ),
           ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // Action buttons
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Add folder button
+            InkWell(
+              onTap: () {
+                // TODO: Implement add folder functionality
+                _showAddFolderDialog();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.add,
+                      size: 16,
+                      color: Colors.teal[600],
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Ordner hinzufügen',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.teal[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // Add asset button
+            InkWell(
+              onTap: () {
+                // TODO: Implement add asset functionality
+                _showAddAssetDialog();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.add,
+                      size: 16,
+                      color: Colors.teal[600],
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Asset hinzufügen',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.teal[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -215,30 +278,6 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     );
   }
 
-  void _showAddChannelDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('dashboard.sidebar.add_channel'.tr()),
-        content: const Text(
-          'Add channel functionality will be implemented here.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // TODO: Implement actual add channel logic
-            },
-            child: const Text('Add'),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildSection({
     required String title,
@@ -364,6 +403,42 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showAddFolderDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Ordner hinzufügen'),
+          content: const Text('Funktion wird bald verfügbar sein.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showAddAssetDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Asset hinzufügen'),
+          content: const Text('Funktion wird bald verfügbar sein.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

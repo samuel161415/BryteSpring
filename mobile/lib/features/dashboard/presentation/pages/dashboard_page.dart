@@ -26,9 +26,7 @@ class _DashboardPageState extends State<DashboardPage> {
       backgroundColor: AppTheme.background,
       body: SingleChildScrollView(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: screenSize.height,
-          ),
+          constraints: BoxConstraints(minHeight: screenSize.height),
           child: Center(
             child: Container(
               width: screenSize.width > 1200 ? 1200 : screenSize.width * 0.95,
@@ -64,7 +62,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
                           // Dashboard Content
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
                             child: IntrinsicHeight(
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,

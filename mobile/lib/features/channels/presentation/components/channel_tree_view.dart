@@ -30,7 +30,7 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
         padding: const EdgeInsets.all(16),
         child: Center(
           child: Text(
-            'No channels available',
+            'Keine Kanäle verfügbar',
             style: TextStyle(
               color: Colors.grey[600],
               fontSize: 14,
@@ -43,61 +43,12 @@ class _ChannelTreeViewState extends State<ChannelTreeView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Expand/Collapse All buttons
-        if (widget.showExpandCollapseButtons && _hasFolders(widget.channels))
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              children: [
-                TextButton(
-                  onPressed: expandAll,
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: Text(
-                    'Expand All',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.blue[600],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                TextButton(
-                  onPressed: collapseAll,
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: Text(
-                    'Collapse All',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.blue[600],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
         // Tree items
         ..._buildRecursiveTreeItems(widget.channels, 0),
       ],
     );
   }
 
-  bool _hasFolders(List<ChannelEntity> channels) {
-    for (final channel in channels) {
-      if (channel.type == 'folder' || channel.children.isNotEmpty) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   List<Widget> _buildRecursiveTreeItems(List<ChannelEntity> channels, int level) {
     List<Widget> items = [];

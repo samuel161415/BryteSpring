@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/core/constant.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 
 class ChannelTreeItem extends StatefulWidget {
@@ -29,6 +28,7 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
   Widget build(BuildContext context) {
     final hasChildren = widget.channel.children.isNotEmpty;
     final isFolder = widget.channel.type == 'folder';
+    final isSubItem = widget.level > 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,23 +38,37 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
           onExit: (_) => setState(() => _isHovered = false),
           child: InkWell(
             onTap: widget.onTap,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
             child: Container(
               padding: EdgeInsets.only(
-                left: 16 + (widget.level * 20),
+                left: isSubItem ? 16 + (widget.level * 16) : 0,
                 right: 16,
-                top: 8,
-                bottom: 8,
+                top: 6,
+                bottom: 6,
               ),
               decoration: BoxDecoration(
-                color: _isHovered ? Colors.grey[100] : Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
+                color: _isHovered ? Colors.grey[50] : Colors.transparent,
+                borderRadius: BorderRadius.circular(4),
               ),
               child: IntrinsicWidth(
                 child: Row(
                   children: [
-                    // Expand/Collapse button
-                    if (hasChildren)
+                    // Prefix for sub-items (=)
+                    if (isSubItem)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          '=',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+
+                    // Expand/Collapse button for folders
+                    if (hasChildren && isFolder)
                       InkWell(
                         onTap: widget.onExpandToggle,
                         borderRadius: BorderRadius.circular(4),
@@ -71,23 +85,27 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                           ),
                         ),
                       )
-                    else
+                    else if (isFolder)
                       const SizedBox(width: 20),
 
-                    const SizedBox(width: 8),
-
                     // Folder/Channel icon
-                    Icon(
-                      isFolder
-                          ? (widget.isExpanded ? Icons.folder_open : Icons.folder)
-                          : Icons.video_library,
-                      size: 18,
-                      color: isFolder
-                          ? Colors.orange[600]
-                          : AppTheme.primary,
-                    ),
-
-                    const SizedBox(width: 8),
+                    if (isFolder) ...[
+                      const SizedBox(width: 4),
+                      Icon(
+                        widget.isExpanded ? Icons.folder_open : Icons.folder,
+                        size: 16,
+                        color: Colors.orange[600],
+                      ),
+                      const SizedBox(width: 8),
+                    ] else if (!isSubItem) ...[
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.business,
+                        size: 16,
+                        color: Colors.grey[700],
+                      ),
+                      const SizedBox(width: 8),
+                    ],
 
                     // Channel/Folder name
                     Expanded(
@@ -95,15 +113,15 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                         widget.channel.name,
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.black87,
-                          fontWeight: isFolder ? FontWeight.w500 : FontWeight.normal,
+                          color: isFolder ? Colors.black87 : Colors.grey[700],
+                          fontWeight: isFolder ? FontWeight.w600 : FontWeight.normal,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
 
                     // Additional info (optional)
-                    if (widget.channel.children.isNotEmpty)
+                    if (widget.channel.children.isNotEmpty && isFolder)
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
