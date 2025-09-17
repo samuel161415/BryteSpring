@@ -50,75 +50,77 @@ class _ChannelTreeItemState extends State<ChannelTreeItem> {
                 color: _isHovered ? Colors.grey[100] : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Row(
-                children: [
-                  // Expand/Collapse button
-                  if (hasChildren)
-                    InkWell(
-                      onTap: widget.onExpandToggle,
-                      borderRadius: BorderRadius.circular(4),
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        alignment: Alignment.center,
-                        child: Icon(
-                          widget.isExpanded
-                              ? Icons.keyboard_arrow_down
-                              : Icons.keyboard_arrow_right,
-                          size: 16,
-                          color: Colors.grey[600],
+              child: IntrinsicWidth(
+                child: Row(
+                  children: [
+                    // Expand/Collapse button
+                    if (hasChildren)
+                      InkWell(
+                        onTap: widget.onExpandToggle,
+                        borderRadius: BorderRadius.circular(4),
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          alignment: Alignment.center,
+                          child: Icon(
+                            widget.isExpanded
+                                ? Icons.keyboard_arrow_down
+                                : Icons.keyboard_arrow_right,
+                            size: 16,
+                            color: Colors.grey[600],
+                          ),
                         ),
-                      ),
-                    )
-                  else
-                    const SizedBox(width: 20),
+                      )
+                    else
+                      const SizedBox(width: 20),
 
-                  const SizedBox(width: 8),
+                    const SizedBox(width: 8),
 
-                  // Folder/Channel icon
-                  Icon(
-                    isFolder
-                        ? (widget.isExpanded ? Icons.folder_open : Icons.folder)
-                        : Icons.video_library,
-                    size: 18,
-                    color: isFolder
-                        ? Colors.orange[600]
-                        : AppTheme.primary,
-                  ),
-
-                  const SizedBox(width: 8),
-
-                  // Channel/Folder name
-                  Expanded(
-                    child: Text(
-                      widget.channel.name,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black87,
-                        fontWeight: isFolder ? FontWeight.w500 : FontWeight.normal,
-                      ),
-                      overflow: TextOverflow.ellipsis,
+                    // Folder/Channel icon
+                    Icon(
+                      isFolder
+                          ? (widget.isExpanded ? Icons.folder_open : Icons.folder)
+                          : Icons.video_library,
+                      size: 18,
+                      color: isFolder
+                          ? Colors.orange[600]
+                          : AppTheme.primary,
                     ),
-                  ),
 
-                  // Additional info (optional)
-                  if (widget.channel.children.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                    const SizedBox(width: 8),
+
+                    // Channel/Folder name
+                    Expanded(
                       child: Text(
-                        '${widget.channel.children.length}',
+                        widget.channel.name,
                         style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: Colors.black87,
+                          fontWeight: isFolder ? FontWeight.w500 : FontWeight.normal,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                ],
+
+                    // Additional info (optional)
+                    if (widget.channel.children.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          '${widget.channel.children.length}',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
           ),

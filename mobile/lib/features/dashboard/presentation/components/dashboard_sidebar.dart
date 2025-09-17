@@ -182,14 +182,12 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         // Channel tree view
         Container(
           constraints: const BoxConstraints(maxHeight: 300),
+          width: double.infinity,
           child: SingleChildScrollView(
-            child: SizedBox(
-              width: double.infinity,
-              child: ChannelTreeView(
-                channels: channels,
-                onChannelTap: _handleChannelTap,
-                onFolderTap: _handleFolderTap,
-              ),
+            child: ChannelTreeView(
+              channels: channels,
+              onChannelTap: _handleChannelTap,
+              onFolderTap: _handleFolderTap,
             ),
           ),
         ),
