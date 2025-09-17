@@ -93,7 +93,7 @@
     "edit_folder_name": "Edit Folder Name",
     "edit_description": "Edit Description",
     "folder_created_success_message": "Great, that worked!",
-    "folder_created_success_message_with_name": "Great, @name, that worked!",
+    "folder_created_success_message_with_name": "Great, {name}, that worked!",
     "view_channel_button": "Alright, view channel",
     "bryteverse_slogan": "BryteVerse® by Publify is the future in publishing.",
     "feature_no_data_send": "we do not send data",

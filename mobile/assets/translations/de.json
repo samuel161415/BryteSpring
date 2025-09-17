@@ -93,7 +93,7 @@
     "edit_folder_name": "Ordnername bearbeiten",
     "edit_description": "Beschreibung bearbeiten",
     "folder_created_success_message": "Prima, das hat geklappt!",
-    "folder_created_success_message_with_name": "Prima, @name, das hat geklappt!",
+    "folder_created_success_message_with_name": "Prima, {name}, das hat geklappt!",
     "view_channel_button": "Alles klar Kanal ansehen",
     "bryteverse_slogan": "BryteVerse® by Publify ist die Zukunft im Publishing.",
     "feature_no_data_send": "wir senden keine Daten",

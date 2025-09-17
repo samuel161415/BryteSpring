@@ -39,7 +39,7 @@ class _CreateFolderConfirmationPageState
     try {
       final loginRepository = sl<LoginRepository>();
       final userResult = await loginRepository.getCurrentUser();
-      
+
       userResult.fold(
         (failure) {
           print('Error loading user: ${failure.message}');
@@ -69,6 +69,17 @@ class _CreateFolderConfirmationPageState
   void _viewChannel() {
     // Navigate back to dashboard to view the channel
     context.goNamed(Routelists.dashboard);
+  }
+
+  String _getPersonalizedMessage() {
+    final userName = currentUser?.firstName ?? 'User';
+    final currentLocale = context.locale.languageCode;
+    
+    if (currentLocale == 'de') {
+      return 'Prima, $userName, das hat geklappt!';
+    } else {
+      return 'Great, $userName, that worked!';
+    }
   }
 
   @override
@@ -181,13 +192,11 @@ class _CreateFolderConfirmationPageState
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Success message
-                Text(
-                  isLoading 
-                      ? 'channels.folder_created_success_message'.tr()
-                      : 'channels.folder_created_success_message_with_name'.tr(
-                          namedArgs: {'name': currentUser?.firstName ?? 'User'}
-                        ),
-                  textAlign: TextAlign.center,
+                  Text(
+                    isLoading
+                        ? 'channels.folder_created_success_message'.tr()
+                        : _getPersonalizedMessage(),
+                    textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.w900,
