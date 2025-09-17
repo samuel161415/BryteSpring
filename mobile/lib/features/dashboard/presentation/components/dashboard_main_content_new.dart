@@ -111,11 +111,6 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           
           const SizedBox(height: 32),
           
-          // Admin Data (if available)
-          if (dashboardData.data.adminData != null) ...[
-            _buildAdminSection(dashboardData.data.adminData!),
-            const SizedBox(height: 32),
-          ],
           
           // Recent Activity
           if (commonData.recentActivity.isNotEmpty) ...[
@@ -356,97 +351,6 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
     );
   }
 
-  Widget _buildAdminSection(AdminData adminData) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Admin-Bereich',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: _buildStatCard(
-                'Mitglieder',
-                adminData.statistics.totalMembers.toString(),
-                Icons.people,
-                Colors.blue,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildStatCard(
-                'Kanäle',
-                adminData.statistics.totalChannels.toString(),
-                Icons.folder,
-                Colors.green,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildStatCard(
-                'Ausstehende Einladungen',
-                adminData.statistics.pendingInvitations.toString(),
-                Icons.pending_actions,
-                Colors.orange,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            color: color,
-            size: 32,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildRecentActivitySection(List<AdminActivity> activities) {
     return Column(

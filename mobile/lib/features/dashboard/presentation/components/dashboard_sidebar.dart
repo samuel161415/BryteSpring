@@ -9,6 +9,7 @@ import 'package:mobile/features/Authentication/domain/repositories/login_reposit
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
 import 'package:mobile/features/channels/presentation/components/channel_tree_view.dart';
+import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
 class DashboardSidebar extends StatefulWidget {
   const DashboardSidebar({super.key});
@@ -488,71 +489,76 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   }
 
   Widget _buildVerseSection() {
-    return Row(
-      children: [
-        // BryteVerse Logo (smaller version)
-        Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  'BRYTE',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Row(
-                  children: List.generate(
-                    2,
-                    (index) => Container(
-                      width: 3,
-                      height: 3,
-                      margin: const EdgeInsets.only(right: 1),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Text(
-              'VERSE',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
-
-        const SizedBox(width: 12),
-
-        // Notification badge
-        Container(
-          width: 20,
-          height: 20,
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      builder: (context, state) {
+        String verseName = 'BRIGHT NETWORKS'; // Default fallback
+        
+        if (state is DashboardLoaded) {
+          verseName = state.dashboardData.data.verse.name;
+        }
+        
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppTheme.primary,
-          ),
-          child: const Center(
-            child: Text(
-              '1',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey[300]!),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-            ),
+            ],
           ),
-        ),
-      ],
+          child: Stack(
+            children: [
+              // Main content
+              Column(
+                children: [
+                  // Downward arrow icon
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 24,
+                    color: Colors.grey[600],
+                  ),
+                  const SizedBox(height: 8),
+                  // Verse name
+                  Text(
+                    verseName,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              
+              // Teal plus icon in top right
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.teal[600],
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

@@ -83,13 +83,13 @@ class _DashboardPageState extends State<DashboardPage> {
                                   // Sidebar
                                   const DashboardSidebar(),
 
-                              // Main content
-                              Expanded(
-                                child: Container(
-                                  color: Colors.white,
-                                  child: const DashboardMainContent(),
-                                ),
-                              ),
+                                  // Main content
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.white,
+                                      child: const DashboardMainContent(),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
