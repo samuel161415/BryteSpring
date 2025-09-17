@@ -15,7 +15,7 @@ class DashboardMainContent extends StatefulWidget {
 
 class _DashboardMainContentState extends State<DashboardMainContent> {
   final TextEditingController _searchController = TextEditingController();
-  bool _isNotificationExpanded = false;
+  bool _isNotificationExpanded = true; // Default to expanded
 
   @override
   void dispose() {
@@ -114,14 +114,6 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           
           // Upload Section
           _buildUploadSection(),
-          
-          const SizedBox(height: 32),
-          
-          
-          // Recent Activity
-          if (commonData.recentActivity.isNotEmpty) ...[
-            _buildRecentActivitySection(commonData.recentActivity),
-          ],
         ],
       ),
     );
@@ -389,10 +381,19 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
             ),
             child: Column(
               children: [
-                Icon(
-                  Icons.add_photo_alternate_outlined,
-                  size: 48,
-                  color: Colors.grey[400],
+                // Image icon
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.image_outlined,
+                    size: 32,
+                    color: Colors.grey[400],
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -412,148 +413,4 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
   }
 
 
-  Widget _buildRecentActivitySection(List<AdminActivity> activities) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'dashboard.activity.recent'.tr(),
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        const SizedBox(height: 16),
-        ...activities.take(5).map((activity) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[300]!),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: _getActivityColor(activity.action).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Icon(
-                    _getActivityIcon(activity.action),
-                    color: _getActivityColor(activity.action),
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _getActivityDescription(activity),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _formatTimestamp(activity.timestamp),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ],
-    );
-  }
-
-  Color _getActivityColor(String action) {
-    switch (action.toLowerCase()) {
-      case 'create':
-        return Colors.green;
-      case 'update':
-        return Colors.blue;
-      case 'delete':
-        return Colors.red;
-      case 'setup_complete':
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  IconData _getActivityIcon(String action) {
-    switch (action.toLowerCase()) {
-      case 'create':
-        return Icons.add_circle;
-      case 'update':
-        return Icons.edit;
-      case 'delete':
-        return Icons.delete;
-      case 'setup_complete':
-        return Icons.check_circle;
-      default:
-        return Icons.info;
-    }
-  }
-
-  String _getActivityDescription(AdminActivity activity) {
-    switch (activity.resourceType) {
-      case 'user':
-        return 'Neuer Benutzer: ${activity.user.firstName} ${activity.user.lastName}';
-      case 'channel':
-        return 'Neuer Kanal erstellt';
-      case 'folder':
-        return 'Neuer Ordner erstellt';
-      case 'verse':
-        return 'Verse Setup abgeschlossen';
-      case 'verse_branding':
-        return 'Verse Branding aktualisiert';
-      case 'role':
-        return 'Neue Rolle erstellt';
-      default:
-        return 'Aktivität: ${activity.action}';
-    }
-  }
-
-  String _formatTimestamp(String timestamp) {
-    try {
-      final date = DateTime.parse(timestamp);
-      final now = DateTime.now();
-      final difference = now.difference(date);
-
-      if (difference.inDays > 0) {
-        return 'vor ${difference.inDays} Tag${difference.inDays > 1 ? 'en' : ''}';
-      } else if (difference.inHours > 0) {
-        return 'vor ${difference.inHours} Stunde${difference.inHours > 1 ? 'n' : ''}';
-      } else if (difference.inMinutes > 0) {
-        return 'vor ${difference.inMinutes} Minute${difference.inMinutes > 1 ? 'n' : ''}';
-      } else {
-        return 'gerade eben';
-      }
-    } catch (e) {
-      return timestamp;
-    }
-  }
 }

@@ -86,8 +86,10 @@
       "item2": "Handball - Leuchtende Bälle"
     },
     "upload": {
-      "title": "Möchtest Du einen hochladen?",
-      "button": "+ Bild zum Daten wählen"
+      "title": "Möchtest Du etwas hochladen?",
+      "button": "+ Bild aus Datei wählen",
+      "coming_soon": "Datei-Upload wird bald verfügbar sein",
+      "choose_file": "+ Bild aus Datei wählen"
     },
     "footer": {
       "message": "BryteVerse© by Publify ist die Zukunft im Publishing.",
@@ -112,10 +114,6 @@
     },
     "greeting": {
       "welcome_back": "Schön, dass Du zurück bist. Lass uns gemeinsam die Welt ein bisschen strukturierter machen."
-    },
-    "upload": {
-      "coming_soon": "Datei-Upload wird bald verfügbar sein",
-      "choose_file": "+ Bild aus Datei wählen"
     },
     "activity": {
       "recent": "Letzte Aktivitäten"

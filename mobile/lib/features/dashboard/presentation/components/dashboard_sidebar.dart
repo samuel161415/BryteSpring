@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/widgets/channel_tree_shimmer.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
@@ -312,7 +311,8 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                     padding: const EdgeInsets.all(16),
                     child: Center(
                       child: Text(
-                        'dashboard.error.loading_channels'.tr() + ' ${state.message}',
+                        'dashboard.error.loading_channels'.tr() +
+                            ' ${state.message}',
                         style: TextStyle(color: Colors.red[600], fontSize: 14),
                       ),
                     ),
@@ -377,7 +377,6 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     );
   }
 
-
   Widget _buildSection({
     required String title,
     required List<String> items,
@@ -415,20 +414,25 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
 
         if (addButtonText.isNotEmpty) ...[
           const SizedBox(height: 12),
-          TextButton(
-            onPressed: onAddTap ?? () {
+          InkWell(
+            onTap: onAddTap ?? () {
               // TODO: Implement add functionality
             },
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              alignment: Alignment.centerLeft,
-            ),
-            child: Text(
-              addButtonText,
-              style: TextStyle(
-                color: AppTheme.primary,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Icon(Icons.add, size: 16, color: Colors.teal[600]),
+                  const SizedBox(width: 8),
+                  Text(
+                    addButtonText,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.teal[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

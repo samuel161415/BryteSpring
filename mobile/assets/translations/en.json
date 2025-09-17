@@ -86,8 +86,10 @@
       "item2": "Handball - Luminous balls"
     },
     "upload": {
-      "title": "Would you like to upload one?",
-      "button": "+ Choose image for data"
+      "title": "Would you like to upload something?",
+      "button": "+ Choose image from file",
+      "coming_soon": "File upload will be available soon",
+      "choose_file": "+ Choose image from file"
     },
     "footer": {
       "message": "BryteVerse© by Publify is the future in Publishing.",
@@ -112,10 +114,6 @@
     },
     "greeting": {
       "welcome_back": "Great to have you back. Let's make the world a bit more structured together."
-    },
-    "upload": {
-      "coming_soon": "File upload will be available soon",
-      "choose_file": "+ Choose image from file"
     },
     "activity": {
       "recent": "Recent Activities"
