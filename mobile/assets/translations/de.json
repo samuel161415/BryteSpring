@@ -102,6 +102,37 @@
       "career": "Karriere",
       "privacy": "Datenschutz",
       "imprint": "Impressum"
+    },
+    "error": {
+      "loading_dashboard": "Fehler beim Laden der Dashboard-Daten",
+      "retry": "Erneut versuchen",
+      "loading": "Dashboard wird geladen...",
+      "loading_channels": "Fehler beim Laden der Kanäle:",
+      "back_to_dashboard": "zurück zum Dashboard"
+    },
+    "greeting": {
+      "welcome_back": "Schön, dass Du zurück bist. Lass uns gemeinsam die Welt ein bisschen strukturierter machen."
+    },
+    "upload": {
+      "coming_soon": "Datei-Upload wird bald verfügbar sein",
+      "choose_file": "+ Bild aus Datei wählen"
+    },
+    "activity": {
+      "recent": "Letzte Aktivitäten"
+    },
+    "folder": {
+      "add": "Ordner hinzufügen",
+      "add_dialog_title": "Ordner hinzufügen",
+      "add_dialog_content": "Funktion wird bald verfügbar sein.",
+      "ok": "OK"
+    },
+    "asset": {
+      "add": "Asset hinzufügen",
+      "add_dialog_title": "Asset hinzufügen",
+      "add_dialog_content": "Funktion wird bald verfügbar sein."
+    },
+    "company": {
+      "data": "Unternehmensdaten"
     }
   }
 }

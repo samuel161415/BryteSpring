@@ -287,7 +287,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Text(
-              'zurück zum Dashboard',
+              'dashboard.error.back_to_dashboard'.tr(),
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey[600],
@@ -299,7 +299,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
 
         // Main heading - Unternehmensdaten
         Text(
-          'Unternehmensdaten',
+          'dashboard.company.data'.tr(),
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -328,10 +328,10 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                   return Padding(
                     padding: const EdgeInsets.all(16),
                     child: Center(
-                      child: Text(
-                        'Fehler beim Laden der Kanäle: ${state.message}',
-                        style: TextStyle(color: Colors.red[600], fontSize: 14),
-                      ),
+                      child:                         Text(
+                          'dashboard.error.loading_channels'.tr() + ' ${state.message}',
+                          style: TextStyle(color: Colors.red[600], fontSize: 14),
+                        ),
                     ),
                   );
                 } else {
@@ -366,7 +366,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                     Icon(Icons.add, size: 16, color: Colors.teal[600]),
                     const SizedBox(width: 8),
                     Text(
-                      'Ordner hinzufügen',
+                      'dashboard.folder.add'.tr(),
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.teal[600],
@@ -393,7 +393,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                     Icon(Icons.add, size: 16, color: Colors.teal[600]),
                     const SizedBox(width: 8),
                     Text(
-                      'Asset hinzufügen',
+                      'dashboard.asset.add'.tr(),
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.teal[600],
@@ -492,11 +492,11 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (context, state) {
         String verseName = 'BRIGHT NETWORKS'; // Default fallback
-        
+
         if (state is DashboardLoaded) {
           verseName = state.dashboardData.data.verse.name;
         }
-        
+
         return Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16),
@@ -536,7 +536,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                   ),
                 ],
               ),
-              
+
               // Teal plus icon in top right
               Positioned(
                 top: 0,
@@ -548,11 +548,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                     color: Colors.teal[600],
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                  child: const Icon(Icons.add, color: Colors.white, size: 16),
                 ),
               ),
             ],
@@ -567,12 +563,12 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Ordner hinzufügen'),
-          content: const Text('Funktion wird bald verfügbar sein.'),
+          title: Text('dashboard.folder.add_dialog_title'.tr()),
+          content: Text('dashboard.folder.add_dialog_content'.tr()),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text('dashboard.folder.ok'.tr()),
             ),
           ],
         );
@@ -585,12 +581,12 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Asset hinzufügen'),
-          content: const Text('Funktion wird bald verfügbar sein.'),
+          title: Text('dashboard.asset.add_dialog_title'.tr()),
+          content: Text('dashboard.asset.add_dialog_content'.tr()),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
+              child: Text('dashboard.folder.ok'.tr()),
             ),
           ],
         );

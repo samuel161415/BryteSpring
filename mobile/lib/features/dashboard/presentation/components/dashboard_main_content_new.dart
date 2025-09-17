@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -40,7 +41,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Fehler beim Laden der Dashboard-Daten',
+                  'dashboard.error.loading_dashboard'.tr(),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -64,7 +65,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                       LoadDashboardData('68c3e2d6f58c817ebed1ca74'),
                     );
                   },
-                  child: const Text('Erneut versuchen'),
+                  child: Text('dashboard.error.retry'.tr()),
                 ),
               ],
             ),
@@ -72,8 +73,8 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
         } else if (state is DashboardLoaded) {
           return _buildDashboardContent(state.dashboardData);
         } else {
-          return const Center(
-            child: Text('Dashboard wird geladen...'),
+          return Center(
+            child: Text('dashboard.error.loading'.tr()),
           );
         }
       },
@@ -135,7 +136,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Schön, dass Du zurück bist. Lass uns gemeinsam die Welt ein bisschen strukturierter machen.',
+          'dashboard.greeting.welcome_back'.tr(),
           style: TextStyle(
             fontSize: 16,
             color: Colors.grey[600],
@@ -195,9 +196,9 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Wonach suchst Du?',
-          style: TextStyle(
+        Text(
+          'dashboard.search.title'.tr(),
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
@@ -220,7 +221,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           child: TextField(
             controller: _searchController,
             decoration: InputDecoration(
-              hintText: 'Suchbegriff eingeben',
+              hintText: 'dashboard.search.placeholder'.tr(),
               hintStyle: TextStyle(color: Colors.grey[500]),
               prefixIcon: Icon(
                 Icons.search,
@@ -242,9 +243,9 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Das hast Du häufig gesucht:',
-          style: TextStyle(
+        Text(
+          'dashboard.frequent.title'.tr(),
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
@@ -289,9 +290,9 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Möchtest Du etwas hochladen?',
-          style: TextStyle(
+        Text(
+          'dashboard.upload.title'.tr(),
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
@@ -302,8 +303,8 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
           onTap: () {
             // TODO: Implement file upload
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Datei-Upload wird bald verfügbar sein'),
+              SnackBar(
+                content: Text('dashboard.upload.coming_soon'.tr()),
               ),
             );
           },
@@ -336,7 +337,7 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  '+ Bild aus Datei wählen',
+                  'dashboard.upload.choose_file'.tr(),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -356,9 +357,9 @@ class _DashboardMainContentState extends State<DashboardMainContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Letzte Aktivitäten',
-          style: TextStyle(
+        Text(
+          'dashboard.activity.recent'.tr(),
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: Colors.black87,

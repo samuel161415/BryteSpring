@@ -102,6 +102,37 @@
       "career": "Career",
       "privacy": "Privacy",
       "imprint": "Imprint"
+    },
+    "error": {
+      "loading_dashboard": "Error loading dashboard data",
+      "retry": "Try again",
+      "loading": "Loading dashboard...",
+      "loading_channels": "Error loading channels:",
+      "back_to_dashboard": "back to dashboard"
+    },
+    "greeting": {
+      "welcome_back": "Great to have you back. Let's make the world a bit more structured together."
+    },
+    "upload": {
+      "coming_soon": "File upload will be available soon",
+      "choose_file": "+ Choose image from file"
+    },
+    "activity": {
+      "recent": "Recent Activities"
+    },
+    "folder": {
+      "add": "Add folder",
+      "add_dialog_title": "Add folder",
+      "add_dialog_content": "Function will be available soon.",
+      "ok": "OK"
+    },
+    "asset": {
+      "add": "Add asset",
+      "add_dialog_title": "Add asset",
+      "add_dialog_content": "Function will be available soon."
+    },
+    "company": {
+      "data": "Company Data"
     }
   }
 }
