@@ -19,7 +19,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   @override
   Future<Either<Failure, VerseJoinEntity>> joinVerse(String verseId) async {
     try {
-      final response = await dioClient.post('/verses/$verseId/join');
+      final response = await dioClient.post('/verse/$verseId/join');
 
       if (response.statusCode == 200) {
         // Backend returns: { verse: {...}, role: {...}, user: {...} }
@@ -47,13 +47,13 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   @override
   Future<Either<Failure, void>> leaveVerse(String verseId) async {
     try {
-      // TODO: Backend needs to implement DELETE /verses/:verseId/leave endpoint
+      // TODO: Backend needs to implement DELETE /verse/:verseId/leave endpoint
       // For now, return success as this endpoint doesn't exist yet
       return const Right(null);
 
       // Uncomment when backend implements this endpoint:
       /*
-      final response = await dioClient.delete('/verses/$verseId/leave');
+      final response = await dioClient.delete('/verse/$verseId/leave');
 
       if (response.statusCode == 200) {
         return const Right(null);
@@ -73,13 +73,13 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   @override
   Future<Either<Failure, List<VerseJoinEntity>>> getJoinedVerses() async {
     try {
-      // TODO: Backend needs to implement GET /verses/joined endpoint
+      // TODO: Backend needs to implement GET /verse/joined endpoint
       // For now, return empty list as this endpoint doesn't exist yet
       return Right(<VerseJoinEntity>[]);
 
       // Uncomment when backend implements this endpoint:
       /*
-      final response = await dioClient.get('/verses/joined');
+      final response = await dioClient.get('/verse/joined');
 
       if (response.statusCode == 200) {
         final List<dynamic> versesJson = response.data;
@@ -103,7 +103,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
   @override
   Future<Either<Failure, VerseJoinEntity>> getVerse(String verseId) async {
     try {
-      final response = await dioClient.get('/verses/$verseId');
+      final response = await dioClient.get('/verse/$verseId');
 
       if (response.statusCode == 200) {
         // Backend returns verse object directly

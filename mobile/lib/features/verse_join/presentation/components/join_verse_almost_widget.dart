@@ -56,7 +56,10 @@ class _JoinVerseAlmostComponentState extends State<JoinVerseAlmostComponent> {
               SizedBox(height: 36),
               GestureDetector(
                 onTap: () {
-                  context.pushNamed(Routelists.joinVerse);
+                  context.pushNamed(
+                    Routelists.joinVerse,
+                    extra: widget.invitation,
+                  );
                 },
                 child: Container(
                   width: 200,

@@ -39,13 +39,18 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void didUpdateWidget(LoginForm oldWidget) {
     super.didUpdateWidget(oldWidget);
-    print('LoginForm didUpdateWidget - old invitation: ${oldWidget.invitation}');
+    print(
+      'LoginForm didUpdateWidget - old invitation: ${oldWidget.invitation}',
+    );
     print('LoginForm didUpdateWidget - new invitation: ${widget.invitation}');
-    
+
     // Update email if invitation changed
     if (oldWidget.invitation != widget.invitation) {
       _emailController.text = widget.invitation?.email ?? '';
-      print('LoginForm didUpdateWidget - email updated to: ${_emailController.text}');
+      print(
+        'LoginForm didUpdateWidget - email updated to: ${_emailController.text}',
+      );
+      setState(() {});
     }
   }
 
@@ -78,6 +83,7 @@ class _LoginFormState extends State<LoginForm> {
           print('Login successful for user: ${user.email}');
           print('Invitation present: ${widget.invitation != null}');
           // Login successful
+          print('widget.invitation: ${widget.invitation}');
           if (widget.invitation != null) {
             print('Checking verse setup status...');
             // Check verse setup status if invitation is provided
@@ -122,7 +128,11 @@ class _LoginFormState extends State<LoginForm> {
               backgroundColor: Colors.orange,
             ),
           );
-          context.go('/${Routelists.dashboard}');
+          // context.go('/${Routelists.dashboard}');
+          context.pushNamed(
+            Routelists.almostJoinVerse,
+            extra: widget.invitation,
+          );
         },
         (verse) {
           print(
