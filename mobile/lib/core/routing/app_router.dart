@@ -170,15 +170,17 @@ class AppRouter {
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         final parentChannelId = extra?['parentChannelId'] as String?;
-        final verseId = extra?['verseId'] as String? ?? '68c3e2d6f58c817ebed1ca74';
+        final verseId = extra?['verseId'] as String?;
+        
+        if (verseId == null) {
+          // If no verse ID provided, redirect to dashboard
+          return _buildPage(context, state, const DashboardPage());
+        }
         
         return _buildPage(
           context,
           state,
-          CreateFolderPage(
-            parentChannelId: parentChannelId,
-            verseId: verseId,
-          ),
+          CreateFolderPage(parentChannelId: parentChannelId, verseId: verseId),
         );
       },
     ),

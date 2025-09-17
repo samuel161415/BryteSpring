@@ -7,6 +7,7 @@ import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/channel_tree_shimmer.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
+import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
 import 'package:mobile/features/channels/presentation/components/channel_tree_view.dart';
@@ -41,6 +42,9 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   Future<void> _loadUserAndChannels() async {
     try {
       final loginRepository = sl<LoginRepository>();
+      final verseJoinRepository = sl<VerseJoinRepository>();
+      
+      // Load current user
       final userResult = await loginRepository.getCurrentUser();
 
       userResult.fold(
@@ -54,21 +58,48 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             );
           }
         },
-        (user) {
-          if (user != null && user.joinedVerse.isNotEmpty) {
+        (user) async {
+          if (user != null) {
             setState(() {
               currentUser = user;
-              currentVerseId = user.joinedVerse.first; // Use first joined verse
             });
-
-            // Load channels for the first joined verse
-            context.read<ChannelBloc>().add(
-              LoadChannelStructure(user.joinedVerse.first),
-            );
-          } else {
-            // If no user or no joined verses, load with hardcoded verse ID for testing
-            context.read<ChannelBloc>().add(
-              LoadChannelStructure('68c3e2d6f58c817ebed1ca74'),
+            
+            // Load joined verses from repository
+            final joinedVersesResult = await verseJoinRepository.getJoinedVerses();
+            
+            joinedVersesResult.fold(
+              (failure) {
+                // Handle error - no joined verses
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('No joined verses found: ${failure.message}'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                }
+              },
+              (joinedVerses) {
+                if (joinedVerses.isNotEmpty) {
+                  setState(() {
+                    currentVerseId = joinedVerses.first.id;
+                  });
+                  
+                  // Load channels for the first joined verse
+                  context.read<ChannelBloc>().add(
+                    LoadChannelStructure(joinedVerses.first.id),
+                  );
+                } else {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('No joined verses found'),
+                        backgroundColor: Colors.orange,
+                      ),
+                    );
+                  }
+                }
+              },
             );
           }
         },
@@ -230,12 +261,19 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
           width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: () {
-              context.pushNamed(
-                Routelists.createFolder,
-                extra: {
-                  'verseId': '68c3e2d6f58c817ebed1ca74',
-                },
-              );
+              if (currentVerseId != null) {
+                context.pushNamed(
+                  Routelists.createFolder,
+                  extra: {'verseId': currentVerseId!},
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('No verse selected. Please join a verse first.'),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+              }
             },
             icon: Icon(Icons.add, size: 16, color: Colors.white),
             label: Text(

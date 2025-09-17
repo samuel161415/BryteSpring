@@ -10,7 +10,7 @@ class DioClient {
     // Configure Dio
     dio.options = BaseOptions(
       baseUrl: // Local development
-          'https://bryte-spring.vercel.app', // Production
+          'https://brytespring-app-itrx7.ondigitalocean.app/', // Production
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),

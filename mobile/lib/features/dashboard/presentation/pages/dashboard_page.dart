@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/constant.dart';
+import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
+import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
 import 'package:mobile/features/dashboard/presentation/components/dashboard_sidebar.dart';
 import 'package:mobile/features/dashboard/presentation/components/dashboard_main_content_new.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -15,13 +17,65 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  String? currentVerseId;
+
   @override
   void initState() {
     super.initState();
-    // Load dashboard data
-    context.read<DashboardBloc>().add(
-      LoadDashboardData('68c3e2d6f58c817ebed1ca74'),
-    );
+    _loadDashboardData();
+  }
+
+  Future<void> _loadDashboardData() async {
+    try {
+      final verseJoinRepository = sl<VerseJoinRepository>();
+      
+      // Load joined verses and use the first one
+      final joinedVersesResult = await verseJoinRepository.getJoinedVerses();
+      
+      joinedVersesResult.fold(
+        (failure) {
+          // Handle error - no joined verses
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('No joined verses found: ${failure.message}'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        },
+        (joinedVerses) {
+          if (joinedVerses.isNotEmpty) {
+            setState(() {
+              currentVerseId = joinedVerses.first.id;
+            });
+            
+            // Load dashboard data for the first joined verse
+            context.read<DashboardBloc>().add(
+              LoadDashboardData(joinedVerses.first.id),
+            );
+          } else {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('No joined verses found'),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            }
+          }
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading dashboard data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void _handleLanguageChanged() {

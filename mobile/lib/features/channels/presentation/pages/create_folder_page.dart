@@ -24,7 +24,7 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
   final _formKey = GlobalKey<FormState>();
   final _folderNameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  
+
   String? _selectedChannelId;
   String? _selectedChannelName;
   bool _isPublic = true;
@@ -34,7 +34,9 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
   void initState() {
     super.initState();
     _selectedChannelId = widget.parentChannelId;
-    _selectedChannelName = widget.parentChannelId != null ? 'Corporate Design' : null;
+    _selectedChannelName = widget.parentChannelId != null
+        ? 'Corporate Design'
+        : null;
   }
 
   @override
@@ -113,8 +115,8 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
         name: _folderNameController.text.trim(),
         parentChannelId: _selectedChannelId,
         type: 'folder',
-        description: _descriptionController.text.trim().isEmpty 
-            ? null 
+        description: _descriptionController.text.trim().isEmpty
+            ? null
             : _descriptionController.text.trim(),
         isPublic: _isPublic,
       ),
@@ -146,7 +148,9 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
             });
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('channels.folder_creation_error'.tr() + ': ${state.message}'),
+                content: Text(
+                  'channels.folder_creation_error'.tr() + ': ${state.message}',
+                ),
                 backgroundColor: Colors.red,
               ),
             );
@@ -258,12 +262,13 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
                   Expanded(
                     child: Text(
                       _selectedChannelName != null
-                          ? 'channels.channel_label'.tr() + ': $_selectedChannelName'
+                          ? 'channels.channel_label'.tr() +
+                                ': $_selectedChannelName'
                           : 'channels.select_channel'.tr(),
                       style: TextStyle(
                         fontSize: 16,
-                        color: _selectedChannelName != null 
-                            ? Colors.black87 
+                        color: _selectedChannelName != null
+                            ? Colors.black87
                             : Colors.grey[600],
                       ),
                     ),
@@ -289,10 +294,7 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
               controller: _folderNameController,
               decoration: InputDecoration(
                 hintText: 'channels.folder_name_placeholder'.tr(),
-                hintStyle: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[500],
-                ),
+                hintStyle: TextStyle(fontSize: 16, color: Colors.grey[500]),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: Colors.teal[300]!),
@@ -326,10 +328,7 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: 'channels.folder_description_placeholder'.tr(),
-                hintStyle: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[500],
-                ),
+                hintStyle: TextStyle(fontSize: 16, color: Colors.grey[500]),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: Colors.grey[300]!),
@@ -396,8 +395,8 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _handleCreateFolder,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _isLoading 
-                      ? Colors.grey[400] 
+                  backgroundColor: _isLoading
+                      ? Colors.grey[400]
                       : Colors.teal[600],
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -412,7 +411,9 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
                     : Text(
