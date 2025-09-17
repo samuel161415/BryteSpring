@@ -14,6 +14,7 @@ const invitationRouter = require('./routes/invitation');
 const channelRouter = require('./routes/channel');
 const dashboardRouter = require('./routes/dashboard');
 const roleRouter = require('./routes/role');
+const uploadRouter = require('./routes/upload');
 
 // CORS configuration
 
@@ -40,6 +41,7 @@ app.use('/invitation', invitationRouter);
 app.use('/channel', channelRouter);
 app.use('/dashboard', dashboardRouter);
 app.use('/role', roleRouter);
+app.use('/upload', uploadRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
