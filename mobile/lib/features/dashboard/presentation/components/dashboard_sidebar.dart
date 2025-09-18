@@ -11,6 +11,7 @@ import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
 import 'package:mobile/features/channels/presentation/components/channel_tree_view.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:mobile/core/services/auth_service.dart';
 
 class DashboardSidebar extends StatefulWidget {
   const DashboardSidebar({super.key});
@@ -155,6 +156,11 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                   ],
                   addButtonText: '+ Nutzer hinzufügen',
                 ),
+
+                const Spacer(),
+
+                // Logout Button
+                _buildLogoutButton(),
               ],
             ),
           );
@@ -492,5 +498,53 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         );
       },
     );
+  }
+
+  Widget _buildLogoutButton() {
+    return InkWell(
+      onTap: _handleLogout,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Icon(
+              Icons.logout,
+              size: 16,
+              color: Colors.red[600],
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Logout',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.red[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleLogout() async {
+    try {
+      final authService = sl<AuthService>();
+      await authService.logout();
+      
+      if (mounted) {
+        // Navigate to login page
+        context.goNamed(Routelists.login);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Logout failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }

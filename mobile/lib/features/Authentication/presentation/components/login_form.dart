@@ -218,9 +218,11 @@ class _LoginFormState extends State<LoginForm> {
               TextField(
                 controller: _emailController,
                 textAlign: TextAlign.center,
+                keyboardType: TextInputType.emailAddress,
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: 'login_screen.email_placeholder'.tr(),
-                  hintStyle: TextStyle(color: Colors.black),
+                  hintStyle: TextStyle(color: Colors.grey[400]),
                   // filled: true,
                   // fillColor: const Color(0xFF21262D),
                   border: OutlineInputBorder(
@@ -240,8 +242,6 @@ class _LoginFormState extends State<LoginForm> {
                     vertical: 12,
                   ),
                 ),
-                style: TextStyle(color: AppTheme.text),
-                keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
               TextField(
@@ -250,7 +250,7 @@ class _LoginFormState extends State<LoginForm> {
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'login_screen.password_placeholder'.tr(),
-                  hintStyle: TextStyle(color: Colors.black),
+                  hintStyle: TextStyle(color: Colors.grey[400]),
                   // filled: true,
                   // fillColor: const Color(0xFF21262D),
                   border: OutlineInputBorder(
@@ -273,7 +273,7 @@ class _LoginFormState extends State<LoginForm> {
                     vertical: 12,
                   ),
                 ),
-                style: TextStyle(color: AppTheme.text),
+                // style: TextStyle(color: AppTheme.text),
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 16),
