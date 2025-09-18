@@ -6,7 +6,7 @@ const Invitation = require('../models/Invitation');
 
 // Get role by ID
 exports.getRole = async (req, res) => {
-  console.log("hello I am in get role by id")
+
   try {
     const { id } = req.params;
     const userId = req.user._id;
@@ -26,7 +26,6 @@ exports.getRole = async (req, res) => {
 
     // If user has a role in this verse, check permissions
     if (userRole && userRole.role_id) {
-      console.log("user already has role ")
       const userRoleDoc = userRole.role_id;
       const canViewRoles = userRoleDoc.name === 'Administrator' || 
                           (userRoleDoc.permissions && userRoleDoc.permissions.manage_users);
@@ -35,7 +34,7 @@ exports.getRole = async (req, res) => {
         return res.status(403).json({ message: 'You do not have permission to view roles' });
       }
     } else {
-      console.log("user has no role ")
+
       // User doesn't have a role yet - check if they have an invitation for this verse
       const invitation = await Invitation.findOne({
         email: req.user.email,
