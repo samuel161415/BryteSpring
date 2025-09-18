@@ -270,19 +270,21 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
                 'channelName': _selectedChannelName ?? 'Channel',
               },
             );
-          } else if (state is ChannelFailure &&
-              state.message.contains('folder_creation_error')) {
-            setState(() {
-              _isLoading = false;
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'channels.folder_creation_error'.tr() + ': ${state.message}',
+          } else if (state is ChannelFailure) {
+            // Only reset loading if we're currently loading (i.e., during folder creation)
+            if (_isLoading) {
+              setState(() {
+                _isLoading = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'channels.folder_creation_error'.tr() + ': ${state.message}',
+                  ),
+                  backgroundColor: Colors.red,
                 ),
-                backgroundColor: Colors.red,
-              ),
-            );
+              );
+            }
           }
         },
         child: SingleChildScrollView(
