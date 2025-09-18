@@ -35,6 +35,7 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
   String? _selectedChannelName;
   bool _isPublic = true;
   int _currentStep = 0;
+  bool _isLoading = false;
 
   // Content type selections
   bool _isImages = false;
@@ -58,7 +59,7 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
     // Pre-fill with example
     _descriptionController.text =
         'Inhalte sind vorwiegend Bilder'; // Pre-fill with example
-    
+
     // Load user and channels
     _loadUserAndChannels();
   }
@@ -158,11 +159,13 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
           child: _isLoadingChannels
               ? const Center(child: CircularProgressIndicator())
               : channels.isEmpty
-                  ? Text('dashboard.sidebar.no_channels'.tr())
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: channels.map((channel) => _buildChannelOption(channel)).toList(),
-                    ),
+              ? Text('dashboard.sidebar.no_channels'.tr())
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: channels
+                      .map((channel) => _buildChannelOption(channel))
+                      .toList(),
+                ),
         ),
         actions: [
           TextButton(
@@ -192,34 +195,42 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
   }
 
   void _handleCreateFolder() async {
-    context.pushNamed(Routelists.createFolderConfirmation);
-    // if (!_formKey.currentState!.validate()) return;
-    // if (_selectedChannelId == null) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('channels.select_channel_error'.tr()),
-    //       backgroundColor: Colors.red,
-    //     ),
-    //   );
-    //   return;
-    // }
+    if (!_formKey.currentState!.validate()) return;
+    if (_selectedChannelId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('channels.select_channel_error'.tr()),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
-    // setState(() {
-    //   _isLoading = true;
-    // });
+    setState(() {
+      _isLoading = true;
+    });
 
-    // context.read<ChannelBloc>().add(
-    //   CreateChannel(
-    //     verseId: widget.verseId,
-    //     name: _folderNameController.text.trim(),
-    //     parentChannelId: _selectedChannelId,
-    //     type: 'folder',
-    //     description: _descriptionController.text.trim().isEmpty
-    //         ? null
-    //         : _descriptionController.text.trim(),
-    //     isPublic: _isPublic,
-    //   ),
-    // );
+    // Determine asset types based on content selection
+    List<String> assetTypes = [];
+    if (_isImages) assetTypes.add('images');
+    if (_isTexts) assetTypes.add('texts');
+    if (_isData) assetTypes.add('data');
+    if (_isDocuments) assetTypes.add('documents');
+
+    // Create the folder using ChannelBloc
+    context.read<ChannelBloc>().add(
+      CreateChannel(
+        verseId: widget.verseId,
+        name: _folderNameController.text.trim(),
+        parentChannelId: _selectedChannelId,
+        type: 'folder',
+        description: _descriptionController.text.trim().isEmpty
+            ? null
+            : _descriptionController.text.trim(),
+        isPublic: _isPublic,
+        assetTypes: assetTypes,
+      ),
+    );
   }
 
   @override
@@ -248,6 +259,9 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
               ),
             );
           } else if (state is ChannelCreated) {
+            setState(() {
+              _isLoading = false;
+            });
             // Navigate to confirmation page instead of showing snackbar
             context.goNamed(
               Routelists.createFolderConfirmation,
@@ -256,7 +270,11 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
                 'channelName': _selectedChannelName ?? 'Channel',
               },
             );
-          } else if (state is ChannelFailure && state.message.contains('folder_creation_error')) {
+          } else if (state is ChannelFailure &&
+              state.message.contains('folder_creation_error')) {
+            setState(() {
+              _isLoading = false;
+            });
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -482,7 +500,7 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
 
   Widget _continueButton(bool isActive) {
     return InkWell(
-      onTap: () {
+      onTap: _isLoading ? null : () {
         if (_currentStep == 3) {
           _handleCreateFolder();
         } else {
@@ -496,17 +514,26 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
         decoration: BoxDecoration(
           // borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isActive ? Colors.black87 : Colors.grey[300]!,
+            color: (_isLoading || !isActive) ? Colors.grey[300]! : Colors.black87,
             width: 3,
           ),
         ),
-        child: Text(
-          _currentStep == 3 ? 'create_folder_button'.tr() : 'common.next'.tr(),
-          style: TextStyle(
-            fontSize: 16,
-            color: isActive ? Colors.black87 : Colors.grey[300]!,
-          ),
-        ),
+        child: _isLoading && _currentStep == 3
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                ),
+              )
+            : Text(
+                _currentStep == 3 ? 'create_folder_button'.tr() : 'common.next'.tr(),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: (_isLoading || !isActive) ? Colors.grey[300]! : Colors.black87,
+                ),
+              ),
       ),
     );
   }
