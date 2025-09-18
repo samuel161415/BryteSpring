@@ -80,6 +80,7 @@
     "change_name": "Change Name",
     "change_contents": "Change Contents",
     "folder_inheritance_info": "Corporate Design is freely accessible to all users of your organization and inherits these properties to 'Employee Photos'.",
+    "folder_review_message": "Please carefully review your folder settings. Do you agree?",
     "yes_correct": "Yes, that is correct",
     "select_other_folder": "Select another folder",
     "content_type_question": "Which contents are stored here?",

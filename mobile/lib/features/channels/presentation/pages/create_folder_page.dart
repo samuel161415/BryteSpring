@@ -500,13 +500,15 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
 
   Widget _continueButton(bool isActive) {
     return InkWell(
-      onTap: _isLoading ? null : () {
-        if (_currentStep == 3) {
-          _handleCreateFolder();
-        } else {
-          isActive ? _nextStep() : null;
-        }
-      },
+      onTap: _isLoading
+          ? null
+          : () {
+              if (_currentStep == 3) {
+                _handleCreateFolder();
+              } else {
+                isActive ? _nextStep() : null;
+              }
+            },
       child: Container(
         alignment: Alignment.center,
         width: 300,
@@ -514,7 +516,9 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
         decoration: BoxDecoration(
           // borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: (_isLoading || !isActive) ? Colors.grey[300]! : Colors.black87,
+            color: (_isLoading || !isActive)
+                ? Colors.grey[300]!
+                : Colors.black87,
             width: 3,
           ),
         ),
@@ -528,10 +532,14 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
                 ),
               )
             : Text(
-                _currentStep == 3 ? 'create_folder_button'.tr() : 'common.next'.tr(),
+                _currentStep == 3
+                    ? 'create_folder_button'.tr()
+                    : 'common.next'.tr(),
                 style: TextStyle(
                   fontSize: 16,
-                  color: (_isLoading || !isActive) ? Colors.grey[300]! : Colors.black87,
+                  color: (_isLoading || !isActive)
+                      ? Colors.grey[300]!
+                      : Colors.black87,
                 ),
               ),
       ),
@@ -995,8 +1003,7 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Text(
-            'Bitte prüfe die Einstellungen Deines Ordners sorgfältig. Bist Du einverstanden?'
-                .tr(),
+            'channels.folder_review_message'.tr(),
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 16, color: Colors.black87),
           ),

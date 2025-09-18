@@ -80,6 +80,7 @@
     "change_name": "Namen ändern",
     "change_contents": "Inhalte ändern",
     "folder_inheritance_info": "Corporate Design ist für alle Nutzer Deiner Organisation uneingeschränkt zugänglich und vererbt diese Eigenschaften auf 'Mitarbeiterfotos'.",
+    "folder_review_message": "Bitte prüfe die Einstellungen Deines Ordners sorgfältig. Bist Du einverstanden?",
     "yes_correct": "Ja, das ist richtig",
     "select_other_folder": "Anderen Ordner wählen",
     "content_type_question": "Welche Inhalte werden hier abgelegt?",

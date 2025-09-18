@@ -122,7 +122,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
         if (description != null) 'description': description,
       };
 
-      final response = await dioClient.post('/channel', data: data);
+      final response = await dioClient.post('/channel/create', data: data);
 
       if (response.statusCode == 201) {
         final channel = ChannelEntity.fromJson(response.data['channel']);
