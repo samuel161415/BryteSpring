@@ -43,7 +43,7 @@
   "join_verse": {
     "greeting_name": "Hello, {name}!",
     "invited_title": "You are invited!",
-    "invited_desc": "Dirk Markus, Chief Financial Officer, invites you to join the Verse of BrightNetWorks GmbH.",
+    "invited_desc": "{inviterName}, Chief Financial Officer, invites you to join the Verse of {verseName}.",
     "join_button": "Join Verse",
     "almost_done_title": "Almost there!",
     "almost_done_desc": "Before you can store and manage content, you need to join a Verse. You can ask your company's administrator for an invitation, or create a new Verse.",

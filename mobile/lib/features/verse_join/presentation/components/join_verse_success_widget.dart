@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/injection_container.dart';
-import 'package:mobile/core/services/auth_service.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
-import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
 import 'package:mobile/features/verse_join/domain/entities/verse_join_entity.dart';
 
@@ -21,7 +19,6 @@ class JoinVerseSuccessComponent extends StatefulWidget {
 }
 
 class _JoinVerseSuccessComponentState extends State<JoinVerseSuccessComponent> {
-  User? currentUser;
   VerseJoinEntity? verseData;
   bool isLoading = true;
 
@@ -33,14 +30,12 @@ class _JoinVerseSuccessComponentState extends State<JoinVerseSuccessComponent> {
 
   Future<void> _loadData() async {
     try {
-      final authService = sl<AuthService>();
       final verseJoinUseCase = sl<VerseJoinUseCase>();
-      
-      // Get current user from auth service
-      setState(() => currentUser = authService.currentUser);
 
-      // Get verse data
-      final verseResult = await verseJoinUseCase.getVerse(widget.invitation.verseId);
+      // Get verse data using invitation's verseId
+      final verseResult = await verseJoinUseCase.getVerse(
+        widget.invitation.verseId,
+      );
       verseResult.fold(
         (failure) => null,
         (verse) => setState(() => verseData = verse),
@@ -53,8 +48,11 @@ class _JoinVerseSuccessComponentState extends State<JoinVerseSuccessComponent> {
   }
 
   String _getGreeting() {
-    if (currentUser?.firstName != null) {
-      return 'join_verse.greeting_name'.tr(namedArgs: {'name': currentUser!.firstName});
+    final firstName = widget.invitation.firstName;
+    if (firstName.isNotEmpty) {
+      return 'join_verse.greeting_name'.tr(
+        namedArgs: {'name': firstName},
+      );
     }
     return 'join_verse.greeting_name'.tr(namedArgs: {'name': 'there'});
   }
@@ -66,13 +64,6 @@ class _JoinVerseSuccessComponentState extends State<JoinVerseSuccessComponent> {
 
   String _getSuccessTitle() {
     return 'join_verse.success_title'.tr();
-  }
-
-  String _getSuccessCta() {
-    if (currentUser?.firstName != null) {
-      return 'join_verse.learn_role_cta'.tr(namedArgs: {'name': currentUser!.firstName});
-    }
-    return 'join_verse.success_cta'.tr();
   }
 
   @override
@@ -113,7 +104,8 @@ class _JoinVerseSuccessComponentState extends State<JoinVerseSuccessComponent> {
                   ? Image.network(
                       verseData!.branding.logoUrl!,
                       height: 80,
-                      errorBuilder: (context, error, stackTrace) => _buildDefaultImage(),
+                      errorBuilder: (context, error, stackTrace) =>
+                          _buildDefaultImage(),
                     )
                   : _buildDefaultImage(),
               Text(
@@ -130,8 +122,8 @@ class _JoinVerseSuccessComponentState extends State<JoinVerseSuccessComponent> {
               GestureDetector(
                 onTap: () {
                   context.pushNamed(
-                    Routelists.getToKnowRole,
-                    extra: widget.invitation,
+                    Routelists.dashboard,
+                    // extra: widget.invitation,
                   );
                 },
                 child: Container(
@@ -140,7 +132,7 @@ class _JoinVerseSuccessComponentState extends State<JoinVerseSuccessComponent> {
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 4),
                   ),
-                  child: Center(child: Text(_getSuccessCta())),
+                  child: Center(child: Text('Endlich loslegen')),
                 ),
               ),
             ],
@@ -158,11 +150,7 @@ class _JoinVerseSuccessComponentState extends State<JoinVerseSuccessComponent> {
         color: Colors.grey[200],
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Icon(
-        Icons.business,
-        size: 40,
-        color: Colors.grey[600],
-      ),
+      child: Icon(Icons.business, size: 40, color: Colors.grey[600]),
     );
   }
 }

@@ -4,16 +4,16 @@ import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/join_verse_widget.dart';
 import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 
-class JoinVerse extends StatefulWidget {
+class JoinVersePage extends StatefulWidget {
   final InvitationEntity invitation;
 
-  const JoinVerse({super.key, required this.invitation});
+  const JoinVersePage({super.key, required this.invitation});
 
   @override
-  State<JoinVerse> createState() => _JoinVerseState();
+  State<JoinVersePage> createState() => _JoinVerseState();
 }
 
-class _JoinVerseState extends State<JoinVerse> {
+class _JoinVerseState extends State<JoinVersePage> {
   void _handleLanguageChanged() {
     // Force rebuild when language changes
     setState(() {});

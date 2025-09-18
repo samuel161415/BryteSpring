@@ -9,7 +9,8 @@ import 'package:mobile/features/Authentication/presentation/pages/reset_password
 import 'package:mobile/features/Authentication/presentation/pages/invitation_validation_page.dart';
 import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
-import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
+import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart'
+    hide JoinVerse;
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
 import 'package:mobile/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:mobile/features/channels/presentation/pages/create_folder_page.dart';
@@ -142,7 +143,11 @@ class AppRouter {
           // If no invitation provided, redirect to login
           return _buildPage(context, state, LoginPage());
         }
-        return _buildPage(context, state, JoinVerse(invitation: invitation));
+        return _buildPage(
+          context,
+          state,
+          JoinVersePage(invitation: invitation),
+        );
       },
     ),
     GoRoute(
@@ -161,6 +166,7 @@ class AppRouter {
         );
       },
     ),
+
     GoRoute(
       path: '/${Routelists.joinVerseSuccess}',
       name: Routelists.joinVerseSuccess,
@@ -177,7 +183,6 @@ class AppRouter {
         );
       },
     ),
-
     GoRoute(
       path: '/${Routelists.dashboard}',
       name: Routelists.dashboard,

@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routing/routeLists.dart';
-import 'package:mobile/core/injection_container.dart';
-import 'package:mobile/core/services/auth_service.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
-import 'package:mobile/features/Authentication/domain/entities/user.dart';
 
 class GetToKnowRoleWidget extends StatefulWidget {
   final InvitationEntity invitation;
@@ -20,22 +17,12 @@ class GetToKnowRoleWidget extends StatefulWidget {
 }
 
 class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
-  User? currentUser;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCurrentUser();
-  }
-
-  void _loadCurrentUser() {
-    final authService = sl<AuthService>();
-    setState(() => currentUser = authService.currentUser);
-  }
-
   String _getGreeting() {
-    if (currentUser?.firstName != null) {
-      return 'join_verse.greeting_name'.tr(namedArgs: {'name': currentUser!.firstName});
+    final firstName = widget.invitation.firstName;
+    if (firstName.isNotEmpty) {
+      return 'join_verse.greeting_name'.tr(
+        namedArgs: {'name': firstName},
+      );
     }
     return 'join_verse.greeting_name'.tr(namedArgs: {'name': 'there'});
   }
