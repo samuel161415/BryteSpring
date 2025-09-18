@@ -30,7 +30,7 @@ exports.sendTestEmailController = async (req, res) => {
           messageId: result.messageId,
           status: result.status,
           recipient: to,
-          sender: from || process.env.EMAIL_FROM
+          sender: from || process.env.MJ_FROM_EMAIL
         }
       });
     } else {
@@ -97,7 +97,7 @@ exports.sendTestInvitation = async (req, res) => {
           messageId: result.messageId,
           status: result.status,
           recipient: to,
-          sender: fromEmail || process.env.EMAIL_FROM,
+          sender: fromEmail || process.env.MJ_FROM_EMAIL,
           verseName: verseName || 'Test Verse',
           roleName: roleName || 'Test Role',
           token: invitationToken
@@ -152,14 +152,14 @@ exports.getAccountInfo = async (req, res) => {
 exports.testConfiguration = async (req, res) => {
   try {
     // Check environment variables
-    const requiredVars = ['MAILJET_API_KEY', 'MAILJET_SECRET_KEY', 'EMAIL_FROM'];
+    const requiredVars = ['MJ_API_KEY', 'MJ_SECRET_KEY', 'MJ_FROM_EMAIL'];
     const missing = requiredVars.filter(varName => !process.env[varName]);
     
     const config = {
-      hasApiKey: !!process.env.MAILJET_API_KEY,
-      hasSecretKey: !!process.env.MAILJET_SECRET_KEY,
-      hasFromEmail: !!process.env.EMAIL_FROM,
-      fromEmail: process.env.EMAIL_FROM,
+      hasApiKey: !!process.env.MJ_API_KEY,
+      hasSecretKey: !!process.env.MJ_SECRET_KEY,
+      hasFromEmail: !!process.env.MJ_FROM_EMAIL,
+      fromEmail: process.env.MJ_FROM_EMAIL,
       fromName: process.env.FROM_NAME || 'BRYTE VERSE',
       inviteBaseUrl: process.env.INVITE_BASE_URL || 'http://localhost:3000'
     };
@@ -172,9 +172,9 @@ exports.testConfiguration = async (req, res) => {
         instructions: {
           message: 'Please set the following environment variables:',
           variables: {
-            MAILJET_API_KEY: 'Your Mailjet API key',
-            MAILJET_SECRET_KEY: 'Your Mailjet secret key',
-            EMAIL_FROM: 'Your verified sender email address',
+            MJ_API_KEY: 'Your Mailjet API key',
+            MJ_SECRET_KEY: 'Your Mailjet secret key',
+            MJ_FROM_EMAIL: 'Your verified sender email address',
             FROM_NAME: 'Your sender name (optional)',
             INVITE_BASE_URL: 'Your application base URL (optional)'
           }
