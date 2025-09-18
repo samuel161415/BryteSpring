@@ -1,9 +1,9 @@
 const Mailjet = require("node-mailjet");
 
 // Mailjet configuration
-const MAILJET_API_KEY = process.env.MAILJET_API_KEY;
-const MAILJET_SECRET_KEY = process.env.MAILJET_SECRET_KEY;
-const FROM_EMAIL = process.env.EMAIL_FROM;
+const MAILJET_API_KEY = process.env.MJ_API_KEY;
+const MAILJET_SECRET_KEY = process.env.MJ_SECRET_KEY;
+const FROM_EMAIL = process.env.MJ_FROM_EMAIL;
 const FROM_NAME = process.env.FROM_NAME || "BRYTE VERSE";
 
 // Initialize Mailjet client
