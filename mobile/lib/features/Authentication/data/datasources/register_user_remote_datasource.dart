@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:mobile/core/error/failure.dart';
 import 'package:mobile/core/network/dio_client.dart';
+import 'package:mobile/core/network/error_extractor.dart';
 import 'package:mobile/features/Authentication/domain/entities/register_user_entity.dart';
 
 abstract class RegisterUserRemoteDataSource {
@@ -34,11 +35,7 @@ class RegisterUserRemoteDataSourceImpl implements RegisterUserRemoteDataSource {
         );
       }
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        final message = e.response?.data['message'] ?? 'Registration failed';
-        return Left(ServerFailure(message));
-      }
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }

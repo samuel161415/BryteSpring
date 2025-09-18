@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:mobile/core/error/failure.dart';
 import 'package:mobile/core/network/dio_client.dart';
+import 'package:mobile/core/network/error_extractor.dart';
 import 'package:mobile/features/Authentication/domain/entities/reset_password_entity.dart';
 
 abstract class ResetPasswordRemoteDataSource {
@@ -36,7 +37,7 @@ class ResetPasswordRemoteDataSourceImpl
         );
       }
     } on DioException catch (e) {
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -61,7 +62,7 @@ class ResetPasswordRemoteDataSourceImpl
         );
       }
     } on DioException catch (e) {
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/failure.dart';
 import 'package:mobile/core/network/dio_client.dart';
+import 'package:mobile/core/network/error_extractor.dart';
 import 'package:mobile/features/verse_join/domain/entities/verse_join_entity.dart';
 
 abstract class VerseJoinRemoteDataSource {
@@ -34,7 +35,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
 
       return Left(ServerFailure('Join verse failed: ${response.statusCode}'));
     } on DioException catch (e) {
-      return Left(ServerFailure(_extractServerMessage(e)));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -60,7 +61,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
       }
       */
     } on DioException catch (e) {
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -90,7 +91,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
       }
       */
     } on DioException catch (e) {
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -109,7 +110,7 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
         return Left(ServerFailure('Get verse failed: ${response.statusCode}'));
       }
     } on DioException catch (e) {
-      return Left(ServerFailure(_extractServerMessage(e)));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -157,21 +158,5 @@ DateTime? _safeParseDate(dynamic value) {
       print('VerseJoinRemoteDataSource: Failed to parse date: $value');
     }
     return null;
-  }
-}
-
-String _extractServerMessage(DioException e) {
-  try {
-    final status = e.response?.statusCode;
-    final data = e.response?.data;
-    if (data is Map<String, dynamic>) {
-      final message = data['message']?.toString();
-      if (message != null && message.isNotEmpty) {
-        return message; // e.g., "User has already joined this verse"
-      }
-    }
-    return 'Request failed${status != null ? ' (HTTP $status)' : ''}: ${e.message}';
-  } catch (_) {
-    return 'Request failed: ${e.message}';
   }
 }

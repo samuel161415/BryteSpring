@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:mobile/core/error/failure.dart';
 import 'package:mobile/core/network/dio_client.dart';
+import 'package:mobile/core/network/error_extractor.dart';
 import 'package:mobile/features/dashboard/domain/entities/dashboard_entity.dart';
 
 abstract class DashboardRemoteDataSource {
@@ -23,6 +25,8 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       } else {
         return Left(ServerFailure('Failed to load dashboard data: ${response.statusCode}'));
       }
+    } on DioException catch (e) {
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Error loading dashboard data: $e'));
     }

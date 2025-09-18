@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:mobile/core/error/failure.dart';
 import 'package:mobile/core/network/dio_client.dart';
+import 'package:mobile/core/network/error_extractor.dart';
 import 'package:mobile/features/channels/domain/entities/channel_entity.dart';
 
 abstract class ChannelRemoteDataSource {
@@ -65,7 +66,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
           ServerFailure('Verse not found or endpoint does not exist'),
         );
       }
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       print('💥 Unexpected error: $e');
       return Left(ServerFailure('Unexpected error: $e'));
@@ -95,7 +96,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
       } else if (e.response?.statusCode == 404) {
         return Left(ServerFailure('Channel not found'));
       }
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -142,7 +143,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
           ServerFailure('Insufficient permissions to create channels'),
         );
       }
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -179,7 +180,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
       } else if (e.response?.statusCode == 404) {
         return Left(ServerFailure('Channel not found'));
       }
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -209,7 +210,7 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
       } else if (e.response?.statusCode == 404) {
         return Left(ServerFailure('Channel not found'));
       }
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }

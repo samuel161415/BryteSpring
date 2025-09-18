@@ -20,9 +20,7 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
   String _getGreeting() {
     final firstName = widget.invitation.firstName;
     if (firstName.isNotEmpty) {
-      return 'join_verse.greeting_name'.tr(
-        namedArgs: {'name': firstName},
-      );
+      return 'join_verse.greeting_name'.tr(namedArgs: {'name': firstName});
     }
     return 'join_verse.greeting_name'.tr(namedArgs: {'name': 'there'});
   }

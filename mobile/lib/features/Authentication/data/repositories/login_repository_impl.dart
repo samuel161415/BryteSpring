@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:mobile/core/error/failure.dart';
 import 'package:mobile/core/storage/secure_storage.dart';
+import 'package:mobile/core/network/error_extractor.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/core/network/dio_client.dart';
@@ -37,7 +38,7 @@ class LoginRepositoryImpl implements LoginRepository {
         return Left(ServerFailure('Login failed: ${response.statusCode}'));
       }
     } on DioException catch (e) {
-      return Left(ServerFailure('Dio error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -57,7 +58,7 @@ class LoginRepositoryImpl implements LoginRepository {
         return Left(ServerFailure('Logout failed: ${response.statusCode}'));
       }
     } on DioException catch (e) {
-      return Left(ServerFailure('Dio error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -101,7 +102,7 @@ class LoginRepositoryImpl implements LoginRepository {
         // For now, assume user doesn't exist and let them proceed to registration
         return const Right(false);
       }
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
