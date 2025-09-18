@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobile/core/error/failure.dart';
 import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/features/verse_join/domain/entities/verse_join_entity.dart';
@@ -21,24 +22,19 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
     try {
       final response = await dioClient.post('/verse/$verseId/join');
 
-      if (response.statusCode == 200) {
-        // Backend returns: { verse: {...}, role: {...}, user: {...} }
-        final responseData = response.data;
-        final verseData = responseData['verse'];
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Expected: { message, verse: {...}, role: {...}, user: {...} }
+        final data = response.data as Map<String, dynamic>;
+        final verseJson = (data['verse'] ?? {}) as Map<String, dynamic>;
+        final userJson = (data['user'] ?? {}) as Map<String, dynamic>;
 
-        if (verseData != null) {
-          final verse = VerseJoinEntity.fromJson(verseData);
-          return Right(verse);
-        } else {
-          return Left(
-            ServerFailure('Invalid response format: missing verse data'),
-          );
-        }
-      } else {
-        return Left(ServerFailure('Join verse failed: ${response.statusCode}'));
+        final verse = _mapMinimalVerseToEntity(verseJson, userJson);
+        return Right(verse);
       }
+
+      return Left(ServerFailure('Join verse failed: ${response.statusCode}'));
     } on DioException catch (e) {
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(_extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -113,9 +109,69 @@ class VerseJoinRemoteDataSourceImpl implements VerseJoinRemoteDataSource {
         return Left(ServerFailure('Get verse failed: ${response.statusCode}'));
       }
     } on DioException catch (e) {
-      return Left(ServerFailure('Network error: ${e.message}'));
+      return Left(ServerFailure(_extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
+  }
+}
+
+// Helpers
+VerseJoinEntity _mapMinimalVerseToEntity(
+  Map<String, dynamic> verseJson,
+  Map<String, dynamic> userJson,
+) {
+  final now = DateTime.now();
+  return VerseJoinEntity(
+    id: (verseJson['_id'] ?? verseJson['id'] ?? '').toString(),
+    name: (verseJson['name'] ?? '').toString(),
+    adminEmail: (userJson['email'] ?? '').toString(),
+    subdomain: verseJson['subdomain']?.toString(),
+    organizationName: verseJson['organization_name']?.toString(),
+    branding: const BrandingEntity(
+      primaryColor: '#3B82F6',
+      colorName: 'Primary Blue',
+    ),
+    settings: const SettingsEntity(
+      isPublic: false,
+      allowInvites: true,
+      maxUsers: 50,
+      storageLimit: 10737418240,
+    ),
+    isSetupComplete: (verseJson['is_setup_complete'] ?? true) == true,
+    setupCompletedAt: null,
+    setupCompletedBy: null,
+    isActive: (verseJson['is_active'] ?? true) == true,
+    createdAt: _safeParseDate(verseJson['created_at']) ?? now,
+    updatedAt: _safeParseDate(verseJson['updated_at']) ?? now,
+    createdBy: verseJson['created_by']?.toString(),
+  );
+}
+
+DateTime? _safeParseDate(dynamic value) {
+  if (value == null) return null;
+  try {
+    return DateTime.parse(value.toString());
+  } catch (_) {
+    if (kDebugMode) {
+      print('VerseJoinRemoteDataSource: Failed to parse date: $value');
+    }
+    return null;
+  }
+}
+
+String _extractServerMessage(DioException e) {
+  try {
+    final status = e.response?.statusCode;
+    final data = e.response?.data;
+    if (data is Map<String, dynamic>) {
+      final message = data['message']?.toString();
+      if (message != null && message.isNotEmpty) {
+        return message; // e.g., "User has already joined this verse"
+      }
+    }
+    return 'Request failed${status != null ? ' (HTTP $status)' : ''}: ${e.message}';
+  } catch (_) {
+    return 'Request failed: ${e.message}';
   }
 }

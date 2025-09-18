@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mobile/core/error/failure.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/verse_join/domain/entities/verse_join_entity.dart';
 import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
 
@@ -64,9 +65,9 @@ class JoinVerseBloc extends Bloc<JoinVerseEvent, JoinVerseState> {
     Emitter<JoinVerseState> emit,
   ) async {
     emit(JoinVerseLoading());
-    
+
     final result = await verseJoinUseCase.joinVerse(event.verseId);
-    
+
     result.fold(
       (failure) => emit(JoinVerseFailure(_mapFailureToMessage(failure))),
       (verse) => emit(JoinVerseSuccess(verse)),

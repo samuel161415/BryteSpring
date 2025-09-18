@@ -41,16 +41,19 @@
     "next": "Next"
   },
   "join_verse": {
-    "greeting_name": "Hello, Stephan!",
+    "greeting_name": "Hello, {name}!",
     "invited_title": "You are invited!",
     "invited_desc": "Dirk Markus, Chief Financial Officer, invites you to join the Verse of BrightNetWorks GmbH.",
     "join_button": "Join Verse",
     "almost_done_title": "Almost there!",
     "almost_done_desc": "Before you can store and manage content, you need to join a Verse. You can ask your company's administrator for an invitation, or create a new Verse.",
     "create_verse_button": "+ Create Verse",
-    "welcome_title": "Welcome to the Verse of BrightNetWorks!",
-    "welcome_desc": "Great, you joined the Verse of BrightNetWorks as an Expert. Are you ready to learn more about your new role?",
-    "learn_role_cta": "Get to know Stephan's role",
+    "welcome_title": "Welcome to the Verse of {verseName}!",
+    "welcome_desc": "Great, you joined the Verse of {verseName} as an Expert. Are you ready to learn more about your new role?",
+    "learn_role_cta": "Get to know {name}'s role",
+    "success_title": "You're all set!",
+    "success_message": "We're excited to have you and your contribution. Your team from {verseName}!",
+    "success_cta": "Get to know your role",
     "role": {
       "title": "Your role as Expert",
       "intro": "As an Expert, you help keep your organization's valuable content up to date, structured and ready for use at any time.",

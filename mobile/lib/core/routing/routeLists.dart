@@ -11,4 +11,5 @@ class Routelists {
   static const dashboard = 'dashboard';
   static const createFolder = 'createFolder';
   static const createFolderConfirmation = 'createFolderConfirmation';
+  static const joinVerseSuccess = 'joinVerseSuccess';
 }

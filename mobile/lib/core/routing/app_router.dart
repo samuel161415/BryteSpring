@@ -7,12 +7,14 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/invitation_validation_page.dart';
+import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
 import 'package:mobile/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:mobile/features/channels/presentation/pages/create_folder_page.dart';
 import 'package:mobile/features/channels/presentation/pages/create_folder_confirmation_page.dart';
+import 'package:mobile/features/verse_join/presentation/pages/join_verse_success.dart';
 
 /// App router configuration using go_router
 class AppRouter {
@@ -159,6 +161,23 @@ class AppRouter {
         );
       },
     ),
+    GoRoute(
+      path: '/${Routelists.joinVerseSuccess}',
+      name: Routelists.joinVerseSuccess,
+      pageBuilder: (context, state) {
+        final invitation = state.extra as InvitationEntity?;
+        if (invitation == null) {
+          // If no invitation provided, redirect to login
+          return _buildPage(context, state, LoginPage());
+        }
+        return _buildPage(
+          context,
+          state,
+          JoinVerseSuccessPage(invitation: invitation),
+        );
+      },
+    ),
+
     GoRoute(
       path: '/${Routelists.dashboard}',
       name: Routelists.dashboard,

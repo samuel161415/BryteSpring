@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -42,6 +43,7 @@ Future<void> init() async {
   // External dependencies
   final sharedPrefs = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPrefs);
+  sl.registerLazySingleton(() => const FlutterSecureStorage());
 
   // Network
   sl.registerLazySingleton(() => Dio());
@@ -97,11 +99,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<VerseJoinRepository>(
-    () => VerseJoinRepositoryImpl(
-      remoteDataSource: sl(),
-      localStorage: sl(),
-      connectivity: sl(),
-    ),
+    () => VerseJoinRepositoryImpl(remoteDataSource: sl()),
   );
 
   // Channel dependencies
@@ -140,8 +138,7 @@ Future<void> init() async {
 
   // Services
   sl.registerLazySingleton(() => AuthService(sl()));
-  sl.registerLazySingleton(() => SavedAccountsService(
-        prefs: sl(),
-        secureStorage: sl(),
-      ));
+  sl.registerLazySingleton(
+    () => SavedAccountsService(prefs: sl(), secureStorage: sl()),
+  );
 }

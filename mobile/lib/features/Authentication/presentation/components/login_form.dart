@@ -41,9 +41,11 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _loadSavedAccounts() async {
     try {
+      print('LoginForm: Loading saved accounts...');
       final savedAccountsService = sl<SavedAccountsService>();
       final accounts = await savedAccountsService.getSavedAccounts();
-      
+
+      print('LoginForm: Loaded ${accounts.length} saved accounts');
       setState(() {
         _savedAccounts = accounts;
       });
@@ -51,16 +53,20 @@ class _LoginFormState extends State<LoginForm> {
       // If invitation is provided, use invitation email
       if (widget.invitation != null) {
         _emailController.text = widget.invitation!.email;
-        print('LoginForm initState - using invitation email: ${widget.invitation!.email}');
+        print(
+          'LoginForm initState - using invitation email: ${widget.invitation!.email}',
+        );
       } else if (accounts.isNotEmpty) {
         // Use last used account or first account
         final lastUsedAccount = await savedAccountsService.getLastUsedAccount();
         final accountToUse = lastUsedAccount ?? accounts.first;
-        
+
         _emailController.text = accountToUse.email;
         _passwordController.text = accountToUse.password;
         _currentAccount = accountToUse;
-        print('LoginForm initState - using saved account: ${accountToUse.email}');
+        print(
+          'LoginForm initState - using saved account: ${accountToUse.email}',
+        );
       }
     } catch (e) {
       print('Error loading saved accounts: $e');
@@ -117,7 +123,7 @@ class _LoginFormState extends State<LoginForm> {
         (user) async {
           print('Login successful for user: ${user.email}');
           print('Invitation present: ${widget.invitation != null}');
-          
+
           // Save account if remember me is checked
           if (_rememberMe) {
             try {
@@ -133,7 +139,7 @@ class _LoginFormState extends State<LoginForm> {
               print('Error saving account: $e');
             }
           }
-          
+
           // Login successful
           print('widget.invitation: ${widget.invitation}');
           if (widget.invitation != null) {
@@ -181,12 +187,14 @@ class _LoginFormState extends State<LoginForm> {
             itemBuilder: (context, index) {
               final account = _savedAccounts[index];
               final isCurrentAccount = _currentAccount?.email == account.email;
-              
+
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: isCurrentAccount ? Colors.teal[600] : Colors.grey[400],
+                  backgroundColor: isCurrentAccount
+                      ? Colors.teal[600]
+                      : Colors.grey[400],
                   child: Text(
-                    account.firstName?.isNotEmpty == true 
+                    account.firstName?.isNotEmpty == true
                         ? account.firstName![0].toUpperCase()
                         : account.email[0].toUpperCase(),
                     style: const TextStyle(
@@ -196,15 +204,17 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
                 title: Text(
-                  account.firstName?.isNotEmpty == true 
+                  account.firstName?.isNotEmpty == true
                       ? '${account.firstName} ${account.lastName ?? ''}'
                       : account.email,
                   style: TextStyle(
-                    fontWeight: isCurrentAccount ? FontWeight.bold : FontWeight.normal,
+                    fontWeight: isCurrentAccount
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
                 subtitle: Text(account.email),
-                trailing: isCurrentAccount 
+                trailing: isCurrentAccount
                     ? Icon(Icons.check, color: Colors.teal[600])
                     : null,
                 onTap: () {
@@ -230,10 +240,7 @@ class _LoginFormState extends State<LoginForm> {
                 _removeCurrentAccount();
                 Navigator.of(context).pop();
               },
-              child: Text(
-                'Remove',
-                style: TextStyle(color: Colors.red[600]),
-              ),
+              child: Text('Remove', style: TextStyle(color: Colors.red[600])),
             ),
         ],
       ),
@@ -242,14 +249,14 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _removeCurrentAccount() async {
     if (_currentAccount == null) return;
-    
+
     try {
       final savedAccountsService = sl<SavedAccountsService>();
       await savedAccountsService.removeAccount(_currentAccount!.email);
-      
+
       // Reload accounts
       await _loadSavedAccounts();
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Account removed: ${_currentAccount!.email}'),
@@ -454,9 +461,7 @@ class _LoginFormState extends State<LoginForm> {
                       },
                       activeColor: const Color(0xFFE44D2E),
                       checkColor: Colors.white,
-                      fillColor: MaterialStateProperty.all(
-                        const Color(0xFF21262D),
-                      ),
+
                       side: const BorderSide(color: Color(0xFF30363D)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
@@ -515,7 +520,7 @@ class _LoginFormState extends State<LoginForm> {
                             : Text(
                                 'login_screen.login_button'.tr(),
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.black,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -549,6 +554,21 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                       Icon(Icons.menu, color: Colors.black, size: 30),
                     ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      context.pushNamed(
+                        Routelists.invitationValidation,
+                        pathParameters: {
+                          'token': 'e522a5b1-1302-4dfb-915f-11ae30476415',
+                        },
+                      );
+                    },
+                    child: Icon(
+                      Icons.inventory_outlined,
+                      color: Colors.black,
+                      size: 30,
+                    ),
                   ),
                 ],
               ),

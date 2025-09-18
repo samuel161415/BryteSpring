@@ -311,7 +311,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                             : Text(
                                                 'Create Account',
                                                 style: const TextStyle(
-                                                  color: Colors.white,
+                                                  color: Colors.black,
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -326,7 +326,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           const SizedBox(height: 12),
                           TextButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              context.pushNamed(
+                                Routelists.login,
+                                extra: widget.invitation,
+                              );
                             },
                             child: Text(
                               'reset_password.back_to_login'.tr(),
