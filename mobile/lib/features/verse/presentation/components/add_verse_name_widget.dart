@@ -13,10 +13,12 @@ class AddVerseNameWidget extends StatefulWidget {
     required this.screenSize,
     required this.controller,
     required this.verse,
+    required this.name,
   });
   final PageController controller;
   final Verse verse;
   final Size screenSize;
+  final String name;
 
   @override
   State<AddVerseNameWidget> createState() => _AddVerseNameWidgetState();
@@ -43,7 +45,7 @@ class _AddVerseNameWidgetState extends State<AddVerseNameWidget> {
 
           // Greeting
           Text(
-            "verse_creation_page.which_verse".tr(),
+            "${widget.name}" + "verse_creation_page.which_verse".tr(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 28,

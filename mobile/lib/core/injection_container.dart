@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
@@ -64,7 +65,7 @@ Future<void> init() async {
   // Network
   sl.registerLazySingleton(() => Dio());
   sl.registerLazySingleton(() => DioClient(dio: sl()));
-  // sl.registerLazySingleton(() => Connectivity());
+  sl.registerLazySingleton(() => Connectivity());
 
   // Storage
   sl.registerLazySingleton(() => LocalStorage(sl.get<SharedPreferences>()));

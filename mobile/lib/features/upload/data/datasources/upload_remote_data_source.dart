@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:mobile/core/storage/secure_storage.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/token_service.dart';
 
@@ -19,12 +20,10 @@ class UploadRemoteDataSourceImpl implements UploadRemoteDataSource {
     String verseId,
     String folderPath,
   ) async {
-    final token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk1ODBiMDY0ZDhkOGM1NTlkNjE5OSIsImlhdCI6MTc1ODE3NDY2NCwiZXhwIjoxNzU4Nzc5NDY0fQ.umrk7iGIlhEuw6mRC4embnm93VmeGBzzo11oK9jsXpE";
-    // await tokenService.getToken();
-    // if (token == null || token.isEmpty) {
-    //   throw const ServerException("Authentication token missing");
-    // }
+    final token = await SecureStorage.getAccessToken();
+    if (token == null || token.isEmpty) {
+      throw const ServerException("Authentication token missing");
+    }
 
     final formData = FormData.fromMap({
       "file": await MultipartFile.fromFile(
@@ -37,7 +36,7 @@ class UploadRemoteDataSourceImpl implements UploadRemoteDataSource {
 
     try {
       final response = await dio.post(
-        "https://brytespring-app-itrx7.ondigitalocean.app/upload/single",
+        "https://brightcore-iugy8.ondigitalocean.app/upload/single",
         data: formData,
         options: Options(
           headers: {

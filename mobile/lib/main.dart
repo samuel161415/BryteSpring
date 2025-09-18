@@ -53,6 +53,10 @@ void main() async {
           BlocProvider<DashboardBloc>(
             create: (context) => DashboardBloc(getDashboardData: sl()),
           ),
+          BlocProvider<VerseBloc>(
+            create: (context) => VerseBloc(createVerse: sl()),
+          ),
+          BlocProvider<UploadBloc>(create: (context) => UploadBloc(sl())),
         ],
         child: const MyApp(),
       ),

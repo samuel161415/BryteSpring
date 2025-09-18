@@ -17,7 +17,15 @@ import '../../domain/entities/verse.dart';
 import '../../domain/usecases/create_verse.dart';
 
 class VerseCreationPage extends StatefulWidget {
-  const VerseCreationPage({super.key});
+  const VerseCreationPage({
+    super.key,
+    required this.verseId,
+    required this.currentUserName,
+    required this.email,
+  });
+  final String verseId;
+  final String currentUserName;
+  final String email;
 
   @override
   State<VerseCreationPage> createState() => _VerseCreationPageState();
@@ -27,6 +35,13 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
   final PageController _controller = PageController();
   int _currentPage = 0;
   Verse verse = Verse.empty();
+  @override
+  void initState() {
+    super.initState();
+    verse.verseId = widget.verseId;
+    verse.email = widget.email;
+  }
+
   bool _isSubmitting = false;
   String? _errorMessage;
   @override
@@ -38,13 +53,21 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
     }
 
     final pages = [
-      VerseWelcomeWidget(screenSize: screenSize, controller: _controller),
+      VerseWelcomeWidget(
+        name: widget.currentUserName,
+        screenSize: screenSize,
+        controller: _controller,
+      ),
       AddVerseNameWidget(
+        name: widget.currentUserName,
+
         screenSize: screenSize,
         controller: _controller,
         verse: verse,
       ),
       AddVerseDomainWidget(
+        name: widget.currentUserName,
+
         screenSize: screenSize,
         controller: _controller,
         verse: verse,
@@ -84,6 +107,8 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
         // onChanged: (value) => _verse = _verse.copyWith(channels: value),
       ),
       AssetSelectionWidget(
+        name: widget.currentUserName,
+
         screenSize: screenSize,
         controller: _controller,
         verse: verse,

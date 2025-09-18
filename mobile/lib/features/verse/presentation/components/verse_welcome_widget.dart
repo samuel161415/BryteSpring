@@ -8,9 +8,10 @@ class VerseWelcomeWidget extends StatelessWidget {
     super.key,
     required this.screenSize,
     required this.controller,
+    required this.name,
   });
   final PageController controller;
-
+  final String name;
   final Size screenSize;
 
   @override
@@ -34,7 +35,7 @@ class VerseWelcomeWidget extends StatelessWidget {
 
           // Greeting
           Text(
-            "verse_creation_page.greeting".tr(),
+            "verse_creation_page.greeting".tr() + "${name}",
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 28,

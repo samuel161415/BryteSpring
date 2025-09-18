@@ -15,9 +15,11 @@ class AssetSelectionWidget extends StatefulWidget {
     required this.screenSize,
     required this.controller,
     required this.verse,
+    required this.name,
   });
   final PageController controller;
   final Verse verse;
+  final String name;
 
   final Size screenSize;
 

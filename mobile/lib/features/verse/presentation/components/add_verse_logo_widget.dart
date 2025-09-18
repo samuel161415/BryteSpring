@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:universal_io/io.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -52,8 +52,10 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
     // final XFile? pickedFile = await _picker.pickImage(
     //   source: ImageSource.gallery,
     // );
-    PermissionStatus status = await Permission.photos
-        .request(); // or Permission.storage for Android
+    // if (Platform.isAndroid && Platform.isIOS) {
+    //   PermissionStatus status = await Permission.photos
+    //       .request(); // or Permission.storage for Android
+    // }
 
     // if (status.isGranted) {
     //   final XFile? pickedFile = await _picker.pickImage(
@@ -87,36 +89,36 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
 
   // Upload image to DigitalOcean Spaces using Dio
 
-  Future<void> uploadFile() async {
-    try {
-      final dio = Dio();
+  // Future<void> uploadFile() async {
+  //   try {
+  //     final dio = Dio();
 
-      FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(
-          _selectedImage!.path,
-          filename: _selectedImage!.path, // keeps original filename
-        ),
-        "verse_id": "68cb9ec5fdfa9ba64f6f6146",
-        "folder_path": "logo",
-      });
+  //     FormData formData = FormData.fromMap({
+  //       "file": await MultipartFile.fromFile(
+  //         _selectedImage!.path,
+  //         filename: _selectedImage!.path, // keeps original filename
+  //       ),
+  //       "verse_id": widget.verse.verseId,
+  //       "folder_path": "logo",
+  //     });
 
-      final response = await dio.post(
-        "https://brytespring-app-itrx7.ondigitalocean.app/upload/single", // replace with your backend endpoint
-        data: formData,
-        options: Options(
-          headers: {
-            "Content-Type": "multipart/form-data",
-            "Authorization":
-                "Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk1ODBiMDY0ZDhkOGM1NTlkNjE5OSIsImlhdCI6MTc1ODE3NDY2NCwiZXhwIjoxNzU4Nzc5NDY0fQ.umrk7iGIlhEuw6mRC4embnm93VmeGBzzo11oK9jsXpE"}", // optional
-          },
-        ),
-      );
+  //     final response = await dio.post(
+  //       "https://brytespring-app-itrx7.ondigitalocean.app/upload/single", // replace with your backend endpoint
+  //       data: formData,
+  //       options: Options(
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           "Authorization":
+  //               "Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzk1ODBiMDY0ZDhkOGM1NTlkNjE5OSIsImlhdCI6MTc1ODE3NDY2NCwiZXhwIjoxNzU4Nzc5NDY0fQ.umrk7iGIlhEuw6mRC4embnm93VmeGBzzo11oK9jsXpE"}", // optional
+  //         },
+  //       ),
+  //     );
 
-      print("✅ Upload success: ${response.data}");
-    } catch (e) {
-      print("❌ Upload failed: $e");
-    }
-  }
+  //     print("✅ Upload success: ${response.data}");
+  //   } catch (e) {
+  //     print("❌ Upload failed: $e");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +180,9 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
                           },
                           child: Text("verse_creation_page.choose_logo".tr()),
                         ),
-                        Image.file(_selectedImage!, height: 120),
+                        Platform.isAndroid && Platform.isIOS
+                            ? Image.file(_selectedImage!, height: 120)
+                            : Container(),
                       ],
                     ),
                   )
@@ -214,7 +218,7 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
                   context.read<UploadBloc>().add(
                     UploadImageEvent(
                       _selectedImage!,
-                      "68cb9ec5fdfa9ba64f6f6146",
+                      widget.verse.verseId,
                       "logo",
                     ),
                   );

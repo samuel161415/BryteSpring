@@ -11,9 +11,11 @@ class AddVerseDomainWidget extends StatefulWidget {
     required this.screenSize,
     required this.controller,
     required this.verse,
+    required this.name,
   });
   final PageController controller;
   final Verse verse;
+  final String name;
 
   final Size screenSize;
 
@@ -43,7 +45,7 @@ class _AddVerseDomainWidgetState extends State<AddVerseDomainWidget> {
 
           // Greeting
           Text(
-            "verse_creation_page.verse_name_info".tr(),
+            "${widget.name}" + "verse_creation_page.verse_name_info".tr(),
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 28,

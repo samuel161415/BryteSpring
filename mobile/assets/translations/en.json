@@ -32,15 +32,15 @@
     "back_to_login": "Back to login"
   },
   "verse_creation_page":{
-    "greeting": "Hello, Dirk!",
+    "greeting": "Hello, ",
     "almost_done": "Almost done!",
     "before_join": "Before you can store and manage content, you must first join a Verse. You can ask your company's administrator for an invitation, or create a new Verse.",
     "create_verse": "+ Create Verse",
-    "which_verse": "Dirk, which Verse should we create together?",
+    "which_verse": ", which Verse should we create together?",
     "verse_name_question": "What should the Verse be called?",
     "verse_tip": "Tip: Ideally, use the official name of your organization or company. This way, your Verse remains easily identifiable, clear – and your team feels right at home.",
     "confirm_name": "Yes, that's what it should be called!",
-      "verse_name_info": "Dirk, this is the name for your Verse:",
+      "verse_name_info": ", this is the name for your Verse:",
       "verse_name_tip": "Tip: The name of your Verse determines the short URL that you and your team can use to access BryteVerse. The catchier, the better.",
       "change_name": "Change again?",
       "confirm_name_final": "Yes, we'll take the name like this!",

@@ -32,15 +32,15 @@
     "back_to_login": "Zurück zur Anmeldung"
   },
   "verse_creation_page":{
-    "greeting": "Hallo, Dirk!",
+    "greeting": "Hallo, ",
     "almost_done": "Fast geschafft!",
     "before_join": "Bevor Du Inhalte ablegen und verwalten kannst, musst Du zunächst einem Verse beitreten. Du kannst den Administrator Deines Unternehmemens um eine Einladung bitten, oder ein neues Verse anlegen.",
     "create_verse": "+ Verse anlegen",
-  "which_verse": "Dirk, welches Verse legen wir gemeinsam an?",
+  "which_verse": ", welches Verse legen wir gemeinsam an?",
   "verse_name_question": "Wie soll das Verse heißen?",
   "verse_tip": "Tipp: Nutze idealerweise den offiziellen Namen Deiner Organisation oder Deines Unternehmens. So bleibt Dein Verse leicht zuordenbar, übersichtlich – und Dein Team fühlt sich sofort zu Hause.",
   "confirm_name": "Ja, so soll es heißen!",
-    "verse_name_info": "Dirk, dies ist der Name für Dein Verse:",
+    "verse_name_info": ", dies ist der Name für Dein Verse:",
     "verse_name_tip": "Tipp: Der Name Deines Verse bestimmt die Short-URL, über die Du und Dein Team BryteVerse erreichen können. Je eingänger, desto besser.",
     "change_name": "Nochmal ändern?",
     "confirm_name_final": "Ja, den Namen nehmen wir so!",

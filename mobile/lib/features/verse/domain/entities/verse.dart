@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 class Verse extends Equatable {
-  final String verseId;
+  String verseId;
   String name;
   String subdomain;
-  final String email;
+  String email;
   String organizationName;
   String? logo; // Can be a URL or a path, string is fine for now
   String? color;
