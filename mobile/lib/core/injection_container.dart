@@ -45,6 +45,14 @@ import 'package:mobile/features/verse/domain/usecases/create_verse.dart';
 import 'package:mobile/features/verse/presentation/bloc/verse_bloc.dart';
 import 'package:mobile/core/services/token_service.dart';
 
+// Upload dependencies
+import 'package:mobile/features/upload/data/datasources/upload_remote_data_source.dart';
+import 'package:mobile/features/upload/domain/repositories/upload_repository.dart';
+import 'package:mobile/features/upload/data/repositories/upload_repository_impl.dart';
+
+import '../features/upload/domain/usecases/upload_usecase.dart';
+import '../features/upload/presentation/bloc/upload_bloc.dart';
+
 final GetIt sl = GetIt.instance;
 
 Future<void> init() async {
@@ -168,4 +176,17 @@ Future<void> init() async {
 
   // Verse Bloc
   sl.registerFactory(() => VerseBloc(createVerse: sl()));
+
+  // Upload Remote Data Source
+  sl.registerLazySingleton<UploadRemoteDataSource>(
+    () => UploadRemoteDataSourceImpl(dio: sl(), tokenService: sl()),
+  );
+
+  // Upload Repository
+  sl.registerLazySingleton<UploadRepository>(
+    () => UploadRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(() => UploadImage(sl()));
+  // Verse Bloc
+  sl.registerFactory(() => UploadBloc(sl()));
 }

@@ -97,7 +97,8 @@
     "confirm_assets": "Das sind meine Assets!",
     "verse_launch_success": "Prima, Dirk! Dein Verse läuft gerade vom Stapel.",
     "go_to_verse": "Jetzt zu meinem Verse",
-    "continue": "Weiter"
+    "continue": "Weiter",
+    "enter_color":"Farbe eingeben, z.B. #000000"
   }
   
 

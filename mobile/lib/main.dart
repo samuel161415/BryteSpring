@@ -11,6 +11,7 @@ import 'package:mobile/features/Authentication/presentation/bloc/reset_password_
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
+import 'package:mobile/features/upload/presentation/bloc/upload_bloc.dart';
 import 'package:mobile/features/verse/presentation/bloc/verse_bloc.dart';
 
 void main() async {

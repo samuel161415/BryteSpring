@@ -97,7 +97,8 @@
       "confirm_assets": "These are my assets!",
       "verse_launch_success": "Great, Dirk! Your Verse is just launching.",
       "go_to_verse": "Now to my Verse",
-      "continue": "Continue"
+      "continue": "Continue",
+      "enter_color":"Enter color, e.g. #000000"
     }
     
 ,  
