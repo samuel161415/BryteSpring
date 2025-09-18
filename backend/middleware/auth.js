@@ -12,7 +12,7 @@ exports.requireAuth = async (req, res, next) => {
     }
 
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log("payload",payload)
+   
     const user = await User.findById(payload.id || payload.userId);
     // console.log("user",user)
     if (!user || user.is_active === false) {
