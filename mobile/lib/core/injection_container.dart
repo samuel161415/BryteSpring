@@ -13,6 +13,7 @@ import 'package:mobile/features/Authentication/data/repositories/invitation_repo
 import 'package:mobile/features/Authentication/data/repositories/register_user_repository_impl.dart';
 import 'package:mobile/features/Authentication/data/repositories/reset_password_repository_impl.dart';
 import 'package:mobile/features/Authentication/domain/repositories/invitation_repository.dart';
+import 'package:mobile/core/services/token_service.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/Authentication/domain/repositories/register_user_repository.dart';
 import 'package:mobile/features/Authentication/domain/repositories/reset_password_repository.dart';
@@ -37,6 +38,12 @@ import 'package:mobile/features/dashboard/domain/usecases/get_dashboard_data.dar
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/Authentication/data/repositories/login_repository_impl.dart';
+import 'package:mobile/features/verse/domain/repositories/verse_repository.dart';
+import 'package:mobile/features/verse/data/repositories/verse_repository_impl.dart';
+import 'package:mobile/features/verse/data/datasources/verse_remote_data_source.dart';
+import 'package:mobile/features/verse/domain/usecases/create_verse.dart';
+import 'package:mobile/features/verse/presentation/bloc/verse_bloc.dart';
+import 'package:mobile/core/services/token_service.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -142,4 +149,23 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => SavedAccountsService(prefs: sl(), secureStorage: sl()),
   );
+
+  // Register TokenService
+  sl.registerLazySingleton(() => TokenService());
+
+  // Verse Remote Data Source
+  sl.registerLazySingleton<VerseRemoteDataSource>(
+    () => VerseRemoteDataSourceImpl(dio: sl(), tokenService: sl()),
+  );
+
+  // Verse Repositories
+  sl.registerLazySingleton<VerseRepository>(
+    () => VerseRepositoryImpl(remoteDataSource: sl(), tokenService: sl()),
+  );
+
+  // Verse Use cases
+  sl.registerLazySingleton(() => CreateVerse(sl()));
+
+  // Verse Bloc
+  sl.registerFactory(() => VerseBloc(createVerse: sl()));
 }
