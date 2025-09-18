@@ -212,10 +212,10 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
 
     // Determine asset types based on content selection
     List<String> assetTypes = [];
-    if (_isImages) assetTypes.add('images');
-    if (_isTexts) assetTypes.add('texts');
+    if (_isImages) assetTypes.add('image');
+    if (_isTexts) assetTypes.add('text');
     if (_isData) assetTypes.add('data');
-    if (_isDocuments) assetTypes.add('documents');
+    if (_isDocuments) assetTypes.add('document');
 
     // Create the folder using ChannelBloc
     context.read<ChannelBloc>().add(
