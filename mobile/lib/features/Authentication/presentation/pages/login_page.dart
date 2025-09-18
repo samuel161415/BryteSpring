@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
-import 'package:mobile/features/Authentication/presentation/components/login_header.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/Authentication/presentation/components/login_form.dart';
-import 'package:mobile/features/Authentication/presentation/components/login_footer.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  final InvitationEntity? invitation;
+  LoginPage({super.key, this.invitation});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    super.initState();
+    print('LoginPage initState - invitation: ${widget.invitation}');
+  }
+
   void _handleLanguageChanged() {
     // Force rebuild when language changes
     setState(() {});
@@ -33,6 +39,7 @@ class _LoginPageState extends State<LoginPage> {
             decoration: BoxDecoration(
               color: AppTheme.surface,
               borderRadius: BorderRadius.circular(24.0),
+
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),
@@ -44,7 +51,10 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 // LoginHeader(onLanguageChanged: _handleLanguageChanged),
-                LoginForm(),
+                LoginForm(
+                  key: ValueKey(widget.invitation?.id ?? 'no-invitation'),
+                  invitation: widget.invitation,
+                ),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
             ),

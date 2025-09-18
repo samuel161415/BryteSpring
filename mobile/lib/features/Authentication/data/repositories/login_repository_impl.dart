@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:mobile/core/error/failure.dart';
-import 'package:mobile/core/error/exceptions.dart';
 import 'package:mobile/core/storage/secure_storage.dart';
+import 'package:mobile/core/network/error_extractor.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/core/network/dio_client.dart';
@@ -29,8 +29,8 @@ class LoginRepositoryImpl implements LoginRepository {
 
         // Save tokens to secure storage
         await SecureStorage.saveTokens(
-          user.token, // Assuming token field contains access token
-          user.refreshToken, // Assuming refreshToken field contains refresh token
+          user.token, // Access token
+          user.refreshToken, // Refresh token (or token if refreshToken not provided)
         );
 
         return Right(user);
@@ -38,7 +38,7 @@ class LoginRepositoryImpl implements LoginRepository {
         return Left(ServerFailure('Login failed: ${response.statusCode}'));
       }
     } on DioException catch (e) {
-      return Left(ServerFailure('Dio error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
@@ -58,7 +58,51 @@ class LoginRepositoryImpl implements LoginRepository {
         return Left(ServerFailure('Logout failed: ${response.statusCode}'));
       }
     } on DioException catch (e) {
-      return Left(ServerFailure('Dio error: ${e.message}'));
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, User?>> getCurrentUser() async {
+    try {
+      // Get user data from local storage
+      final userDataString = prefs.getString('user_data');
+      if (userDataString != null) {
+        final user = User.fromJsonString(userDataString);
+        return Right(user);
+      }
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure('Get current user error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> checkUserExists(String email) async {
+    try {
+      final response = await dioClient.get('/user/email/$email');
+
+      if (response.statusCode == 200) {
+        // User exists
+        return const Right(true);
+      } else if (response.statusCode == 404) {
+        // User doesn't exist
+        return const Right(false);
+      } else {
+        return Left(ServerFailure('Check user failed: ${response.statusCode}'));
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        // User doesn't exist
+        return const Right(false);
+      } else if (e.response?.statusCode == 401) {
+        // Unauthorized - this endpoint requires auth
+        // For now, assume user doesn't exist and let them proceed to registration
+        return const Right(false);
+      }
+      return Left(ServerFailure(ErrorExtractor.extractServerMessage(e)));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }

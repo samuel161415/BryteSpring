@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
-import 'package:mobile/features/Authentication/presentation/components/login_header.dart';
-import 'package:mobile/features/Authentication/presentation/components/login_form.dart';
-import 'package:mobile/features/Authentication/presentation/components/login_footer.dart';
+import 'package:mobile/features/verse_join/presentation/components/join_verse_success_widget.dart';
+import 'package:mobile/features/verse_join/presentation/components/join_verse_widget.dart';
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 
-class ResetPassword extends StatefulWidget {
-  ResetPassword({super.key});
+class JoinVerseSuccessPage extends StatefulWidget {
+  final InvitationEntity invitation;
+
+  const JoinVerseSuccessPage({super.key, required this.invitation});
 
   @override
-  State<ResetPassword> createState() => _ResetPasswordState();
+  State<JoinVerseSuccessPage> createState() => _JoinVerseSuccessState();
 }
 
-class _ResetPasswordState extends State<ResetPassword> {
+class _JoinVerseSuccessState extends State<JoinVerseSuccessPage> {
   void _handleLanguageChanged() {
+    // Force rebuild when language changes
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions for responsive layout
     final Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -42,8 +44,7 @@ class _ResetPasswordState extends State<ResetPassword> {
             ),
             child: Column(
               children: [
-                // LoginHeader(onLanguageChanged: _handleLanguageChanged),
-                LoginForm(),
+                JoinVerseSuccessComponent(invitation: widget.invitation),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
             ),

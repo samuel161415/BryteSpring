@@ -189,6 +189,9 @@ exports.createChannel = async (req, res) => {
 
     await channel.save();
 
+    // Populate the created_by field for the response
+    await channel.populate('created_by', 'first_name last_name');
+
     // Log the activity
     const activityLog = new ActivityLog({
       verse_id,

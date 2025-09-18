@@ -20,10 +20,6 @@ class LanguageSwitcher extends StatelessWidget {
 
         // Call the callback to force a rebuild of parent widgets
         onLanguageChanged?.call();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Language changed to $languageCode')),
-        );
       },
     );
   }

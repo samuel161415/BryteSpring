@@ -156,7 +156,7 @@ class _AppFooterState extends State<AppFooter> {
               LanguageSwitcher(
                 onLanguageChanged: () {
                   // Force a rebuild by updating state
-                  widget.onLanguageChanged?.call();
+                  widget.onLanguageChanged.call();
                 },
               ),
               Column(
