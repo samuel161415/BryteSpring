@@ -33,19 +33,27 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['_id'],
-      email: json['email'],
-      passwordHash: json['password_hash'],
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      avatarUrl: json['avatar_url'],
-      isActive: json['is_active'],
-      lastLogin: DateTime.parse(json['last_login']),
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-      joinedVerse: List<String>.from(json['joined_verse']),
-      token: json['token'], // Access token
-      refreshToken: json['refresh_token'], // Refresh token
+      id: json['_id'] ?? '',
+      email: json['email'] ?? '',
+      passwordHash: json['password_hash'] ?? '',
+      firstName: json['first_name'] ?? json['name'] ?? '',
+      lastName: json['last_name'] ?? '',
+      avatarUrl: json['avatar_url'] ?? '',
+      isActive: json['is_active'] ?? true,
+      lastLogin: json['last_login'] != null
+          ? DateTime.parse(json['last_login'])
+          : DateTime.now(),
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime.now(),
+      joinedVerse: json['joined_verse'] != null
+          ? List<String>.from(json['joined_verse'])
+          : <String>[],
+      token: json['token'] ?? '',
+      refreshToken: json['refresh_token'] ?? json['token'] ?? '',
     );
   }
 
