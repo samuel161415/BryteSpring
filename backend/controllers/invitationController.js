@@ -9,8 +9,42 @@ try {
 const Invitation = require('../models/Invitation');
 const Role = require('../models/Role');
 const Verse = require('../models/Verse');
+const User = require('../models/User');
+const UserRole = require('../models/UserRole');
 // const { sendInvitationEmail } = require('../services/email'); // Old email service
-const { sendInvitationEmail } = require('../services/cleverEmail'); // New CleverReach service
+// const { sendInvitationEmail } = require('../services/cleverEmail'); // New CleverReach service
+const {sendInvitationEmail} = require('../services/mailjetEmail');
+
+/**
+ * Helper function to check if a user is already a member of a verse
+ */
+async function checkUserMembership(email, verse_id) {
+  const user = await User.findOne({ email: email.toLowerCase() });
+  
+  if (!user) {
+    return { exists: false, isMember: false };
+  }
+
+  // Check joined_verse array
+  const isInJoinedVerses = user.joined_verse
+    .map(verseId => verseId.toString())
+    .includes(verse_id.toString());
+
+  // Check UserRole for active roles
+  const activeUserRole = await UserRole.findOne({
+    user_id: user._id,
+    verse_id: verse_id,
+    is_active: true
+  });
+
+  return {
+    exists: true,
+    user_id: user._id,
+    isMember: isInJoinedVerses || !!activeUserRole,
+    hasActiveRole: !!activeUserRole,
+    role_id: activeUserRole?.role_id
+  };
+}
 
 // Create invitation (admin or superadmin)
 exports.createInvitation = async (req, res) => {
@@ -36,6 +70,42 @@ exports.createInvitation = async (req, res) => {
     const role = await Role.findOne({ _id: role_id, verse_id });
     if (!role) {
       return res.status(400).json({ message: 'Invalid role for the specified verse' });
+    }
+
+    // Check if user already exists and is part of this verse
+    const membershipStatus = await checkUserMembership(email, verse_id);
+    
+    if (membershipStatus.exists && membershipStatus.isMember) {
+      return res.status(400).json({ 
+        message: 'User is already a member of this verse',
+        details: {
+          email: email.toLowerCase(),
+          user_id: membershipStatus.user_id,
+          verse_id: verse_id,
+          has_active_role: membershipStatus.hasActiveRole,
+          role_id: membershipStatus.role_id
+        }
+      });
+    }
+
+    // Check if there's already a pending invitation for this email and verse
+    const existingInvitation = await Invitation.findOne({
+      email: email.toLowerCase(),
+      verse_id: verse_id,
+      is_accepted: false,
+      expires_at: { $gt: new Date() } // Not expired
+    });
+
+    if (existingInvitation) {
+      return res.status(400).json({ 
+        message: 'There is already a pending invitation for this email to this verse',
+        details: {
+          email: email.toLowerCase(),
+          verse_id: verse_id,
+          invitation_id: existingInvitation._id,
+          expires_at: existingInvitation.expires_at
+        }
+      });
     }
 
     const token = uuidv4();
@@ -203,5 +273,59 @@ exports.deleteInvitation = async (req, res) => {
   } catch (error) {
     console.error('Error deleting invitation:', error);
     return res.status(500).json({ message: 'Server error deleting invitation', error: error.message });
+  }
+};
+
+// Check user membership status for a verse
+exports.checkUserMembershipStatus = async (req, res) => {
+  try {
+    const { verse_id, email } = req.params;
+    const requester = req.user;
+    
+    if (!requester) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    if (!email || !verse_id) {
+      return res.status(400).json({ message: 'Email and verse_id are required' });
+    }
+
+    // Check if verse exists
+    const verse = await Verse.findById(verse_id);
+    if (!verse) {
+      return res.status(404).json({ message: 'Verse not found' });
+    }
+
+    // Get membership status
+    const membershipStatus = await checkUserMembership(email, verse_id);
+
+    // Check for pending invitations
+    const pendingInvitation = await Invitation.findOne({
+      email: email.toLowerCase(),
+      verse_id: verse_id,
+      is_accepted: false,
+      expires_at: { $gt: new Date() }
+    });
+
+    return res.status(200).json({
+      email: email.toLowerCase(),
+      verse_id: verse_id,
+      verse_name: verse.name,
+      user_exists: membershipStatus.exists,
+      is_member: membershipStatus.isMember,
+      has_active_role: membershipStatus.hasActiveRole,
+      role_id: membershipStatus.role_id,
+      has_pending_invitation: !!pendingInvitation,
+      pending_invitation_id: pendingInvitation?._id,
+      pending_invitation_expires: pendingInvitation?.expires_at,
+      can_invite: !membershipStatus.isMember && !pendingInvitation
+    });
+
+  } catch (error) {
+    console.error('Error checking user membership status:', error);
+    return res.status(500).json({ 
+      message: 'Server error checking user membership status', 
+      error: error.message 
+    });
   }
 };
