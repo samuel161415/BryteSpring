@@ -89,7 +89,7 @@
     "documents": "Documents",
     "tip_title": "Tip:",
     "tip_channel_selection": "Please make sure you have selected the correct channel.",
-    "tip_unique_name": "Please ensure you choose a unique name.",
+    "tip_unique_name": "Tip: Please make sure you have selected the correct channel. Please ensure you select a unique name.",
     "edit_folder_name": "Edit Folder Name",
     "edit_description": "Edit Description",
     "folder_created_success_message": "Great, that worked!",

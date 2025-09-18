@@ -74,7 +74,7 @@ class _CreateFolderConfirmationPageState
   String _getPersonalizedMessage() {
     final userName = currentUser?.firstName ?? 'User';
     final currentLocale = context.locale.languageCode;
-    
+
     if (currentLocale == 'de') {
       return 'Prima, $userName, das hat geklappt!';
     } else {
@@ -192,11 +192,11 @@ class _CreateFolderConfirmationPageState
               // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Success message
-                  Text(
-                    isLoading
-                        ? 'channels.folder_created_success_message'.tr()
-                        : _getPersonalizedMessage(),
-                    textAlign: TextAlign.center,
+                Text(
+                  isLoading
+                      ? 'channels.folder_created_success_message'.tr()
+                      : _getPersonalizedMessage(),
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.w900,
