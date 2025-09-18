@@ -38,6 +38,9 @@ router.get("/test/cleverreach", emailTestController.testCleverReachConnection);
 router.post("/test/send-invitation", emailTestController.testSendInvitation);
 router.get("/test/cleverreach-debug", emailTestController.debugCleverReachAPI);
 
+// Mailjet test routes (for development/testing only)
+router.use("/mailjet-test", require("./mailjetTest"));
+
 
 
 module.exports = router;

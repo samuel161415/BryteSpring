@@ -14,7 +14,8 @@ try {
   uuidv4 = () => crypto.randomUUID();
 }
 // const { sendInvitationEmail } = require('../services/email'); // Old email service
-const { sendInvitationEmail } = require('../services/cleverEmail'); // New CleverReach service
+// const { sendInvitationEmail } = require('../services/cleverEmail'); // New CleverReach service
+const {sendInvitationEmail} = require('../services/mailjetEmail');
 const { validationResult } = require('express-validator');
 
 // Create initial verse (for superadmin)

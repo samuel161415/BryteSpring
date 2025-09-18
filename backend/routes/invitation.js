@@ -18,4 +18,7 @@ router.put('/:id', auth.requireAuth, invitationController.updateInvitation);
 // Delete invitation (only inviter)
 router.delete('/:id', auth.requireAuth, invitationController.deleteInvitation);
 
+// Check user membership status for a verse
+router.get('/check-membership/:verse_id/:email', auth.requireAuth, invitationController.checkUserMembershipStatus);
+
 module.exports = router;

@@ -104,7 +104,7 @@ const debugCleverReachAPI = async (req, res) => {
     
     // Test creating a mailing
     try {
-      console.log('Testing mailing creation...');
+
       const testMailingResponse = await axios.post(`${CLEVERREACH_BASE_URL}/mailings.json`, {
         name: 'Test Mailing - Debug',
         subject: 'Test Subject',
