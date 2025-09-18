@@ -62,7 +62,7 @@ class _AddVerseDomainWidgetState extends State<AddVerseDomainWidget> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.surface,
+                    backgroundColor: AppColors.primaryColor,
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
