@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/services/auth_service.dart';
+import 'package:mobile/core/services/saved_accounts_service.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
@@ -20,6 +21,9 @@ class _LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _rememberMe = true;
+  List<SavedAccount> _savedAccounts = [];
+  SavedAccount? _currentAccount;
 
   @override
   void dispose() {
@@ -32,8 +36,39 @@ class _LoginFormState extends State<LoginForm> {
   void initState() {
     super.initState();
     print('LoginForm initState - invitation: ${widget.invitation}');
-    _emailController.text = widget.invitation?.email ?? '';
-    print('LoginForm initState - email set to: ${_emailController.text}');
+    _loadSavedAccounts();
+  }
+
+  Future<void> _loadSavedAccounts() async {
+    try {
+      final savedAccountsService = sl<SavedAccountsService>();
+      final accounts = await savedAccountsService.getSavedAccounts();
+      
+      setState(() {
+        _savedAccounts = accounts;
+      });
+
+      // If invitation is provided, use invitation email
+      if (widget.invitation != null) {
+        _emailController.text = widget.invitation!.email;
+        print('LoginForm initState - using invitation email: ${widget.invitation!.email}');
+      } else if (accounts.isNotEmpty) {
+        // Use last used account or first account
+        final lastUsedAccount = await savedAccountsService.getLastUsedAccount();
+        final accountToUse = lastUsedAccount ?? accounts.first;
+        
+        _emailController.text = accountToUse.email;
+        _passwordController.text = accountToUse.password;
+        _currentAccount = accountToUse;
+        print('LoginForm initState - using saved account: ${accountToUse.email}');
+      }
+    } catch (e) {
+      print('Error loading saved accounts: $e');
+      // Fallback to invitation email if available
+      if (widget.invitation != null) {
+        _emailController.text = widget.invitation!.email;
+      }
+    }
   }
 
   @override
@@ -82,6 +117,23 @@ class _LoginFormState extends State<LoginForm> {
         (user) async {
           print('Login successful for user: ${user.email}');
           print('Invitation present: ${widget.invitation != null}');
+          
+          // Save account if remember me is checked
+          if (_rememberMe) {
+            try {
+              final savedAccountsService = sl<SavedAccountsService>();
+              await savedAccountsService.saveAccount(
+                email: _emailController.text.trim(),
+                password: _passwordController.text,
+                firstName: user.firstName,
+                lastName: user.lastName,
+              );
+              print('Account saved for: ${_emailController.text.trim()}');
+            } catch (e) {
+              print('Error saving account: $e');
+            }
+          }
+          
           // Login successful
           print('widget.invitation: ${widget.invitation}');
           if (widget.invitation != null) {
@@ -103,6 +155,114 @@ class _LoginFormState extends State<LoginForm> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  void _showAccountSelectionDialog() {
+    if (_savedAccounts.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No saved accounts found'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('login_screen.switch_account'.tr()),
+        content: SizedBox(
+          width: 300,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: _savedAccounts.length,
+            itemBuilder: (context, index) {
+              final account = _savedAccounts[index];
+              final isCurrentAccount = _currentAccount?.email == account.email;
+              
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: isCurrentAccount ? Colors.teal[600] : Colors.grey[400],
+                  child: Text(
+                    account.firstName?.isNotEmpty == true 
+                        ? account.firstName![0].toUpperCase()
+                        : account.email[0].toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                title: Text(
+                  account.firstName?.isNotEmpty == true 
+                      ? '${account.firstName} ${account.lastName ?? ''}'
+                      : account.email,
+                  style: TextStyle(
+                    fontWeight: isCurrentAccount ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+                subtitle: Text(account.email),
+                trailing: isCurrentAccount 
+                    ? Icon(Icons.check, color: Colors.teal[600])
+                    : null,
+                onTap: () {
+                  setState(() {
+                    _emailController.text = account.email;
+                    _passwordController.text = account.password;
+                    _currentAccount = account;
+                  });
+                  Navigator.of(context).pop();
+                },
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('common.cancel'.tr()),
+          ),
+          if (_currentAccount != null)
+            TextButton(
+              onPressed: () {
+                _removeCurrentAccount();
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Remove',
+                style: TextStyle(color: Colors.red[600]),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _removeCurrentAccount() async {
+    if (_currentAccount == null) return;
+    
+    try {
+      final savedAccountsService = sl<SavedAccountsService>();
+      await savedAccountsService.removeAccount(_currentAccount!.email);
+      
+      // Reload accounts
+      await _loadSavedAccounts();
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Account removed: ${_currentAccount!.email}'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error removing account: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -209,12 +369,13 @@ class _LoginFormState extends State<LoginForm> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 24,
+                      fontSize: 30,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 24),
               TextField(
                 controller: _emailController,
                 textAlign: TextAlign.center,
@@ -285,8 +446,12 @@ class _LoginFormState extends State<LoginForm> {
                       unselectedWidgetColor: const Color(0xFF30363D),
                     ),
                     child: Checkbox(
-                      value: true,
-                      onChanged: (bool? value) {},
+                      value: _rememberMe,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _rememberMe = value ?? true;
+                        });
+                      },
                       activeColor: const Color(0xFFE44D2E),
                       checkColor: Colors.white,
                       fillColor: MaterialStateProperty.all(
@@ -365,17 +530,14 @@ class _LoginFormState extends State<LoginForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      context.pushNamed(
-                        Routelists.invitationValidation,
-                        pathParameters: {
-                          'token': '6fe3ac76-9438-4eb4-b09f-9875f1306424',
-                        },
-                      );
-                    },
+                    onPressed: _showAccountSelectionDialog,
                     child: Text(
-                      'reset_password.back_to_login'.tr(),
-                      style: TextStyle(color: Colors.black, fontSize: 12),
+                      'login_screen.switch_account'.tr(),
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                   Column(

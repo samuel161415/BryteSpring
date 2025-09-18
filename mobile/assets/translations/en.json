@@ -1,9 +1,9 @@
 {
   "login_screen": {
-    "welcome_message": "Welcome to BryteSpring",
+    "welcome_message": "Hello, It's nice to have you here.",
     "email_placeholder": "Enter your email",
     "password_placeholder": "Enter your password",
-    "remember_me": "Remember me",
+    "remember_me": "Save login details on this device",
     "login_button": "Log in securely now",
     "switch_account": "Switch Account",
     "footer_title": "BryteVerse by Publify",

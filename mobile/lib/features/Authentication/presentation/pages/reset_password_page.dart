@@ -67,7 +67,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             ),
           );
           // Navigate to dashboard after successful registration
-          context.goNamed(Routelists.dashboard);
+          context.goNamed(Routelists.almostJoinVerse, extra: widget.invitation);
         } else if (state is RegisterUserFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message), backgroundColor: Colors.red),
@@ -77,11 +77,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       child: Builder(
         builder: (context) => BlocBuilder<RegisterUserBloc, RegisterUserState>(
           builder: (context, state) {
-            return LoadingOverlay(
-              isLoading: state is RegisterUserLoading,
-              loadingMessage: 'Creating your account...',
-              child: _buildRegisterUserForm(context),
-            );
+            return _buildRegisterUserForm(context);
           },
         ),
       ),
@@ -130,63 +126,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // Personalized greeting
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Colors.white.withOpacity(0.2),
-                                child: Text(
-                                  widget.invitation.firstName.isNotEmpty
-                                      ? widget.invitation.firstName[0]
-                                            .toUpperCase()
-                                      : 'U',
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Welcome, ${widget.invitation.firstName}!',
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      'Set your password to complete your invitation',
-                                      style: const TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    if (widget.invitation.position.isNotEmpty)
-                                      Text(
-                                        'Position: ${widget.invitation.position}',
-                                        style: const TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
                           const SizedBox(height: 24),
                           Text(
-                            'Create Your Account',
+                            'login_screen.welcome_message'.tr(),
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.black,
-                              fontSize: 24,
+                              fontSize: 30,
                               fontWeight: FontWeight.w900,
                             ),
                           ),
@@ -197,21 +143,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             style: const TextStyle(color: Colors.black87),
                           ),
                           const SizedBox(height: 24),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'reset_password.password_label'.tr(),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
+                          // Align(
+                          //   alignment: Alignment.centerLeft,
+                          //   child: Text(
+                          //     'reset_password.password_label'.tr(),
+                          //     style: const TextStyle(
+                          //       color: Colors.black,
+                          //       fontWeight: FontWeight.w600,
+                          //     ),
+                          //   ),
+                          // ),
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: _passwordController,
                             obscureText: true,
-                            textAlign: TextAlign.left,
+                            textAlign: TextAlign.center,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Password is required';
@@ -249,21 +195,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'reset_password.confirm_label'.tr(),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
+                          // Align(
+                          //   alignment: Alignment.centerLeft,
+                          //   child: Text(
+                          //     'reset_password.confirm_label'.tr(),
+                          //     style: const TextStyle(
+                          //       color: Colors.black,
+                          //       fontWeight: FontWeight.w600,
+                          //     ),
+                          //   ),
+                          // ),
                           const SizedBox(height: 8),
                           TextFormField(
                             controller: _confirmController,
                             obscureText: true,
-                            textAlign: TextAlign.left,
+                            textAlign: TextAlign.center,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please confirm your password';
@@ -300,7 +246,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 40),
 
                           BlocBuilder<RegisterUserBloc, RegisterUserState>(
                             builder: (context, state) {
@@ -387,6 +333,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               style: const TextStyle(color: Colors.black),
                             ),
                           ),
+                          const SizedBox(height: 60),
                         ],
                       ),
                     ),

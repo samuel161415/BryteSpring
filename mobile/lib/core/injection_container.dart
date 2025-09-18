@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/core/services/auth_service.dart';
+import 'package:mobile/core/services/saved_accounts_service.dart';
 import 'package:mobile/core/storage/local_storage.dart';
 import 'package:mobile/features/Authentication/data/datasources/invitation_remote_datasource.dart';
 import 'package:mobile/features/Authentication/data/datasources/register_user_remote_datasource.dart';
@@ -139,4 +140,8 @@ Future<void> init() async {
 
   // Services
   sl.registerLazySingleton(() => AuthService(sl()));
+  sl.registerLazySingleton(() => SavedAccountsService(
+        prefs: sl(),
+        secureStorage: sl(),
+      ));
 }

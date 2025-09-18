@@ -157,8 +157,8 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                   addButtonText: '+ Nutzer hinzufügen',
                 ),
 
-                const Spacer(),
-
+                // const Spacer(),
+                const SizedBox(height: 24),
                 // Logout Button
                 _buildLogoutButton(),
               ],
@@ -330,7 +330,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             onTap: () {
               // Trigger channel refresh
               context.read<ChannelBloc>().add(
-                RefreshChannelStructure('68c3e2d6f58c817ebed1ca74'),
+                RefreshChannelStructure(currentVerseId!),
               );
             },
             child: Text(
@@ -507,11 +507,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: [
-            Icon(
-              Icons.logout,
-              size: 16,
-              color: Colors.red[600],
-            ),
+            Icon(Icons.logout, size: 16, color: Colors.red[600]),
             const SizedBox(width: 8),
             Text(
               'Logout',
@@ -531,7 +527,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
     try {
       final authService = sl<AuthService>();
       await authService.logout();
-      
+
       if (mounted) {
         // Navigate to login page
         context.goNamed(Routelists.login);
