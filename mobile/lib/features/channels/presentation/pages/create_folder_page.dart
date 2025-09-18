@@ -279,7 +279,8 @@ class _CreateFolderPageState extends State<CreateFolderPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    'channels.folder_creation_error'.tr() + ': ${state.message}',
+                    'channels.folder_creation_error'.tr() +
+                        ': ${state.message}',
                   ),
                   backgroundColor: Colors.red,
                 ),

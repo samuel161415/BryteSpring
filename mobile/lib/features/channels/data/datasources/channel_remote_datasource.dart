@@ -124,9 +124,21 @@ class ChannelRemoteDataSourceImpl implements ChannelRemoteDataSource {
 
       final response = await dioClient.post('/channel/create', data: data);
 
+      print('🔍 Create Channel Response Status: ${response.statusCode}');
+      print('📄 Create Channel Response Data: ${response.data}');
+      print('📄 Response Data Type: ${response.data.runtimeType}');
+      print('📄 Channel Data: ${response.data['channel']}');
+      print('📄 Channel Data Type: ${response.data['channel'].runtimeType}');
+
       if (response.statusCode == 201) {
-        final channel = ChannelEntity.fromJson(response.data['channel']);
-        return Right(channel);
+        try {
+          final channel = ChannelEntity.fromJson(response.data['channel']);
+          return Right(channel);
+        } catch (e) {
+          print('❌ Error parsing channel data: $e');
+          print('📄 Raw channel data: ${response.data['channel']}');
+          return Left(ServerFailure('Failed to parse channel data: $e'));
+        }
       } else {
         return Left(
           ServerFailure('Failed to create channel: ${response.statusCode}'),
