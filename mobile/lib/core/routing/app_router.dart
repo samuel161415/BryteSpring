@@ -7,10 +7,8 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/invitation_validation_page.dart';
-import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
-import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart'
-    hide JoinVerse;
+import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
 import 'package:mobile/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:mobile/features/channels/presentation/pages/create_folder_page.dart';
@@ -41,6 +39,18 @@ class AppRouter {
         final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
         final isDashboardRoute =
             state.matchedLocation == '/${Routelists.dashboard}';
+        final isInvitationValidationRoute = 
+            state.matchedLocation.startsWith('/invitation-validation');
+        final isJoinVerseRoute = 
+            state.matchedLocation.startsWith('/${Routelists.almostJoinVerse}') ||
+            state.matchedLocation.startsWith('/${Routelists.joinVerse}') ||
+            state.matchedLocation.startsWith('/${Routelists.getToKnowRole}') ||
+            state.matchedLocation.startsWith('/${Routelists.joinVerseSuccess}');
+
+        // Allow access to invitation validation and join verse routes regardless of authentication status
+        if (isInvitationValidationRoute || isJoinVerseRoute) {
+          return null; // No redirect needed
+        }
 
         // If user is authenticated and trying to access login, redirect to dashboard
         if (isAuthenticated && isLoginRoute) {
