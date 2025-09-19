@@ -110,12 +110,27 @@ class AppRouter {
       },
     ),
     GoRoute(
-      path: '/invitation-validation/:token',
+      path: '/invitation-validation',
       name: Routelists.invitationValidation,
       pageBuilder: (context, state) {
         final token = state.uri.queryParameters['token'];
         if (token == null || token.isEmpty) {
           // If no token provided, redirect to login
+          return _buildPage(context, state, LoginPage());
+        }
+        return _buildPage(
+          context,
+          state,
+          InvitationValidationPage(token: token),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/invitation-validation/:token',
+      name: '${Routelists.invitationValidation}Path',
+      pageBuilder: (context, state) {
+        final token = state.pathParameters['token'];
+        if (token == null || token.isEmpty) {
           return _buildPage(context, state, LoginPage());
         }
         return _buildPage(
