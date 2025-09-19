@@ -124,9 +124,7 @@ class VerseJoinEntity extends Equatable {
       updatedAt: DateTime.parse(
         json['updated_at'] ?? DateTime.now().toIso8601String(),
       ),
-      createdBy: json['created_by']["email"],
-
-
+      createdBy: _extractIdFromField(json['created_by']),
     );
   }
 

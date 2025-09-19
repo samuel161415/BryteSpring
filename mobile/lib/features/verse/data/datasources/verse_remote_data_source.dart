@@ -67,7 +67,7 @@ class VerseRemoteDataSourceImpl implements VerseRemoteDataSource {
         ),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         return VerseModel.fromJson(response.data);
       } else {
         throw ServerException("unknown error");

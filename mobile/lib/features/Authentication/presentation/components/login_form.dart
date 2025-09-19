@@ -567,7 +567,7 @@ class _LoginFormState extends State<LoginForm> {
                       context.pushNamed(
                         '${Routelists.invitationValidation}Path',
                         pathParameters: {
-                          'token': '7a3377a6-9e09-4c8e-b96f-ace7b9e34de7',
+                          'token': 'c5a81e16-50a3-46dc-94c3-a1b9453b2121',
                         },
                       );
                     },

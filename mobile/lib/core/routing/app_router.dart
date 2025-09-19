@@ -28,7 +28,7 @@ class AppRouter {
   late final GoRouter router = GoRouter(
     initialLocation: '/',
     routes: _routes,
-    debugLogDiagnostics: true,
+    // debugLogDiagnostics: true,
     redirect: (context, state) {
       try {
         final authService = sl<AuthService>();
@@ -48,7 +48,7 @@ class AppRouter {
         final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
         final isDashboardRoute =
             state.matchedLocation == '/${Routelists.dashboard}';
-        final isInvitationValidationRoute = 
+        final isInvitationValidationRoute =
             state.matchedLocation.startsWith('/invitation-validation') ||
             state.matchedLocation.contains('/invitation-validation');
         final isJoinVerseRoute =
