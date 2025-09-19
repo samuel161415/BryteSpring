@@ -247,7 +247,7 @@ yarn-error.log*
 
 # Docker
 .dockerignore
-Dockerfile
+!mobile/Dockerfile
 docker-compose.yml
 docker-compose.yaml
 
