@@ -113,7 +113,7 @@ class AppRouter {
       path: '/invitation-validation/:token',
       name: Routelists.invitationValidation,
       pageBuilder: (context, state) {
-        final token = state.pathParameters['token'];
+        final token = state.uri.queryParameters['token'];
         if (token == null || token.isEmpty) {
           // If no token provided, redirect to login
           return _buildPage(context, state, LoginPage());
