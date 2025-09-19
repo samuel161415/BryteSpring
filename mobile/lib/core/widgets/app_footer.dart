@@ -111,10 +111,12 @@ class _AppFooterState extends State<AppFooter> {
           const SizedBox(height: 8),
           Container(
             height: 200,
+            width: double.infinity,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: Colors.white,
             ),
+            child: Image.asset('assets/images/appfoter.png'),
           ),
           const SizedBox(height: 16),
           Row(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/services/dynamic_theme_service.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
@@ -18,11 +18,26 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   String? currentVerseId;
-
+  late DynamicThemeService _themeService;
   @override
   void initState() {
     super.initState();
+    _themeService = sl<DynamicThemeService>();
+    _themeService.addListener(_onThemeChanged);
     _loadDashboardData();
+  }
+
+  @override
+  void dispose() {
+    _themeService.removeListener(_onThemeChanged); // Add this line
+    super.dispose();
+  }
+
+  void _onThemeChanged() {
+    // Add this method
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _loadDashboardData() async {
@@ -87,7 +102,7 @@ class _DashboardPageState extends State<DashboardPage> {
     final Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
+      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: screenSize.height),
@@ -96,7 +111,7 @@ class _DashboardPageState extends State<DashboardPage> {
               width: screenSize.width > 1200 ? 1200 : screenSize.width * 0.95,
               margin: const EdgeInsets.symmetric(vertical: 20.0),
               decoration: BoxDecoration(
-                color: AppTheme.primary,
+                color: _themeService.getCurrentSurfaceColor(),
                 borderRadius: BorderRadius.circular(24.0),
                 boxShadow: [
                   BoxShadow(
