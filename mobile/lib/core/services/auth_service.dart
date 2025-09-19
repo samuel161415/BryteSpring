@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:mobile/core/error/failure.dart';
+import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/services/dynamic_theme_service.dart';
 import 'package:mobile/features/Authentication/domain/entities/user.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 
@@ -36,6 +38,8 @@ class AuthService {
     final result = await _loginRepository.login(email, password);
     result.fold((failure) => null, (user) {
       _currentUser = user;
+      // Refresh theme after login
+      sl<DynamicThemeService>().refreshTheme();
     });
     return result;
   }
@@ -45,6 +49,8 @@ class AuthService {
     final result = await _loginRepository.logout();
     result.fold((failure) => null, (_) {
       _currentUser = null;
+      // Refresh theme after logout
+      sl<DynamicThemeService>().refreshTheme();
     });
     return result;
   }
