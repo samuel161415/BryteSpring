@@ -255,6 +255,7 @@ docker-compose.yaml
 *.yaml
 *.yml
 !docker-compose*.yml
+!.do/
 
 # Terraform
 *.tfstate
