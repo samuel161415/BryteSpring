@@ -21,7 +21,7 @@ class VerseRepositoryImpl implements VerseRepository {
 
   @override
   Future<Either<Failure, Verse>> createVerse(Verse verse) async {
-    // if (await networkInfo.isConnected) {
+    // if (await networkInfo.isConnected) {//
     try {
       final verseModel = VerseModel(
         verseId: verse.verseId,
@@ -47,8 +47,10 @@ class VerseRepositoryImpl implements VerseRepository {
 
       final remoteVerse = await tokenAwareDataSource.createVerse(verseModel);
       return Right(remoteVerse);
-    } on ServerException {
-      return Left(ServerFailure("unknown error"));
+    } on ServerException catch (e) {
+      return Left(ServerFailure("unknown error${e.message}"));
+    } on DioException catch (e) {
+      throw ServerException("Upload failed: ${e.message}");
     }
     // } else {
     //   return Left(ServerFailure()); // Or a specific NetworkFailure

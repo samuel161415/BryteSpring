@@ -3,16 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:mobile/features/verse/presentation/components/top_bar.dart';
 
 import '../../../../core/constant.dart';
+import '../../domain/entities/verse.dart';
 
 class VerseLoadingWidget extends StatelessWidget {
-  const VerseLoadingWidget({super.key});
-
+  VerseLoadingWidget({
+    super.key,
+    this.isLoading,
+    required this.screenSize,
+    required this.controller,
+    required this.verse,
+    required this.name,
+  });
+  bool? isLoading = true;
+  final PageController controller;
+  final Verse verse;
+  final Size screenSize;
+  final String name;
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20.0),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       decoration: BoxDecoration(
-        color: AppTheme.surface,
+        color: AppColors.primaryColor,
         borderRadius: BorderRadius.circular(24.0),
         boxShadow: [
           BoxShadow(
@@ -25,40 +38,59 @@ class VerseLoadingWidget extends StatelessWidget {
       child: Column(
         children: [
           TopBar(),
-          Image.asset("asset/loading.gif"),
-          Text("Prima, Dirk!Dein Verse läuft gerade vom Stapel."),
-          Container(
-            margin: EdgeInsets.only(bottom: 4, right: 4),
-            height: 48,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 4),
-            ),
-            child: ElevatedButton(
-              onPressed: () {
-                // Navigator.of(context).push(
-                //   MaterialPageRoute(
-                //     builder: (context) => VerseCreationPage(),
-                //   ),
-                // );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                minimumSize: const Size.fromHeight(48),
-              ),
-              child: Text(
-                'login_screen.login_button'.tr(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+          const SizedBox(height: 40),
+
+          Image.asset("assets/images/successImage1.png", height: 80),
+          const SizedBox(height: 20),
+
+          Text(
+            "Prima, " + name + "!Dein Verse läuft gerade vom Stapel.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
             ),
           ),
+          const SizedBox(height: 20),
+
+          if (isLoading == false)
+            Container(
+              margin: EdgeInsets.only(bottom: 4, right: 4),
+              height: 48,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 4),
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => VerseCreationPage(),
+                  //   ),
+                  // );
+                  controller.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  minimumSize: const Size.fromHeight(48),
+                ),
+                child: Text(
+                  "Jetzt zu meinem Verse",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

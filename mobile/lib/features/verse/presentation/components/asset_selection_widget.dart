@@ -65,7 +65,13 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
         }
       },
       child: isLoading
-          ? VerseLoadingWidget()
+          ? VerseLoadingWidget(
+              name: widget.name,
+
+              screenSize: widget.screenSize,
+              controller: widget.controller,
+              verse: widget.verse,
+            )
           : Container(
               // height: widget.screenSize.height * 0.6,
               decoration: BoxDecoration(

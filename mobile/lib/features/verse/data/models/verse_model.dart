@@ -49,10 +49,10 @@ class VerseModel extends Verse {
       // 'assets': assets,
       'branding': {
         "logo_url": logo,
-        "primary_color": color,
+        "primary_color": "#3B82F6",
         "color_name": colorName,
       },
-      'initial_channels': channels,
+      'initial_channels': [],
       'is_neutral_view': isNeutralView,
     };
   }

@@ -6,6 +6,8 @@ import 'package:mobile/features/verse/presentation/components/add_verse_logo_wid
 import 'package:mobile/features/verse/presentation/components/asset_selection_widget.dart';
 import 'package:mobile/features/verse/presentation/components/channel_selection_widget.dart';
 import 'package:mobile/features/verse/presentation/components/stracture_verse_widget.dart';
+import 'package:mobile/features/verse/presentation/components/verse_complete_widget.dart';
+import 'package:mobile/features/verse/presentation/components/verse_loading_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/constant.dart';
@@ -117,6 +119,21 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
         // onSubmit: _submitForm,
         // isSubmitting: _isSubmitting,
       ),
+      VerseLoadingWidget(
+        isLoading: false,
+        name: widget.currentUserName,
+
+        screenSize: screenSize,
+        controller: _controller,
+        verse: verse,
+      ),
+      VerseCompleteWidget(
+        name: widget.currentUserName,
+
+        screenSize: screenSize,
+        controller: _controller,
+        verse: verse,
+      ),
     ];
     return SafeArea(
       child: Scaffold(
@@ -149,8 +166,8 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     height: screenSize.height * 0.77,
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
 
+                    // padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: PageView(
                       controller: _controller,
                       onPageChanged: (index) {

@@ -19,52 +19,64 @@ class VerseRemoteDataSourceImpl implements VerseRemoteDataSource {
 
   @override
   Future<VerseModel> createVerse(VerseModel verse) async {
-    final token = await SecureStorage.getAccessToken();
-    if (token == null || token.isEmpty) {
-      throw const ServerException("Authentication token missing");
-    }
+    try {
+      final token = await tokenService.getAccessToken();
+      if (token == null || token.isEmpty) {
+        throw const ServerException("Authentication token missing");
+      }
+      verse.logo = "https://example.com/logo.png";
 
-    final response = await dio.post(
-      'https://brightcore-iugy8.ondigitalocean.app/verse/complete-setup',
-      data: {
-        "verse_id": verse.verseId,
-        "name": "tempo Verse",
-        "subdomain": "bnw",
-        "email": "samuelnegalign1er@gmail.com",
-        "organization_name": "BNW Corporation",
-        "branding": {
-          "logo_url": "https://example.com/logo.png",
-          "primary_color": "#3B82F6",
-          "color_name": "Primary Blue",
-        },
-        "initial_channels": [
-          {
-            "name": "general",
-            "type": "channel",
-            "description": "General discussion channel",
-          },
-          {
-            "name": "announcements",
-            "type": "channel",
-            "description": "Important announcements",
-          },
-        ],
-        "is_neutral_view": false,
-      },
-      // verse.toJson(),
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      ),
-    );
+      final body = verse.toJson();
+      print("=== Verse JSON Payload==");
+      print(verse.toJson());
 
-    if (response.statusCode == 201) {
-      return VerseModel.fromJson(response.data);
-    } else {
-      throw ServerException("unknown error");
+      final response = await dio.post(
+        'https://brightcore-iugy8.ondigitalocean.app/verse/complete-setup',
+        data: body,
+        // {
+        //   "verse_id": verse.verseId,
+        //   "name": "tempo Verse",
+        //   "subdomain": "bnw",
+        //   "email": "samuelnegalign1er@gmail.com",
+        //   "organization_name": "BNW Corporation",
+        //   "branding": {
+        //     "logo_url": "https://example.com/logo.png",
+        //     "primary_color": "#3B82F6",
+        //     "color_name": "Primary Blue",
+        //   },
+        //   "initial_channels": [
+        //     {
+        //       "name": "general",
+        //       "type": "channel",
+        //       "description": "General discussion channel",
+        //     },
+        //     {
+        //       "name": "announcements",
+        //       "type": "channel",
+        //       "description": "Important announcements",
+        //     },
+        //   ],
+        //   "is_neutral_view": false,
+        // },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 201) {
+        return VerseModel.fromJson(response.data);
+      } else {
+        throw ServerException("unknown error");
+      }
+    } on DioException catch (e) {
+      print("=== ERROR RESPONSE ===");
+      print("Status code: ${e.response?.statusCode}");
+      print("Data: ${e.response?.data}");
+      throw ServerException("Upload failed: ${e.message}");
     }
   }
 }
