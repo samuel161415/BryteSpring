@@ -1,5 +1,6 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+// import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/core/network/dio_client.dart';
@@ -11,10 +12,10 @@ import 'package:mobile/features/Authentication/data/datasources/invitation_remot
 import 'package:mobile/features/Authentication/data/datasources/register_user_remote_datasource.dart';
 import 'package:mobile/features/Authentication/data/datasources/reset_password_remote_datasource.dart';
 import 'package:mobile/features/Authentication/data/repositories/invitation_repository_impl.dart';
-import 'package:mobile/features/Authentication/data/repositories/login_repository_impl.dart';
 import 'package:mobile/features/Authentication/data/repositories/register_user_repository_impl.dart';
 import 'package:mobile/features/Authentication/data/repositories/reset_password_repository_impl.dart';
 import 'package:mobile/features/Authentication/domain/repositories/invitation_repository.dart';
+import 'package:mobile/core/services/token_service.dart';
 import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/Authentication/domain/repositories/register_user_repository.dart';
 import 'package:mobile/features/Authentication/domain/repositories/reset_password_repository.dart';
@@ -37,6 +38,22 @@ import 'package:mobile/features/dashboard/data/repositories/dashboard_repository
 import 'package:mobile/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:mobile/features/dashboard/domain/usecases/get_dashboard_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../features/Authentication/data/repositories/login_repository_impl.dart';
+import 'package:mobile/features/verse/domain/repositories/verse_repository.dart';
+import 'package:mobile/features/verse/data/repositories/verse_repository_impl.dart';
+import 'package:mobile/features/verse/data/datasources/verse_remote_data_source.dart';
+import 'package:mobile/features/verse/domain/usecases/create_verse.dart';
+import 'package:mobile/features/verse/presentation/bloc/verse_bloc.dart';
+import 'package:mobile/core/services/token_service.dart';
+
+// Upload dependencies
+import 'package:mobile/features/upload/data/datasources/upload_remote_data_source.dart';
+import 'package:mobile/features/upload/domain/repositories/upload_repository.dart';
+import 'package:mobile/features/upload/data/repositories/upload_repository_impl.dart';
+
+import '../features/upload/domain/usecases/upload_usecase.dart';
+import '../features/upload/presentation/bloc/upload_bloc.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -142,4 +159,36 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => SavedAccountsService(prefs: sl(), secureStorage: sl()),
   );
+
+  // Register TokenService
+  sl.registerLazySingleton(() => TokenService());
+
+  // Verse Remote Data Source
+  sl.registerLazySingleton<VerseRemoteDataSource>(
+    () => VerseRemoteDataSourceImpl(dio: sl(), tokenService: sl()),
+  );
+
+  // Verse Repositories
+  sl.registerLazySingleton<VerseRepository>(
+    () => VerseRepositoryImpl(remoteDataSource: sl(), tokenService: sl()),
+  );
+
+  // Verse Use cases
+  sl.registerLazySingleton(() => CreateVerse(sl()));
+
+  // Verse Bloc
+  sl.registerFactory(() => VerseBloc(createVerse: sl()));
+
+  // Upload Remote Data Source
+  sl.registerLazySingleton<UploadRemoteDataSource>(
+    () => UploadRemoteDataSourceImpl(dio: sl(), tokenService: sl()),
+  );
+
+  // Upload Repository
+  sl.registerLazySingleton<UploadRepository>(
+    () => UploadRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(() => UploadImage(sl()));
+  // Verse Bloc
+  sl.registerFactory(() => UploadBloc(sl()));
 }

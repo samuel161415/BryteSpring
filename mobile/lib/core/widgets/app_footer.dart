@@ -27,7 +27,7 @@ class _AppFooterState extends State<AppFooter> {
               'login_screen.footer_title'.tr(),
               style: TextStyle(
                 color: AppTheme.text,
-                fontSize: 36,
+                fontSize: 30,
                 fontWeight: FontWeight.w700,
               ),
             ),
