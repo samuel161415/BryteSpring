@@ -25,7 +25,7 @@ class VerseModel extends Verse {
       email: json['email'],
       organizationName: json['organization_name'],
       logo: json['logo'],
-      color: json['color'],
+      color: _formatHexColor(json['color']),
       colorName: json['color_name'],
       channels: List<String>.from(json['channels']),
       assets: List<String>.from(json['assets']),
@@ -33,6 +33,48 @@ class VerseModel extends Verse {
       initialChannels: List<String>.from(json['initial_channels']),
       isNeutralView: json['is_neutral_view'],
     );
+  }
+  static String? _formatHexColor(String? colorInput) {
+    if (colorInput == null || colorInput.isEmpty) {
+      return null;
+    }
+
+    // Remove any whitespace
+    String cleanColor = colorInput.trim();
+
+    // If it's already a valid hex color with #, return as is
+    if (_isValidHexColor(cleanColor)) {
+      return cleanColor;
+    }
+
+    // If it doesn't start with #, try adding it
+    if (!cleanColor.startsWith('#')) {
+      String withHash = '#$cleanColor';
+      if (_isValidHexColor(withHash)) {
+        return withHash;
+      }
+    }
+
+    // If it's still invalid, return null
+    return null;
+  }
+
+  static bool _isValidHexColor(String color) {
+    if (color.isEmpty) return false;
+
+    // Must start with #
+    if (!color.startsWith('#')) return false;
+
+    // Remove # for validation
+    String hex = color.substring(1);
+
+    // Check if it's 3, 6, or 8 characters (RGB, RRGGBB, RRGGBBAA)
+    if (hex.length != 3 && hex.length != 6 && hex.length != 8) {
+      return false;
+    }
+
+    // Check if all characters are valid hex digits (0-9, A-F, a-f)
+    return RegExp(r'^[0-9A-Fa-f]+$').hasMatch(hex);
   }
 
   Map<String, dynamic> toJson() {
@@ -49,10 +91,17 @@ class VerseModel extends Verse {
       // 'assets': assets,
       'branding': {
         "logo_url": logo,
-        "primary_color": "#3B82F6",
+        "primary_color": _formatHexColor(color) ?? "#3B82F6",
         "color_name": colorName,
       },
-      'initial_channels': [],
+      'initial_channels': channels.map((channel) {
+        return {
+          "name": channel,
+          "type": 'channel',
+          "description": "description",
+        };
+      }).toList(),
+
       'is_neutral_view': isNeutralView,
     };
   }

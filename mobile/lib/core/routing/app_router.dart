@@ -28,13 +28,19 @@ class AppRouter {
   late final GoRouter router = GoRouter(
     initialLocation: '/',
     routes: _routes,
-    debugLogDiagnostics: true,
+    // debugLogDiagnostics: true,
     redirect: (context, state) {
       try {
         final authService = sl<AuthService>();
 
+        // Debug logging
+        print('AppRouter - Redirect check: ${state.matchedLocation}');
+        print('AppRouter - Full location: ${state.uri.toString()}');
+        print('AppRouter - URI: ${state.uri}');
+
         // Wait for auth service to initialize
         if (!authService.isInitialized) {
+          print('AppRouter - Auth service not initialized, allowing');
           return null; // Let the app initialize
         }
 
@@ -42,9 +48,9 @@ class AppRouter {
         final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
         final isDashboardRoute =
             state.matchedLocation == '/${Routelists.dashboard}';
-        final isInvitationValidationRoute = state.matchedLocation.startsWith(
-          '/invitation-validation',
-        );
+        final isInvitationValidationRoute =
+            state.matchedLocation.startsWith('/invitation-validation') ||
+            state.matchedLocation.contains('/invitation-validation');
         final isJoinVerseRoute =
             state.matchedLocation.startsWith(
               '/${Routelists.almostJoinVerse}',
@@ -53,8 +59,15 @@ class AppRouter {
             state.matchedLocation.startsWith('/${Routelists.getToKnowRole}') ||
             state.matchedLocation.startsWith('/${Routelists.joinVerseSuccess}');
 
+        print(
+          'AppRouter - isInvitationValidationRoute: $isInvitationValidationRoute',
+        );
+        print('AppRouter - isJoinVerseRoute: $isJoinVerseRoute');
+        print('AppRouter - isAuthenticated: $isAuthenticated');
+
         // Allow access to invitation validation and join verse routes regardless of authentication status
         if (isInvitationValidationRoute || isJoinVerseRoute) {
+          print('AppRouter - Allowing access to invitation/join verse route');
           return null; // No redirect needed
         }
 
@@ -81,6 +94,7 @@ class AppRouter {
         return null; // No redirect needed
       } catch (e) {
         // If there's any error, redirect to login as fallback
+        print('AppRouter - Error in redirect: $e');
         return '/${Routelists.login}';
       }
     },
