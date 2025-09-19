@@ -37,6 +37,7 @@ class AppRouter {
         print('AppRouter - Redirect check: ${state.matchedLocation}');
         print('AppRouter - Full location: ${state.uri.toString()}');
         print('AppRouter - URI: ${state.uri}');
+        print('AppRouter - Path: ${state.uri.path}');
 
         // Wait for auth service to initialize
         if (!authService.isInitialized) {
@@ -48,9 +49,13 @@ class AppRouter {
         final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
         final isDashboardRoute =
             state.matchedLocation == '/${Routelists.dashboard}';
+
+        // More comprehensive check for invitation validation routes
         final isInvitationValidationRoute =
+            state.matchedLocation == '/invitation-validation' ||
             state.matchedLocation.startsWith('/invitation-validation') ||
-            state.matchedLocation.contains('/invitation-validation');
+            state.uri.path == '/invitation-validation' ||
+            state.uri.path.startsWith('/invitation-validation');
         final isJoinVerseRoute =
             state.matchedLocation.startsWith(
               '/${Routelists.almostJoinVerse}',
