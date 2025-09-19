@@ -328,7 +328,14 @@ class _LoginFormState extends State<LoginForm> {
               ),
             );
             // Redirect to dashboard for now
-            context.go('/${Routelists.dashboard}');
+            context.goNamed(
+              '${Routelists.createVerse}',
+              extra: {
+                'verseId': widget.invitation!.verseId,
+                "currentUserName": widget.invitation!.firstName,
+                "email": widget.invitation!.email,
+              },
+            );
           }
         },
       );
@@ -560,7 +567,7 @@ class _LoginFormState extends State<LoginForm> {
                       context.pushNamed(
                         Routelists.invitationValidation,
                         pathParameters: {
-                          'token': 'ca0edec8-37ad-4877-91df-3b3ad18ebefd',
+                          'token': '7a3377a6-9e09-4c8e-b96f-ace7b9e34de7',
                         },
                       );
                     },
