@@ -33,8 +33,14 @@ class AppRouter {
       try {
         final authService = sl<AuthService>();
 
+        // Debug logging
+        print('AppRouter - Redirect check: ${state.matchedLocation}');
+        print('AppRouter - Full location: ${state.location}');
+        print('AppRouter - URI: ${state.uri}');
+
         // Wait for auth service to initialize
         if (!authService.isInitialized) {
+          print('AppRouter - Auth service not initialized, allowing');
           return null; // Let the app initialize
         }
 
@@ -53,8 +59,13 @@ class AppRouter {
             state.matchedLocation.startsWith('/${Routelists.getToKnowRole}') ||
             state.matchedLocation.startsWith('/${Routelists.joinVerseSuccess}');
 
+        print('AppRouter - isInvitationValidationRoute: $isInvitationValidationRoute');
+        print('AppRouter - isJoinVerseRoute: $isJoinVerseRoute');
+        print('AppRouter - isAuthenticated: $isAuthenticated');
+
         // Allow access to invitation validation and join verse routes regardless of authentication status
         if (isInvitationValidationRoute || isJoinVerseRoute) {
+          print('AppRouter - Allowing access to invitation/join verse route');
           return null; // No redirect needed
         }
 
@@ -81,6 +92,7 @@ class AppRouter {
         return null; // No redirect needed
       } catch (e) {
         // If there's any error, redirect to login as fallback
+        print('AppRouter - Error in redirect: $e');
         return '/${Routelists.login}';
       }
     },
