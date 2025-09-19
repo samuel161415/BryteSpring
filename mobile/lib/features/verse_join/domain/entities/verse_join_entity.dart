@@ -115,8 +115,9 @@ class VerseJoinEntity extends Equatable {
       setupCompletedAt: json['setup_completed_at'] != null
           ? DateTime.parse(json['setup_completed_at'])
           : null,
-      setupCompletedBy: json['setup_completed_by'],
+      setupCompletedBy: _extractIdFromField(json['setup_completed_by']),
       isActive: json['is_active'] ?? true,
+
       createdAt: DateTime.parse(
         json['created_at'] ?? DateTime.now().toIso8601String(),
       ),
@@ -124,7 +125,25 @@ class VerseJoinEntity extends Equatable {
         json['updated_at'] ?? DateTime.now().toIso8601String(),
       ),
       createdBy: json['created_by']["email"],
+
+
     );
+  }
+
+  /// Helper method to extract ID from populated user objects or direct ID strings
+  static String? _extractIdFromField(dynamic field) {
+    if (field == null) return null;
+
+    // If it's already a string, return it
+    if (field is String) return field;
+
+    // If it's a Map (populated object), extract the _id
+    if (field is Map<String, dynamic>) {
+      return field['_id']?.toString();
+    }
+
+    // Fallback: convert to string
+    return field.toString();
   }
 
   Map<String, dynamic> toJson() {

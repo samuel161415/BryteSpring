@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobile/core/network/dio_client.dart';
 import 'package:mobile/core/services/auth_service.dart';
+import 'package:mobile/core/services/dynamic_theme_service.dart';
 import 'package:mobile/core/services/saved_accounts_service.dart';
 import 'package:mobile/core/storage/local_storage.dart';
 import 'package:mobile/features/Authentication/data/datasources/invitation_remote_datasource.dart';
@@ -67,8 +68,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DioClient(dio: sl()));
   sl.registerLazySingleton(() => Connectivity());
 
-  // Storage
-  sl.registerLazySingleton(() => LocalStorage(sl.get<SharedPreferences>()));
+  // Services
+  sl.registerLazySingleton(() => DynamicThemeService());
 
   // Data sources
   sl.registerLazySingleton<InvitationRemoteDataSource>(
