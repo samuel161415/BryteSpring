@@ -16,9 +16,10 @@ const mailjet = new Mailjet({
  * Build invitation link
  */
 function buildInviteLink({ token, subdomain }) {
-  const baseUrl = process.env.INVITE_BASE_URL || "http://localhost:3000";
+  // https://bryte-spring-vnv1.vercel.app/invitation-validation?token=INVITATION_TOKEN
+  const baseUrl = "https://bryte-spring-vnv1.vercel.app";
   const url = new URL(baseUrl);
-  url.pathname = "/invite";
+  url.pathname = "/invitation-validation";
   url.searchParams.set("token", token);
   if (subdomain) {
     url.searchParams.set("subdomain", String(subdomain));
