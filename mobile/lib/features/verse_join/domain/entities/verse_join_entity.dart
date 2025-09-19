@@ -14,7 +14,7 @@ class BrandingEntity extends Equatable {
 
   factory BrandingEntity.fromJson(Map<String, dynamic> json) {
     return BrandingEntity(
-      logoUrl: json['logo_url'],
+      logoUrl: json['logo_url'] ?? "",
       primaryColor: json['primary_color'] ?? '#3B82F6',
       colorName: json['color_name'] ?? 'Primary Blue',
     );
@@ -107,8 +107,8 @@ class VerseJoinEntity extends Equatable {
       id: json['_id'] ?? json['id'], // Handle both _id and id
       name: json['name'],
       adminEmail: json['admin_email'],
-      subdomain: json['subdomain'],
-      organizationName: json['organization_name'],
+      subdomain: json['subdomain'] ?? "subdomain",
+      organizationName: json['organization_name'] ?? "Organization Name",
       branding: BrandingEntity.fromJson(json['branding'] ?? {}),
       settings: SettingsEntity.fromJson(json['settings'] ?? {}),
       isSetupComplete: json['is_setup_complete'] ?? false,
@@ -117,9 +117,16 @@ class VerseJoinEntity extends Equatable {
           : null,
       setupCompletedBy: _extractIdFromField(json['setup_completed_by']),
       isActive: json['is_active'] ?? true,
-      createdAt: DateTime.parse(json['created_at'] ?? json['createdAt']),
-      updatedAt: DateTime.parse(json['updated_at'] ?? json['updatedAt']),
-      createdBy: _extractIdFromField(json['created_by'] ?? json['createdBy']),
+
+      createdAt: DateTime.parse(
+        json['created_at'] ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        json['updated_at'] ?? DateTime.now().toIso8601String(),
+      ),
+      createdBy: json['created_by']["email"],
+
+
     );
   }
 

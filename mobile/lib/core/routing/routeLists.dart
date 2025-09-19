@@ -12,4 +12,6 @@ class Routelists {
   static const createFolder = 'createFolder';
   static const createFolderConfirmation = 'createFolderConfirmation';
   static const joinVerseSuccess = 'joinVerseSuccess';
+  static const createVerse = 'createVerse';
+
 }

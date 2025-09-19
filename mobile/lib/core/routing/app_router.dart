@@ -7,6 +7,9 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/invitation_validation_page.dart';
+import 'package:mobile/features/verse/domain/usecases/create_verse.dart';
+import 'package:mobile/features/verse/presentation/pages/verse_creation_page.dart';
+import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
@@ -248,6 +251,26 @@ class AppRouter {
           CreateFolderConfirmationPage(
             folderName: folderName,
             channelName: channelName,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/${Routelists.createVerse}',
+      name: Routelists.createVerse,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final verseId = extra?['verseId'] as String? ?? 'verseId';
+        final currentUserName =
+            extra?['currentUserName'] as String? ?? 'currentUserName';
+        final email = extra?['email'] as String? ?? 'email';
+        return _buildPage(
+          context,
+          state,
+          VerseCreationPage(
+            verseId: verseId,
+            currentUserName: currentUserName,
+            email: email,
           ),
         );
       },
