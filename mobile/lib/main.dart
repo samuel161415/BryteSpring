@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/app_router.dart';
 import 'package:mobile/core/services/auth_service.dart';
+import 'package:mobile/core/widgets/dynamic_theme_provider.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/register_user_bloc.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/invitation_validation_bloc.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/reset_password_bloc.dart';
@@ -51,7 +52,7 @@ void main() async {
             create: (context) => DashboardBloc(getDashboardData: sl()),
           ),
         ],
-        child: const MyApp(),
+        child: DynamicThemeProvider(child: const MyApp()),
       ),
     ),
   );
@@ -64,9 +65,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'BryteSpring',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
       routerConfig: AppRouter.instance.router,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
