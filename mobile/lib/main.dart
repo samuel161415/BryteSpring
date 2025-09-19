@@ -12,6 +12,7 @@ import 'package:mobile/features/Authentication/presentation/bloc/invitation_vali
 import 'package:mobile/features/Authentication/presentation/bloc/reset_password_bloc.dart';
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_user_bloc.dart';
 import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/upload/presentation/bloc/upload_bloc.dart';
 import 'package:mobile/features/verse/presentation/bloc/verse_bloc.dart';
@@ -69,6 +70,9 @@ void main() async {
             create: (context) => VerseBloc(createVerse: sl()),
           ),
           BlocProvider<UploadBloc>(create: (context) => UploadBloc(sl())),
+          BlocProvider<UserInvitationBloc>(
+            create: (context) => UserInvitationBloc(sl()),
+          ),
         ],
         child: const MyApp(),
       ),

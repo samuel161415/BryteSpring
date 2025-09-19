@@ -23,6 +23,9 @@ import 'package:mobile/features/Authentication/domain/usecases/invitation_usecas
 import 'package:mobile/features/Authentication/domain/usecases/login_usecase.dart';
 import 'package:mobile/features/Authentication/domain/usecases/register_user_usecase.dart';
 import 'package:mobile/features/Authentication/domain/usecases/reset_password_usecase.dart';
+import 'package:mobile/features/invite-user/data/datasourse/invite_user_datasourse.dart';
+import 'package:mobile/features/invite-user/domain/usecase/create_invitation_usecase.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_user_bloc.dart';
 import 'package:mobile/features/verse_join/data/datasources/verse_join_remote_datasource.dart';
 import 'package:mobile/features/verse_join/data/repositories/verse_join_repository_impl.dart';
 import 'package:mobile/features/verse_join/domain/repositories/verse_join_repository.dart';
@@ -191,4 +194,24 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UploadImage(sl()));
   // Verse Bloc
   sl.registerFactory(() => UploadBloc(sl()));
+  // Verse Use cases
+  sl.registerLazySingleton(() => CreateUser(sl()));
+
+  // Verse Bloc
+  sl.registerFactory(() => UserInvitationBloc(sl()));
+
+  // Use cases
+  sl.registerLazySingleton(() => CreateUser(sl()));
+
+  // Repository
+  sl.registerLazySingleton<InvitationRepository>(
+    () => InvitationRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<InviteUserDatasourse>(
+    () => InviteUserDatasourseImpl(dio: sl()),
+  );
+
+  // Verse Bloc
 }
