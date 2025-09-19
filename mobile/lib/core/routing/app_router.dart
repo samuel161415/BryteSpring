@@ -42,10 +42,13 @@ class AppRouter {
         final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
         final isDashboardRoute =
             state.matchedLocation == '/${Routelists.dashboard}';
-        final isInvitationValidationRoute = 
-            state.matchedLocation.startsWith('/invitation-validation');
-        final isJoinVerseRoute = 
-            state.matchedLocation.startsWith('/${Routelists.almostJoinVerse}') ||
+        final isInvitationValidationRoute = state.matchedLocation.startsWith(
+          '/invitation-validation',
+        );
+        final isJoinVerseRoute =
+            state.matchedLocation.startsWith(
+              '/${Routelists.almostJoinVerse}',
+            ) ||
             state.matchedLocation.startsWith('/${Routelists.joinVerse}') ||
             state.matchedLocation.startsWith('/${Routelists.getToKnowRole}') ||
             state.matchedLocation.startsWith('/${Routelists.joinVerseSuccess}');
