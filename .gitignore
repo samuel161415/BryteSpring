@@ -247,7 +247,7 @@ yarn-error.log*
 
 # Docker
 .dockerignore
-Dockerfile
+!mobile/Dockerfile
 docker-compose.yml
 docker-compose.yaml
 
@@ -255,6 +255,7 @@ docker-compose.yaml
 *.yaml
 *.yml
 !docker-compose*.yml
+!.do/
 
 # Terraform
 *.tfstate
