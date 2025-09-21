@@ -66,6 +66,42 @@ exports.createInitialVerse = async (req, res) => {
         },
         { new: true, upsert: true }
       );
+
+      // Ensure Editor role exists for this verse (idempotent)
+      await Role.findOneAndUpdate(
+        { verse_id: verse._id, name: 'Editor' },
+        {
+          $setOnInsert: {
+            permissions: {
+              manage_assets: true,
+              edit_content: true,
+              sort_assets: true,
+              view_analytics: false
+            },
+            description: 'Can edit and organize content',
+            is_system_role: true
+          }
+        },
+        { new: true, upsert: true }
+      );
+
+      // Ensure Expert role exists for this verse (idempotent)
+      await Role.findOneAndUpdate(
+        { verse_id: verse._id, name: 'Expert' },
+        {
+          $setOnInsert: {
+            permissions: {
+              manage_assets: false,
+              edit_content: false,
+              view_analytics: true,
+              provide_expertise: true
+            },
+            description: 'Subject matter expert with specialized access',
+            is_system_role: true
+          }
+        },
+        { new: true, upsert: true }
+      );
   
       // Create an invitation for the admin (user may not exist yet)
       const token = uuidv4();
