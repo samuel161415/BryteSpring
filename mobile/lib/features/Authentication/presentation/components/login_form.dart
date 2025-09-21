@@ -565,8 +565,8 @@ class _LoginFormState extends State<LoginForm> {
                   GestureDetector(
                     onTap: () {
                       context.pushNamed(
-                        '${Routelists.invitationValidation}Path',
-                        pathParameters: {
+                        Routelists.invitationValidation,
+                        queryParameters: {
                           'token': 'c5a81e16-50a3-46dc-94c3-a1b9453b2121',
                         },
                       );

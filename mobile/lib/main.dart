@@ -16,13 +16,15 @@ import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart'
 import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/upload/presentation/bloc/upload_bloc.dart';
 import 'package:mobile/features/verse/presentation/bloc/verse_bloc.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Set URL strategy to use path-based routing (removes # from URLs)
   if (kIsWeb) {
-    setPathUrlStrategy();
+    // setPathUrlStrategy();
+    setUrlStrategy(PathUrlStrategy());
   }
 
   await init();

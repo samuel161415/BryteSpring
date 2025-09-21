@@ -26,9 +26,8 @@ class AppRouter {
   static final AppRouter instance = AppRouter._();
 
   late final GoRouter router = GoRouter(
-    initialLocation: '/',
     routes: _routes,
-    // debugLogDiagnostics: true,
+    debugLogDiagnostics: true,
     redirect: (context, state) {
       try {
         final authService = sl<AuthService>();
@@ -151,27 +150,12 @@ class AppRouter {
         final token = state.uri.queryParameters['token'];
         if (token == null || token.isEmpty) {
           // If no token provided, redirect to login
-          return _buildPage(context, state, LoginPage());
+          // return _buildPage(context, state, LoginPage());
         }
         return _buildPage(
           context,
           state,
-          InvitationValidationPage(token: token),
-        );
-      },
-    ),
-    GoRoute(
-      path: '/invitation-validation/:token',
-      name: '${Routelists.invitationValidation}Path',
-      pageBuilder: (context, state) {
-        final token = state.pathParameters['token'];
-        if (token == null || token.isEmpty) {
-          return _buildPage(context, state, LoginPage());
-        }
-        return _buildPage(
-          context,
-          state,
-          InvitationValidationPage(token: token),
+          InvitationValidationPage(token: token ?? ''),
         );
       },
     ),
