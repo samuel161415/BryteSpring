@@ -22,10 +22,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Set URL strategy to use path-based routing (removes # from URLs)
-  if (kIsWeb) {
-    // setPathUrlStrategy();
-    setUrlStrategy(PathUrlStrategy());
-  }
 
   await init();
 
@@ -35,7 +31,7 @@ void main() async {
 
   await EasyLocalization.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
-
+  setPathUrlStrategy();
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('de')],
