@@ -1,0 +1,194 @@
+{
+  "login_screen": {
+    "welcome_message": "Hallo, es ist schön, dass Du hier bist.",
+    "email_placeholder": "E-Mail-Adresse eingeben",
+    "password_placeholder": "Passwort eingeben",
+    "remember_me": "Anmeldedaten auf diesem Gerät speichern",
+    "login_button": "Jetzt sicher einloggen",
+    "switch_account": "Benutzer wechseln",
+    "footer_title": "BryteVerse© by Publify ist die Zukunft im Publishing.",
+    "menu": "Menü",
+    "footer_feature_1": "Wir senken Deine Kosten",
+    "footer_feature_2": "Wir sparen Deine Zeit",
+    "footer_feature_3": "Wir machen Deine Inhalte relevant",
+    "footer_feature_4": "Wir bündeln Deine Inhalte an einem Ort",
+    "footer_feature_5": "Wir machen Deine Inhalte sicher",
+    "footer_feature_6": "Wir sind für Dich da",
+    "footer_social_media": "Social Media",
+    "footer_relevant_links": "Relevante Links",
+    "footer_link_contact": "Kontakt",
+    "footer_link_data_protection": "Datenschutz",
+    "footer_link_privacy_settings": "Privatsphäre-Einstellungen",
+    "footer_link_imprint": "Impressum"
+  },
+  "reset_password": {
+    "title": "Passwort festlegen",
+    "subtitle": "Wählen Sie ein sicheres Passwort zum Schutz Ihres Kontos",
+    "password_label": "Neues Passwort",
+    "password_hint": "Neues Passwort eingeben",
+    "confirm_label": "Passwort bestätigen",
+    "confirm_hint": "Neues Passwort erneut eingeben",
+    "send_button": "Passwort festlegen",
+    "back_to_login": "Zurück zur Anmeldung"
+  },
+  "app_footer": {
+    "relevant_links": "Relevante Links"
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "back": "Zurück",
+    "next": "Weiter"
+  },
+  "join_verse": {
+    "greeting_name": "Hallo, {name}!",
+    "invited_title": "Du bist eingeladen!",
+    "invited_desc": "{inviterName}, Chief Financial Officer, lädt Dich ein, dem Verse von {verseName} beizutreten.",
+    "join_button": "Verse beitreten",
+    "almost_done_title": "Fast geschafft!",
+    "almost_done_desc": "Bevor Du Inhalte ablegen und verwalten kannst, musst Du zunächst einem Verse beitreten. Du kannst den Administrator Deines Unternehmens um eine Einladung bitten, oder ein neues Verse anlegen.",
+    "create_verse_button": "+ Verse anlegen",
+    "welcome_title": "Willkommen im Verse von {verseName}!",
+    "welcome_desc": "Super, Du bist dem Verse von {verseName} in der Rolle eines Experten beigetreten. Bist Du bereit, mehr über Deine neue Rolle zu erfahren?",
+    "learn_role_cta": "{name}s Rolle kennenlernen",
+    "success_title": "Du bist jetzt startklar!",
+    "success_message": "Wir freuen uns auf Dich und Deinen Beitrag. Dein Team von {verseName}!",
+    "success_cta": "Deine Rolle kennenlernen",
+    "role": {
+      "title": "Deine Rolle als Experte",
+      "intro": "In Deiner Rolle als Experte trägst Du im Verse dazu bei, die wertvollen Inhalte Deiner Organisation professionell aufzubereiten, zu strukturieren und jederzeit die aktuellste Version griffbereit zu haben.",
+      "bullet_1": "Du kannst Assets wie Bilder, Texte oder Daten hochladen",
+      "bullet_2": "Du kannst Assets bearbeiten und anreichern",
+      "bullet_3": "Du kannst Assets sortieren und Kanälen (Buch, Website etc.) zuordnen",
+      "bullet_4": "Du kannst Inhalte vorbereiten und um Freigabe bitten",
+      "hint": "Hinweis: In Deiner Organisation können spezifische Freigaberichtlinien gelten. Bitte achte darauf, Inhalte nur zu bearbeiten oder hochzuladen, wenn sie mit Deinem Team abgestimmt sind. Bitte gehe sorgfältig mit den Strukturen und Daten in diesem geschützten Verse um und handle verantwortungsvoll.",
+      "cta": "Rolle verstanden & loslegen"
+    }
+  },
+  "channels": {
+    "create_folder": "Ordner erstellen",
+    "select_channel": "Kanal auswählen",
+    "change_channel": "Kanal ändern",
+    "channel_label": "Kanal",
+    "folder_name_placeholder": "+ Wie soll der Ordner heißen?",
+    "folder_name_required": "Ordnername ist erforderlich",
+    "folder_description_placeholder": "Ordnerbeschreibung (optional)",
+    "make_public": "Diesen Ordner öffentlich machen",
+    "create_folder_tip": "Tipp: Bitte achte darauf, dass Du den richtigen Kanal ausgewählt hast. Bitte stelle sicher, dass Du einen eindeutigen Namen auswählst.",
+    "create_folder_button": "Ordner erstellen",
+    "select_channel_error": "Bitte wähle zuerst einen Kanal aus",
+    "folder_created_success": "Ordner erfolgreich erstellt!",
+    "folder_creation_error": "Fehler beim Erstellen des Ordners",
+    "add_folder": "Ordner hinzufügen",
+    "change_name": "Namen ändern",
+    "change_contents": "Inhalte ändern",
+    "folder_inheritance_info": "Corporate Design ist für alle Nutzer Deiner Organisation uneingeschränkt zugänglich und vererbt diese Eigenschaften auf 'Mitarbeiterfotos'.",
+    "folder_review_message": "Bitte prüfe die Einstellungen Deines Ordners sorgfältig. Bist Du einverstanden?",
+    "yes_correct": "Ja, das ist richtig",
+    "select_other_folder": "Anderen Ordner wählen",
+    "content_type_question": "Welche Inhalte werden hier abgelegt?",
+    "images": "Bilder",
+    "texts": "Texte",
+    "data": "Daten",
+    "documents": "Dokumente",
+    "tip_title": "Tipp:",
+    "tip_channel_selection": "Bitte achte darauf, dass Du den richtigen Kanal ausgewählt hast.",
+    "tip_unique_name": "Tipp: Bitte achte darauf, dass Du den richtigen Kanal ausgewählt hast. Bitte stelle sicher, dass Du einen eindeutigen Namen auswählst.",
+    "edit_folder_name": "Ordnername bearbeiten",
+    "edit_description": "Beschreibung bearbeiten",
+    "folder_created_success_message": "Prima, das hat geklappt!",
+    "folder_created_success_message_with_name": "Prima, {name}, das hat geklappt!",
+    "view_channel_button": "Alles klar Kanal ansehen",
+    "bryteverse_slogan": "BryteVerse® by Publify ist die Zukunft im Publishing.",
+    "feature_no_data_send": "wir senden keine Daten",
+    "feature_no_data_store": "wir speichern keine Daten",
+    "feature_content_manage": "wir können deine Inhalte in einem von 3",
+    "feature_content_share": "wir können deine Inhalte teilen",
+    "feature_content_organize": "wir können deine Inhalte organisieren",
+    "social_media": "Social Media",
+    "relevant_links": "Relevante Links",
+    "contact": "Kontakt",
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "terms": "AGB"
+  },
+  "dashboard": {
+    "greeting": "Hallo, Dirk!",
+    "description": "Schön, dass Du zurück bist! Lass uns gemeinsam die Welt des Publizierens revolutionieren und Deine Inhalte zum Leben erwecken.",
+    "sidebar": {
+      "channels": "Deine Kanäle",
+      "my_channels": "Meine",
+      "company": "Unternehmen",
+      "publishing": "Publishing",
+      "add_channel": "+ Kanal hinzufügen",
+      "no_channels": "Keine Kanäle verfügbar",
+      "assets": "Deine Assets",
+      "employee_images": "Mitarbeiterbilder",
+      "company_materials": "Unternehmensmaterialien",
+      "add_assets": "+ Assets hinzufügen",
+      "verses": "Deine Verse",
+      "settings": "Einstellungen",
+      "links": "Verknüpfungen",
+      "help_support": "Hilfe & Support",
+      "add_more": "+ Mehr hinzufügen"
+    },
+    "search": {
+      "title": "Wonach suchst Du?",
+      "placeholder": "Suchbegriff eingeben"
+    },
+    "frequent": {
+      "title": "Das hast Du häufig gesucht:",
+      "item1": "Den Sommer - Eine neue Kampagne",
+      "item2": "Handball - Leuchtende Bälle"
+    },
+    "upload": {
+      "title": "Möchtest Du etwas hochladen?",
+      "button": "+ Bild aus Datei wählen",
+      "coming_soon": "Datei-Upload wird bald verfügbar sein",
+      "choose_file": "+ Bild aus Datei wählen"
+    },
+    "footer": {
+      "message": "BryteVerse© by Publify ist die Zukunft im Publishing.",
+      "feature1": "Wir können Deine Welt",
+      "feature2": "Wir können Deine Inhalte",
+      "feature3": "Wir können Deine Reichweite",
+      "feature4": "Wir können Deine Effizienz",
+      "feature5": "Wir können Deine Zukunft",
+      "social_media": "Social Media",
+      "materials_links": "Materialien & Links",
+      "contact": "Kontakt",
+      "career": "Karriere",
+      "privacy": "Datenschutz",
+      "imprint": "Impressum"
+    },
+    "error": {
+      "loading_dashboard": "Fehler beim Laden der Dashboard-Daten",
+      "retry": "Erneut versuchen",
+      "retry_offline": "Aktualisieren",
+      "offline": "Offline-Modus",
+      "loading": "Dashboard wird geladen...",
+      "loading_channels": "Fehler beim Laden der Kanäle:",
+      "back_to_dashboard": "zurück zum Dashboard"
+    },
+    "greeting": {
+      "welcome_back": "Schön, dass Du zurück bist. Lass uns gemeinsam die Welt ein bisschen strukturierter machen."
+    },
+    "activity": {
+      "recent": "Letzte Aktivitäten"
+    },
+    "folder": {
+      "add": "Ordner hinzufügen",
+      "add_dialog_title": "Ordner hinzufügen",
+      "add_dialog_content": "Funktion wird bald verfügbar sein.",
+      "ok": "OK"
+    },
+    "asset": {
+      "add": "Asset hinzufügen",
+      "add_dialog_title": "Asset hinzufügen",
+      "add_dialog_content": "Funktion wird bald verfügbar sein."
+    },
+    "company": {
+      "data": "Unternehmensdaten"
+    }
+  }
+}

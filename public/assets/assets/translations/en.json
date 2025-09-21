@@ -1,0 +1,194 @@
+{
+  "login_screen": {
+    "welcome_message": "Hello, It's nice to have you here.",
+    "email_placeholder": "Enter your email",
+    "password_placeholder": "Enter your password",
+    "remember_me": "Save login details on this device",
+    "login_button": "Log in securely now",
+    "switch_account": "Switch Account",
+    "footer_title": "BryteVerse by Publify",
+    "menu": "Menu",
+    "footer_feature_1": "We reduce your costs",
+    "footer_feature_2": "We save you time",
+    "footer_feature_3": "We make your content relevant",
+    "footer_feature_4": "We centralize your content in one place",
+    "footer_feature_5": "We keep your content secure",
+    "footer_feature_6": "We are here for you",
+    "footer_social_media": "Social Media",
+    "footer_relevant_links": "Relevant Links",
+    "footer_link_contact": "Contact",
+    "footer_link_data_protection": "Data Protection",
+    "footer_link_privacy_settings": "Privacy Settings",
+    "footer_link_imprint": "Imprint"
+  },
+  "reset_password": {
+    "title": "Set Your Password",
+    "subtitle": "Choose a secure password to protect your account",
+    "password_label": "New password",
+    "password_hint": "Enter new password",
+    "confirm_label": "Confirm password",
+    "confirm_hint": "Re-enter new password",
+    "send_button": "Set Password",
+    "back_to_login": "Back to login"
+  },
+  "app_footer": {
+    "relevant_links": "Relevant Links"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "next": "Next"
+  },
+  "join_verse": {
+    "greeting_name": "Hello, {name}!",
+    "invited_title": "You are invited!",
+    "invited_desc": "{inviterName}, Chief Financial Officer, invites you to join the Verse of {verseName}.",
+    "join_button": "Join Verse",
+    "almost_done_title": "Almost there!",
+    "almost_done_desc": "Before you can store and manage content, you need to join a Verse. You can ask your company's administrator for an invitation, or create a new Verse.",
+    "create_verse_button": "+ Create Verse",
+    "welcome_title": "Welcome to the Verse of {verseName}!",
+    "welcome_desc": "Great, you joined the Verse of {verseName} as an Expert. Are you ready to learn more about your new role?",
+    "learn_role_cta": "Get to know {name}'s role",
+    "success_title": "You're all set!",
+    "success_message": "We're excited to have you and your contribution. Your team from {verseName}!",
+    "success_cta": "Get to know your role",
+    "role": {
+      "title": "Your role as Expert",
+      "intro": "As an Expert, you help keep your organization's valuable content up to date, structured and ready for use at any time.",
+      "bullet_1": "You can upload assets such as images, texts or data",
+      "bullet_2": "You can edit and enrich assets",
+      "bullet_3": "You can assign assets to channels (book, website, etc.)",
+      "bullet_4": "You can prepare content and request approval",
+      "hint": "Note: Your organization might have specific approval policies. Only upload or edit content that has been approved by your team. Handle structures and data in this protected Verse carefully and responsibly.",
+      "cta": "I understand my role – let's start"
+    }
+  },
+  "channels": {
+    "create_folder": "Create Folder",
+    "select_channel": "Select Channel",
+    "change_channel": "Change Channel",
+    "channel_label": "Channel",
+    "folder_name_placeholder": "+ What should the folder be called?",
+    "folder_name_required": "Folder name is required",
+    "folder_description_placeholder": "Folder description (optional)",
+    "make_public": "Make this folder public",
+    "create_folder_tip": "Tip: Please make sure you have selected the correct channel. Please ensure you choose a unique name.",
+    "create_folder_button": "Create Folder",
+    "select_channel_error": "Please select a channel first",
+    "folder_created_success": "Folder created successfully!",
+    "folder_creation_error": "Failed to create folder",
+    "add_folder": "Add Folder",
+    "change_name": "Change Name",
+    "change_contents": "Change Contents",
+    "folder_inheritance_info": "Corporate Design is freely accessible to all users of your organization and inherits these properties to 'Employee Photos'.",
+    "folder_review_message": "Please carefully review your folder settings. Do you agree?",
+    "yes_correct": "Yes, that is correct",
+    "select_other_folder": "Select another folder",
+    "content_type_question": "Which contents are stored here?",
+    "images": "Images",
+    "texts": "Texts",
+    "data": "Data",
+    "documents": "Documents",
+    "tip_title": "Tip:",
+    "tip_channel_selection": "Please make sure you have selected the correct channel.",
+    "tip_unique_name": "Tip: Please make sure you have selected the correct channel. Please ensure you select a unique name.",
+    "edit_folder_name": "Edit Folder Name",
+    "edit_description": "Edit Description",
+    "folder_created_success_message": "Great, that worked!",
+    "folder_created_success_message_with_name": "Great, {name}, that worked!",
+    "view_channel_button": "Alright, view channel",
+    "bryteverse_slogan": "BryteVerse® by Publify is the future in publishing.",
+    "feature_no_data_send": "we do not send data",
+    "feature_no_data_store": "we do not store data",
+    "feature_content_manage": "we can manage your content in one of 3",
+    "feature_content_share": "we can share your content",
+    "feature_content_organize": "we can organize your content",
+    "social_media": "Social Media",
+    "relevant_links": "Relevant Links",
+    "contact": "Contact",
+    "imprint": "Imprint",
+    "privacy": "Privacy",
+    "terms": "Terms and Conditions"
+  },
+  "dashboard": {
+    "greeting": "Hello, Dirk!",
+    "description": "Great to have you back! Let's revolutionize the world of publishing together and bring your content to life.",
+    "sidebar": {
+      "channels": "Your Channels",
+      "my_channels": "My",
+      "company": "Company",
+      "publishing": "Publishing",
+      "add_channel": "+ Add Channel",
+      "no_channels": "No channels available",
+      "assets": "Your Assets",
+      "employee_images": "Employee Images",
+      "company_materials": "Company Materials",
+      "add_assets": "+ Add Assets",
+      "verses": "Your Verses",
+      "settings": "Settings",
+      "links": "Links",
+      "help_support": "Help & Support",
+      "add_more": "+ Add More"
+    },
+    "search": {
+      "title": "What are you looking for?",
+      "placeholder": "Enter search term"
+    },
+    "frequent": {
+      "title": "You have frequently searched for:",
+      "item1": "The Summer - A new campaign",
+      "item2": "Handball - Luminous balls"
+    },
+    "upload": {
+      "title": "Would you like to upload something?",
+      "button": "+ Choose image from file",
+      "coming_soon": "File upload will be available soon",
+      "choose_file": "+ Choose image from file"
+    },
+    "footer": {
+      "message": "BryteVerse© by Publify is the future in Publishing.",
+      "feature1": "We can your world",
+      "feature2": "We can your content",
+      "feature3": "We can your reach",
+      "feature4": "We can your efficiency",
+      "feature5": "We can your future",
+      "social_media": "Social Media",
+      "materials_links": "Materials & Links",
+      "contact": "Contact",
+      "career": "Career",
+      "privacy": "Privacy",
+      "imprint": "Imprint"
+    },
+    "error": {
+      "loading_dashboard": "Error loading dashboard data",
+      "retry": "Try again",
+      "retry_offline": "Refresh",
+      "offline": "Offline Mode",
+      "loading": "Loading dashboard...",
+      "loading_channels": "Error loading channels:",
+      "back_to_dashboard": "back to dashboard"
+    },
+    "greeting": {
+      "welcome_back": "Great to have you back. Let's make the world a bit more structured together."
+    },
+    "activity": {
+      "recent": "Recent Activities"
+    },
+    "folder": {
+      "add": "Add folder",
+      "add_dialog_title": "Add folder",
+      "add_dialog_content": "Function will be available soon.",
+      "ok": "OK"
+    },
+    "asset": {
+      "add": "Add asset",
+      "add_dialog_title": "Add asset",
+      "add_dialog_content": "Function will be available soon."
+    },
+    "company": {
+      "data": "Company Data"
+    }
+  }
+}
