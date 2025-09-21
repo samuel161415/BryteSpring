@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
-import 'package:url_strategy/url_strategy.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/app_router.dart';
 import 'package:mobile/core/services/auth_service.dart';
@@ -22,6 +21,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Set URL strategy to use path-based routing (removes # from URLs)
+  // This is now built into Flutter - no need for url_strategy package
+  if (kIsWeb) {
+    setUrlStrategy(PathUrlStrategy());
+  }
 
   await init();
 
@@ -31,7 +34,6 @@ void main() async {
 
   await EasyLocalization.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
-  setPathUrlStrategy();
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('de')],
