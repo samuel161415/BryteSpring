@@ -91,7 +91,7 @@ exports.listRolesByVerse = async (req, res) => {
     }
 
     const roles = await Role.find({ verse_id: verse_id })
-      .populate('verse_id', 'name subdomain')
+      .select('_id name') // Only select id and name fields
       .sort({ name: 1 });
 
     res.json({
