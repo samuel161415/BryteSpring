@@ -1,0 +1,329 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobile/core/routing/routeLists.dart';
+import 'package:mobile/features/invite-user/domain/model/invitation_model.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_user_bloc.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_user_event.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_user_role_bloc.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_user_state.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_verse_role_event.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_verse_role_state.dart';
+import 'package:mobile/features/verse/presentation/components/top_bar.dart';
+
+import '../../../../core/constant.dart';
+import '../../../../core/widgets/app_footer.dart';
+import '../../../verse/presentation/components/custom_outlined_button.dart';
+
+class InviteUserPage extends StatefulWidget {
+  const InviteUserPage({super.key, this.verseId});
+  final String? verseId;
+
+  @override
+  State<InviteUserPage> createState() => _InviteUserPageState();
+}
+
+class _InviteUserPageState extends State<InviteUserPage> {
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController postionController = TextEditingController();
+  String selectedRoleId = "";
+  bool isAdmin = false;
+  bool isUser = false;
+  bool isExpert = false;
+  @override
+  void initState() {
+    super.initState();
+    context.read<InvitedVerseUserRoleBloc>().add(
+      GetInviteVerseRoleEvent(widget.verseId ?? ""),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+    void _handleLanguageChanged() {
+      // Force rebuild when language changes
+      setState(() {});
+    }
+
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppTheme.background,
+        body: Center(
+          child: SingleChildScrollView(
+            child: BlocListener<UserInvitationBloc, InvitedUserState>(
+              listener: (context, state) {
+                if (state is InvitedUserSuccess) {
+                  context.pushNamed(Routelists.completeUserInvite);
+                }
+              },
+              child: Container(
+                width: screenSize.width > 500 ? 500 : screenSize.width * 0.98,
+                // margin: const EdgeInsets.symmetric(vertical: 20.0),
+                // height: screenSize.height,
+                decoration: BoxDecoration(
+                  color: AppTheme.surface,
+                  borderRadius: BorderRadius.circular(24.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 25,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  // mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      // height: widget.screenSize.height * 0.6,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 5,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // Top bar
+                          TopBar(),
+                          IconButton(
+                            onPressed: () {
+                              context.pop();
+                            },
+                            icon: Icon(Icons.arrow_back_ios_new_outlined),
+                          ),
+                          const SizedBox(height: 30),
+
+                          // Greeting
+                          Text(
+                            "Nutzer hinzufügen",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          // Title textfield
+                          TextField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              hintText:
+                                  "Mail        @brightnetworks.de  Domän ändern",
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ), // Red border
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Title textfield
+                          TextField(
+                            controller: postionController,
+                            decoration: InputDecoration(
+                              hintText: "Vor- und Nachname, Position",
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ), // Red border
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Description
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: 6),
+                            child: Text(
+                              "Bitte wähle die Rolle aus:",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                                height: 1.5,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          BlocBuilder<
+                            InvitedVerseUserRoleBloc,
+                            InviteVerseRoleState
+                          >(
+                            builder: (context, state) {
+                              if (state is InviteVerseRoleLoading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (state is InviteVerseRoleFailure) {
+                                return Center(
+                                  child: Text("Error: ${state.error}"),
+                                );
+                              } else if (state is InviteVerseRoleSuccess) {
+                                final roles = state.invitedVerseRole;
+                                // roles could be like: [{ "id": "user", "label": "Redakteur", "selected": false }, ...]
+
+                                return GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: roles.length,
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3, // 3 columns
+                                        mainAxisExtent:
+                                            50, // height of each item
+                                      ),
+                                  itemBuilder: (context, index) {
+                                    final role = roles[index];
+                                    return Row(
+                                      children: [
+                                        Checkbox(
+                                          value: role.isSelected ?? false,
+                                          onChanged: (value) {
+                                            if (role.isSelected != false) {
+                                              selectedRoleId = role.roleId;
+                                            }
+                                            context
+                                                .read<
+                                                  InvitedVerseUserRoleBloc
+                                                >()
+                                                .add(
+                                                  ToggleRoleEvent(
+                                                    role.roleId,
+                                                    value ?? false,
+                                                  ),
+                                                );
+                                          },
+                                        ),
+                                        Expanded(child: Text(role.role)),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+
+                              return const SizedBox.shrink(); // fallback
+                            },
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 6),
+                            child: Text(
+                              "Was muss Deine Organisation über Stephan wissen?Wenn Stephan ein Mitarbeiter Deiner Organisation ist, kannst Du sein Mitarbeiterprofil verknüpfen. ",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                                height: 1.5,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          const SizedBox(height: 40),
+                          // Button
+                          CustomOutlinedButton(
+                            text: "Einladung senden",
+                            onPressed: () {
+                              if (widget.verseId != null &&
+                                  selectedRoleId.isNotEmpty) {
+                                final user = InvitationUser(
+                                  email: _emailController.text,
+                                  position: postionController.text,
+                                  roleId: selectedRoleId,
+                                  verseId: widget.verseId!,
+                                  firstName: postionController.text,
+                                  lastName: postionController.text,
+                                  subdomain: "brightnetworks",
+                                );
+                                context.read<UserInvitationBloc>().add(
+                                  CreateInvitedUserEvent(user),
+                                );
+                              }
+
+                              // context.goNamed(Routelists.dashboard);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      // height: screenSize.height * 0.75,
+                      child: AppFooter(
+                        onLanguageChanged: _handleLanguageChanged,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
