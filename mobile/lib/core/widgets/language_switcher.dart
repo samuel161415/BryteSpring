@@ -9,7 +9,7 @@ class LanguageSwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      icon: const Icon(Icons.language),
+      icon: const Icon(Icons.language, color: Colors.white),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         const PopupMenuItem<String>(value: 'en', child: Text('English')),
         const PopupMenuItem<String>(value: 'de', child: Text('Deutsch')),
