@@ -299,8 +299,11 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.inviteUser}',
       name: Routelists.inviteUser,
-      pageBuilder: (context, state) =>
-          _buildPage(context, state, const InviteUserPage()),
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final verseId = extra?['verseId'] as String? ?? 'verseId';
+        return _buildPage(context, state, InviteUserPage(verseId: verseId));
+      },
     ),
     GoRoute(
       path: '/${Routelists.completeUserInvite}',

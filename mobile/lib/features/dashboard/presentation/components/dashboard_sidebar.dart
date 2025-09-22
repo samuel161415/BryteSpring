@@ -156,7 +156,10 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
                   ],
                   addButtonText: '+ Nutzer hinzufügen',
                   onAddTap: () {
-                    context.pushNamed(Routelists.inviteUser);
+                    context.pushNamed(
+                      Routelists.inviteUser,
+                      extra: {'verseId': currentVerseId},
+                    );
                   },
                 ),
 

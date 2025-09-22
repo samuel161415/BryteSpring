@@ -13,6 +13,7 @@ import 'package:mobile/features/Authentication/presentation/bloc/reset_password_
 import 'package:mobile/features/channels/presentation/bloc/channel_bloc.dart';
 import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:mobile/features/invite-user/presentation/bloc/invite_user_bloc.dart';
+import 'package:mobile/features/invite-user/presentation/bloc/invite_user_role_bloc.dart';
 import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/upload/presentation/bloc/upload_bloc.dart';
 import 'package:mobile/features/verse/presentation/bloc/verse_bloc.dart';
@@ -72,6 +73,9 @@ void main() async {
           BlocProvider<UploadBloc>(create: (context) => UploadBloc(sl())),
           BlocProvider<UserInvitationBloc>(
             create: (context) => UserInvitationBloc(sl()),
+          ),
+          BlocProvider<InvitedVerseUserRoleBloc>(
+            create: (context) => InvitedVerseUserRoleBloc(sl()),
           ),
         ],
         child: const MyApp(),
