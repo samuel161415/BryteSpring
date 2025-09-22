@@ -67,7 +67,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             ),
           );
           // Navigate to dashboard after successful registration
-          context.goNamed(Routelists.almostJoinVerse, extra: widget.invitation);
+          context.goNamed(Routelists.login, extra: widget.invitation);
         } else if (state is RegisterUserFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message), backgroundColor: Colors.red),
