@@ -1,0 +1,11 @@
+{
+  "name": "bryte-spring-flutter-web",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd mobile && flutter pub get && flutter build web --release && cp -r build/web/* ../public/",
+    "dev": "cd mobile && flutter run -d chrome --web-port=3000"
+  },
+  "devDependencies": {
+    "flutter": "^3.0.0"
+  }
+}

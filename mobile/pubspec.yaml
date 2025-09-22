@@ -50,6 +50,7 @@ dependencies:
   image_picker: ^1.2.0
   permission_handler: ^12.0.1
   universal_io: ^2.2.2
+  # url_strategy: ^0.2.0  # Discontinued - functionality now built into Flutter
 
 dev_dependencies:
   flutter_test:

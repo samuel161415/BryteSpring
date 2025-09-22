@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/app_router.dart';
 import 'package:mobile/core/services/auth_service.dart';
@@ -14,16 +15,26 @@ import 'package:mobile/features/dashboard/presentation/bloc/dashboard_bloc.dart'
 import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/upload/presentation/bloc/upload_bloc.dart';
 import 'package:mobile/features/verse/presentation/bloc/verse_bloc.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await init();
+
+  // Set URL strategy to use path-based routing (removes # from URLs)
+  // This is now built into Flutter - no need for url_strategy package
+  if (kIsWeb) {
+    usePathUrlStrategy();
+  }
+  GoRouter.optionURLReflectsImperativeAPIs = true;
 
   // Initialize authentication service
   final authService = sl<AuthService>();
   await authService.initialize();
 
   await EasyLocalization.ensureInitialized();
+
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('de')],
@@ -59,7 +70,7 @@ void main() async {
           ),
           BlocProvider<UploadBloc>(create: (context) => UploadBloc(sl())),
         ],
-        child: DynamicThemeProvider(child: const MyApp()),
+        child: const MyApp(),
       ),
     ),
   );
@@ -76,6 +87,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -42,6 +42,43 @@ package-lock.json
 yarn.lock
 .env
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+.dockerignore
+!mobile/Dockerfile
+docker-compose.yml
+docker-compose.yaml
+
+# Kubernetes
+*.yaml
+*.yml
+!docker-compose*.yml
+!.do/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Secrets and config files
+config.json
+secrets.json
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Backup files
+*.bak
+*.backup
+*.old
+
 # Coverage & temp
 coverage/
 *.log
