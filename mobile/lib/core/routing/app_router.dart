@@ -7,6 +7,8 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/invitation_validation_page.dart';
+import 'package:mobile/features/invite-user/presentation/pages/invite_user_page.dart';
+import 'package:mobile/features/verse/domain/usecases/create_verse.dart';
 import 'package:mobile/features/verse/presentation/pages/verse_creation_page.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
@@ -15,6 +17,8 @@ import 'package:mobile/features/dashboard/presentation/pages/dashboard_page.dart
 import 'package:mobile/features/channels/presentation/pages/create_folder_page.dart';
 import 'package:mobile/features/channels/presentation/pages/create_folder_confirmation_page.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_success.dart';
+
+import '../../features/invite-user/presentation/pages/invite_complete_page.dart';
 
 /// App router configuration using go_router
 class AppRouter {
@@ -291,6 +295,21 @@ class AppRouter {
           ),
         );
       },
+    ),
+    GoRoute(
+      path: '/${Routelists.inviteUser}',
+      name: Routelists.inviteUser,
+      pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final verseId = extra?['verseId'] as String? ?? 'verseId';
+        return _buildPage(context, state, InviteUserPage(verseId: verseId));
+      },
+    ),
+    GoRoute(
+      path: '/${Routelists.completeUserInvite}',
+      name: Routelists.completeUserInvite,
+      pageBuilder: (context, state) =>
+          _buildPage(context, state, const InviteCompletePage()),
     ),
   ];
 
