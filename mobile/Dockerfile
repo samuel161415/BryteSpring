@@ -20,20 +20,17 @@ RUN flutter config --enable-web
 # Set working directory
 WORKDIR /app
 
-# Copy pubspec files
-COPY mobile/pubspec.yaml mobile/pubspec.lock ./
+# Copy pubspec files first for better caching
+COPY pubspec.yaml pubspec.lock ./
 
 # Get dependencies
 RUN flutter pub get
 
 # Copy source code
-COPY mobile/ ./
+COPY . ./
 
-# Build the app
+# Build the app for web
 RUN flutter build web --release
 
-# Expose port
-EXPOSE 8080
-
-# Serve the app
-CMD ["flutter", "run", "-d", "web-server", "--web-port", "8080", "--web-hostname", "0.0.0.0"]
+# The built files are now in /app/build/web
+# This is the output directory that Digital Ocean needs
