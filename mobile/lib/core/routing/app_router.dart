@@ -7,9 +7,7 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 import 'package:mobile/features/Authentication/presentation/pages/login_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/reset_password_page.dart';
 import 'package:mobile/features/Authentication/presentation/pages/invitation_validation_page.dart';
-import 'package:mobile/features/verse/domain/usecases/create_verse.dart';
 import 'package:mobile/features/verse/presentation/pages/verse_creation_page.dart';
-import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/verse_join/presentation/pages/get_to_know_role.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse.dart';
 import 'package:mobile/features/verse_join/presentation/pages/join_verse_almost_done.dart';
@@ -25,18 +23,35 @@ class AppRouter {
 
   static final AppRouter instance = AppRouter._();
 
+  // No explicit RouteInformationProvider; let Flutter/GoRouter infer from the browser.
+
   late final GoRouter router = GoRouter(
     routes: _routes,
     debugLogDiagnostics: true,
+    initialLocation: '/',
+    errorBuilder: (context, state) {
+      print('GoRouter Error: ${state.error}');
+      print('GoRouter Error Location: ${state.uri}');
+      // If it's an invitation validation URL, extract the token and navigate properly
+      if (state.uri.path == '/invitation-validation' &&
+          state.uri.queryParameters.containsKey('token')) {
+        final token = state.uri.queryParameters['token'];
+        return InvitationValidationPage(token: token ?? '');
+      }
+      // For other errors, redirect to login
+      return LoginPage();
+    },
     redirect: (context, state) {
       try {
         final authService = sl<AuthService>();
 
         // Debug logging
-        print('AppRouter - Redirect check: ${state.matchedLocation}');
+        print('AppRouter - Redirect check: ${state.uri.path}');
         print('AppRouter - Full location: ${state.uri.toString()}');
-        print('AppRouter - URI: ${state.uri}');
-        print('AppRouter - Path: ${state.uri.path}');
+        print('AppRouter - State: $state');
+        print('AppRouter - Matched location: ${state.matchedLocation}');
+        print('AppRouter - Route name: ${state.name}');
+        print('AppRouter - Route path: ${state.path}');
 
         // Wait for auth service to initialize
         if (!authService.isInitialized) {
@@ -45,23 +60,19 @@ class AppRouter {
         }
 
         final isAuthenticated = authService.isAuthenticated;
-        final isLoginRoute = state.matchedLocation == '/${Routelists.login}';
-        final isDashboardRoute =
-            state.matchedLocation == '/${Routelists.dashboard}';
+        final isLoginRoute = state.uri.path == '/login';
+        final isDashboardRoute = state.uri.path == '/dashboard';
 
         // More comprehensive check for invitation validation routes
-        final isInvitationValidationRoute =
-            state.matchedLocation == '/invitation-validation' ||
-            state.matchedLocation.startsWith('/invitation-validation') ||
-            state.uri.path == '/invitation-validation' ||
-            state.uri.path.startsWith('/invitation-validation');
+        final isInvitationValidationRoute = state.uri.path.startsWith(
+          '/invitation-validation',
+        );
+
         final isJoinVerseRoute =
-            state.matchedLocation.startsWith(
-              '/${Routelists.almostJoinVerse}',
-            ) ||
-            state.matchedLocation.startsWith('/${Routelists.joinVerse}') ||
-            state.matchedLocation.startsWith('/${Routelists.getToKnowRole}') ||
-            state.matchedLocation.startsWith('/${Routelists.joinVerseSuccess}');
+            state.uri.path.startsWith('/${Routelists.almostJoinVerse}') ||
+            state.uri.path.startsWith('/${Routelists.joinVerse}') ||
+            state.uri.path.startsWith('/${Routelists.getToKnowRole}') ||
+            state.uri.path.startsWith('/${Routelists.joinVerseSuccess}');
 
         print(
           'AppRouter - isInvitationValidationRoute: $isInvitationValidationRoute',
@@ -77,29 +88,29 @@ class AppRouter {
 
         // If user is authenticated and trying to access login, redirect to dashboard
         if (isAuthenticated && isLoginRoute) {
-          return '/${Routelists.dashboard}';
+          return '/dashboard';
         }
 
         // If user is not authenticated and trying to access dashboard, redirect to login
         if (!isAuthenticated && isDashboardRoute) {
-          return '/${Routelists.login}';
+          return '/login';
         }
 
         // If user is not authenticated and on root, redirect to login
-        if (!isAuthenticated && state.matchedLocation == '/') {
-          return '/${Routelists.login}';
+        if (!isAuthenticated && state.uri.path == '/') {
+          return '/login';
         }
 
         // If user is authenticated and on root, redirect to dashboard
-        if (isAuthenticated && state.matchedLocation == '/') {
-          return '/${Routelists.dashboard}';
+        if (isAuthenticated && state.uri.path == '/') {
+          return '/dashboard';
         }
 
         return null; // No redirect needed
       } catch (e) {
         // If there's any error, redirect to login as fallback
         print('AppRouter - Error in redirect: $e');
-        return '/${Routelists.login}';
+        return '/login';
       }
     },
   );
@@ -112,8 +123,8 @@ class AppRouter {
           _buildPage(context, state, const SizedBox()),
     ),
     GoRoute(
-      path: '/${Routelists.login}',
-      name: Routelists.login,
+      path: '/login',
+      name: 'login',
       pageBuilder: (context, state) {
         final invitation = state.extra as InvitationEntity?;
         print('AppRouter - Login route with invitation: $invitation');
@@ -145,17 +156,17 @@ class AppRouter {
     ),
     GoRoute(
       path: '/invitation-validation',
-      name: Routelists.invitationValidation,
+      name: 'invitation-validation',
       pageBuilder: (context, state) {
         final token = state.uri.queryParameters['token'];
         if (token == null || token.isEmpty) {
           // If no token provided, redirect to login
-          // return _buildPage(context, state, LoginPage());
+          return _buildPage(context, state, LoginPage());
         }
         return _buildPage(
           context,
           state,
-          InvitationValidationPage(token: token ?? ''),
+          InvitationValidationPage(token: token),
         );
       },
     ),
@@ -218,8 +229,8 @@ class AppRouter {
       },
     ),
     GoRoute(
-      path: '/${Routelists.dashboard}',
-      name: Routelists.dashboard,
+      path: '/dashboard',
+      name: 'dashboard',
       pageBuilder: (context, state) =>
           _buildPage(context, state, const DashboardPage()),
     ),
