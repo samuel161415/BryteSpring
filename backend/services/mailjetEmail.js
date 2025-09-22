@@ -17,7 +17,7 @@ const mailjet = new Mailjet({
  */
 function buildInviteLink({ token, subdomain }) {
   // https://bryte-spring-vnv1.vercel.app/#/invitation-validation?token=INVITATION_TOKEN
-  const baseUrl = "https://bryte-spring-vnv1.vercel.app";
+  const baseUrl = "https://springcore-app-xsayy.ondigitalocean.app";
   const url = new URL(baseUrl);
   url.pathname = "/invitation-validation";
   url.searchParams.set("token", token);
