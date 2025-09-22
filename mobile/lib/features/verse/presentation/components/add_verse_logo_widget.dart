@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:dio/dio.dart';
@@ -36,6 +38,7 @@ class AddVerseLogoWidget extends StatefulWidget {
 class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
   TextEditingController verseNameController = TextEditingController();
   File? _selectedImage;
+  Uint8List? _selectedImageBytes;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -47,46 +50,88 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
   final String bucket = "brightspace";
 
   // Pick image
+  // Future<void> _pickImage() async {
+  //   // Request storage permission
+  //   // final XFile? pickedFile = await _picker.pickImage(
+  //   //   source: ImageSource.gallery,
+  //   // );
+  //   // if (Platform.isAndroid && Platform.isIOS) {
+  //   //   PermissionStatus status = await Permission.photos
+  //   //       .request(); // or Permission.storage for Android
+  //   // }
+
+  //   // if (status.isGranted) {
+  //   //   final XFile? pickedFile = await _picker.pickImage(
+  //   //     source: ImageSource.gallery,
+  //   //   );
+  //   //   if (pickedFile != null) {
+  //   //     // Use pickedFile (e.g., show preview or upload)
+  //   //     setState(() {
+  //   //       _selectedImage = File(pickedFile.path);
+  //   //     });
+  //   //   }
+  //   // } else if (status.isDenied) {
+  //   final XFile? pickedFile = await _picker.pickImage(
+  //     source: ImageSource.gallery,
+  //   );
+  //   if (pickedFile != null) {
+  //     // Use pickedFile (e.g., show preview or upload)
+  //     final bytes = await pickedFile.readAsBytes(); // works on web
+  //     setState(() {
+  //       _selectedImage = File(pickedFile.path);
+  //       _selectedImageBytes = bytes;
+  //     });
+  //   }
+  //   // openAppSettings();
+
+  //   print("Permission denied by user");
+  //   // }
+  //   // else if (status.isPermanentlyDenied) {
+  //   //   print("Permission permanently denied, open app settings");
+  //   //   openAppSettings();
+  //   // }
+  // }
   Future<void> _pickImage() async {
-    // Request storage permission
-    // final XFile? pickedFile = await _picker.pickImage(
-    //   source: ImageSource.gallery,
-    // );
-    // if (Platform.isAndroid && Platform.isIOS) {
-    //   PermissionStatus status = await Permission.photos
-    //       .request(); // or Permission.storage for Android
-    // }
+    if (kIsWeb) {
+      // ✅ Web: no permission needed
+      final XFile? pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+      if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
+        setState(() {
+          _selectedImage = File(pickedFile.path); // use this for preview
+          _selectedImageBytes = bytes; // use this for preview
+        });
+      }
+    } else {
+      // ✅ Mobile: request permission
 
-    // if (status.isGranted) {
-    //   final XFile? pickedFile = await _picker.pickImage(
-    //     source: ImageSource.gallery,
-    //   );
-    //   if (pickedFile != null) {
-    //     // Use pickedFile (e.g., show preview or upload)
-    //     setState(() {
-    //       _selectedImage = File(pickedFile.path);
-    //     });
-    //   }
-    // } else if (status.isDenied) {
-    final XFile? pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      // Use pickedFile (e.g., show preview or upload)
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
+      PermissionStatus status = await Permission.photos.request();
+      final XFile? pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path); // use this for preview
+        });
+        if (status.isGranted) {
+          final XFile? pickedFile = await ImagePicker().pickImage(
+            source: ImageSource.gallery,
+          );
+          if (pickedFile != null) {
+            setState(() {
+              _selectedImage = File(pickedFile.path); // use this for preview
+            });
+          }
+        } else if (status.isDenied) {
+          print("Permission denied by user");
+        } else if (status.isPermanentlyDenied) {
+          openAppSettings();
+        }
+      }
     }
-    // openAppSettings();
-
-    print("Permission denied by user");
-    // }
-    // else if (status.isPermanentlyDenied) {
-    //   print("Permission permanently denied, open app settings");
-    //   openAppSettings();
-    // }
   }
-
   // Upload image to DigitalOcean Spaces using Dio
 
   // Future<void> uploadFile() async {
@@ -182,7 +227,12 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
                         ),
                         Platform.isAndroid && Platform.isIOS
                             ? Image.file(_selectedImage!, height: 120)
-                            : Container(),
+                            : ((_selectedImageBytes != null)
+                                  ? Image.memory(
+                                      _selectedImageBytes!,
+                                      height: 120,
+                                    )
+                                  : Container()),
                       ],
                     ),
                   )
@@ -223,10 +273,10 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
                     ),
                   );
                   // uploadFile();
-                  widget.controller.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
+                  // widget.controller.nextPage(
+                  //   duration: const Duration(milliseconds: 300),
+                  //   curve: Curves.easeInOut,
+                  // );
                 }
               },
             ),

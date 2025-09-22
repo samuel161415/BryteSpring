@@ -24,7 +24,7 @@ class VerseRemoteDataSourceImpl implements VerseRemoteDataSource {
       if (token == null || token.isEmpty) {
         throw const ServerException("Authentication token missing");
       }
-      verse.logo = "https://example.com/logo.png";
+      verse.logo ??= "https://example.com/logo.png";
 
       final body = verse.toJson();
       print("=== Verse JSON Payload==");
