@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     xz-utils \
     zip \
     libglu1-mesa \
+    nginx \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Flutter
@@ -32,5 +33,27 @@ COPY . ./
 # Build the app for web
 RUN flutter build web --release
 
-# The built files are now in /app/build/web
-# This is the output directory that Digital Ocean needs
+# Configure nginx for SPA routing
+RUN echo 'server { \
+    listen 8080; \
+    server_name localhost; \
+    root /app/build/web; \
+    index index.html; \
+    \
+    # Handle SPA routing - serve index.html for all routes \
+    location / { \
+        try_files $uri $uri/ /index.html; \
+    } \
+    \
+    # Cache static assets \
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ { \
+        expires 1y; \
+        add_header Cache-Control "public, immutable"; \
+    } \
+}' > /etc/nginx/sites-available/default
+
+# Expose port
+EXPOSE 8080
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
