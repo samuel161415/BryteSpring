@@ -20,20 +20,21 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await init();
+
   // Set URL strategy to use path-based routing (removes # from URLs)
   // This is now built into Flutter - no need for url_strategy package
   if (kIsWeb) {
-    setUrlStrategy(PathUrlStrategy());
+    usePathUrlStrategy();
   }
-
-  await init();
+  GoRouter.optionURLReflectsImperativeAPIs = true;
 
   // Initialize authentication service
   final authService = sl<AuthService>();
   await authService.initialize();
 
   await EasyLocalization.ensureInitialized();
-  GoRouter.optionURLReflectsImperativeAPIs = true;
+
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('de')],
@@ -69,7 +70,7 @@ void main() async {
           ),
           BlocProvider<UploadBloc>(create: (context) => UploadBloc(sl())),
         ],
-        child: DynamicThemeProvider(child: const MyApp()),
+        child: const MyApp(),
       ),
     ),
   );
@@ -86,6 +87,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
