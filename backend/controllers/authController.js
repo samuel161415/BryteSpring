@@ -160,7 +160,8 @@ const loginUser = async (req, res) => {
         email: user.email,
         avatar_url: user.avatar_url,
         joined_verse: user.joined_verse,
-        token: generateToken(user._id)
+        token: generateToken(user._id),
+        pending_invitations: []
       };
 
       // Add pending invitations if any
