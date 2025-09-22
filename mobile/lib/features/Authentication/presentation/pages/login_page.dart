@@ -34,12 +34,12 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: SingleChildScrollView(
           child: Container(
-            width: screenSize.width > 500 ? 500 : screenSize.width * 0.9,
-            margin: const EdgeInsets.symmetric(vertical: 20.0),
+            width: screenSize.width > 500 ? 500 : screenSize.width,
+            // margin: const EdgeInsets.symmetric(vertical: 20.0),
             decoration: BoxDecoration(
               color: AppTheme.surface,
-              borderRadius: BorderRadius.circular(24.0),
 
+              // borderRadius: BorderRadius.circular(24.0),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),

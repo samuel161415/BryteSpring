@@ -35,9 +35,15 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
     return BlocListener<InvitationValidationBloc, InvitationValidationState>(
       listener: (context, state) {
         if (state is InvitationValidationSuccess) {
-          // Always go to reset password page
-          // The reset password page will handle existing users appropriately
-          context.pushNamed(Routelists.resetPassword, extra: state.invitation);
+          // If user already exists -> go to login; else -> reset password
+          if (state.userExists) {
+            context.pushNamed(Routelists.login, extra: state.invitation);
+          } else {
+            context.pushNamed(
+              Routelists.resetPassword,
+              extra: state.invitation,
+            );
+          }
         }
       },
       child: Scaffold(

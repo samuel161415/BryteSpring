@@ -80,10 +80,6 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void didUpdateWidget(LoginForm oldWidget) {
     super.didUpdateWidget(oldWidget);
-    print(
-      'LoginForm didUpdateWidget - old invitation: ${oldWidget.invitation}',
-    );
-    print('LoginForm didUpdateWidget - new invitation: ${widget.invitation}');
 
     // Update email if invitation changed
     if (oldWidget.invitation != widget.invitation) {
@@ -274,11 +270,6 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> _checkVerseSetupAndRedirect() async {
-    print('_checkVerseSetupAndRedirect - invitation: ${widget.invitation}');
-    print(
-      '_checkVerseSetupAndRedirect - verseId: ${widget.invitation?.verseId}',
-    );
-
     try {
       final verseJoinUseCase = sl<VerseJoinUseCase>();
       final verseResult = await verseJoinUseCase.getVerse(
@@ -296,18 +287,24 @@ class _LoginFormState extends State<LoginForm> {
             ),
           );
           // context.go('/${Routelists.dashboard}');
-          context.pushNamed(
-            Routelists.almostJoinVerse,
-            extra: widget.invitation,
-          );
+          // context.pushNamed(
+          //   Routelists.almostJoinVerse,
+          //   extra: widget.invitation,
+          // );
         },
         (verse) {
           print(
             'Verse fetched successfully: ${verse.name}, isSetupComplete: ${verse.isSetupComplete}',
           );
+          final authService = sl<AuthService>();
+          final joinedVerse = authService.currentUser?.joinedVerse;
+          final isJoined = joinedVerse?.contains(verse.id) ?? false;
+          if (isJoined) {
+            context.goNamed('dashboard');
+          }
           if (verse.isSetupComplete) {
             // Verse setup is complete, redirect to almost join page
-            print('Redirecting to almost join page');
+
             context.pushNamed(
               Routelists.almostJoinVerse,
               extra: widget.invitation,
@@ -348,7 +345,7 @@ class _LoginFormState extends State<LoginForm> {
           backgroundColor: Colors.red,
         ),
       );
-      context.go('/${Routelists.dashboard}');
+      // context.go('/${Routelists.dashboard}');
     }
   }
 
