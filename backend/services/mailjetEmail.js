@@ -25,7 +25,7 @@ function buildInviteLink({ token, subdomain }) {
     url.searchParams.set("subdomain", String(subdomain));
   }
   // Add the '#' character before the path by reconstructing the URL
-  const finalUrl = `${url.origin}/#${url.pathname}${url.search}`;
+  const finalUrl = `${url.origin}${url.pathname}${url.search}`;
   return finalUrl;
 }
 
