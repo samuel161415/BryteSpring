@@ -54,9 +54,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         if (state is RegisterUserSuccess) {
           // Save tokens to secure storage
           // Use token as refreshToken if refreshToken is not provided
-          final refreshToken =
-              state.response.refreshToken ?? state.response.token;
-          SecureStorage.saveTokens(state.response.token, refreshToken);
+          // final refreshToken =
+          //     state.response.refreshToken ?? state.response.token;
+          // SecureStorage.saveTokens(state.response.token, refreshToken);
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

@@ -136,12 +136,16 @@ class InvitationValidationBloc
           return;
         }
 
-        // Skip user existence check since it requires authentication
-        // Always go to reset password page - it will handle existing users
+        // Check whether a user already exists for the invitation email
+        final existsResult = await loginRepository.checkUserExists(
+          invitation.email,
+        );
+        final exists = existsResult.fold((_) => false, (v) => v);
+
         emit(
           InvitationValidationSuccess(
             invitation: invitation,
-            userExists: false, // Always false to go to reset password
+            userExists: exists,
           ),
         );
       },
