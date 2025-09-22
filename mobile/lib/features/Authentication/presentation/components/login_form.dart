@@ -559,21 +559,6 @@ class _LoginFormState extends State<LoginForm> {
                       Icon(Icons.menu, color: Colors.black, size: 30),
                     ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      context.pushNamed(
-                        Routelists.invitationValidation,
-                        queryParameters: {
-                          'token': 'c5a81e16-50a3-46dc-94c3-a1b9453b2121',
-                        },
-                      );
-                    },
-                    child: Icon(
-                      Icons.inventory_outlined,
-                      color: Colors.black,
-                      size: 30,
-                    ),
-                  ),
                 ],
               ),
             ],
