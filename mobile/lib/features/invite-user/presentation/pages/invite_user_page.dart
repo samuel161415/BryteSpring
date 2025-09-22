@@ -57,6 +57,10 @@ class _InviteUserPageState extends State<InviteUserPage> {
               listener: (context, state) {
                 if (state is InvitedUserSuccess) {
                   context.pushNamed(Routelists.completeUserInvite);
+                } else if (state is InvitedUserFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: ${state.error}')),
+                  );
                 }
               },
               child: Container(
