@@ -200,19 +200,19 @@ exports.completeVerseSetup = async (req, res) => {
         return res.status(404).json({ message: 'Verse not found' });
       }
   
-      // Check if user has Administrator role for this verse
-      const userRole = await UserRole.findOne({ 
-        user_id: adminId, 
+      // Check if user has an accepted invitation for this verse with Administrator role
+      const invitation = await Invitation.findOne({
+        email: req.user.email,
         verse_id: verse_id,
-        is_active: true 
+        is_accepted: true
       }).populate('role_id');
 
-      if (!userRole || !userRole.role_id) {
-        return res.status(403).json({ message: 'You do not have access to this verse' });
+      if (!invitation || !invitation.role_id) {
+        return res.status(403).json({ message: 'No valid invitation found for this verse' });
       }
 
       // Check if user has Administrator role
-      const role = userRole.role_id;
+      const role = invitation.role_id;
       if (role.name !== 'Administrator') {
         return res.status(403).json({ message: 'Only Administrators can complete verse setup' });
       }
@@ -282,6 +282,29 @@ exports.completeVerseSetup = async (req, res) => {
       verse.setup_completed_by = adminId;
   
       await verse.save();
+
+      // Create UserRole for the admin (if not already exists)
+      let userRole = await UserRole.findOne({
+        user_id: adminId,
+        verse_id: verse_id
+      });
+
+      if (!userRole) {
+        userRole = await UserRole.create({
+          user_id: adminId,
+          verse_id: verse_id,
+          role_id: invitation.role_id,
+          assigned_at: new Date(),
+          assigned_by: invitation.invited_by
+        });
+      }
+
+      // Add verse to user's joined_verse (if not already added)
+      const user = await User.findById(adminId);
+      if (user && !user.joined_verse.some(verseId => verseId.toString() === verse_id.toString())) {
+        user.joined_verse.push(verse_id);
+        await user.save();
+      }
   
       // Log the activity
       const activityLog = new ActivityLog({

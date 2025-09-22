@@ -86,70 +86,30 @@ const registerUser = async (req, res) => {
         // Continue even if junction creation fails
       }
 
-      if (is_verse_setup) {
-        // Scenario 1: User is completing verse setup (admin completing verse creation)
-        // Immediately add to verse and create user role
-        try {
-          await UserRole.create({
-            user_id: user._id,
-            verse_id: invitation.verse_id,
-            role_id: invitation.role_id,
-            assigned_at: new Date(),
-            assigned_by: invitation.invited_by
-          });
-        } catch (e) {
-          // ignore duplicate if already assigned for safety
+      // Mark invitation as accepted for both scenarios
+      // UserRole and joined_verse will be handled later:
+      // - For incomplete verses: in completeVerseSetup
+      // - For complete verses: in joinVerse endpoint
+      invitation.is_accepted = true;
+      invitation.accepted_at = new Date();
+      await invitation.save();
+
+      // Log the activity
+      const activityLog = new ActivityLog({
+        verse_id: invitation.verse_id,
+        user_id: user._id,
+        action: 'create',
+        resource_type: 'user',
+        resource_id: user._id,
+        timestamp: new Date(),
+        details: {
+          action: is_verse_setup ? 'admin_registered_pending_setup' : 'user_registered_pending_verse_join',
+          invitation_token: invitation_token,
+          verse_setup_complete: !is_verse_setup,
+          requires_action: true
         }
-
-        // Add verse to user's joined_verse
-        user.joined_verse.push(invitation.verse_id);
-        await user.save();
-
-        // Mark invitation as accepted
-        invitation.is_accepted = true;
-        invitation.accepted_at = new Date();
-        await invitation.save();
-
-        // Log the activity
-        const activityLog = new ActivityLog({
-          verse_id: invitation.verse_id,
-          user_id: user._id,
-          action: 'create',
-          resource_type: 'user',
-          resource_id: user._id,
-          timestamp: new Date(),
-          details: {
-            action: 'admin_joined_for_verse_setup',
-            invitation_token: invitation_token,
-            role_assigned: true
-          }
-        });
-        await activityLog.save();
-
-      } else {
-        // Scenario 2: User is joining existing verse
-        // Mark invitation as accepted but don't add to verse yet
-        // User must call joinVerse endpoint later
-        invitation.is_accepted = true;
-        invitation.accepted_at = new Date();
-        await invitation.save();
-
-        // Log the activity
-        const activityLog = new ActivityLog({
-          verse_id: invitation.verse_id,
-          user_id: user._id,
-          action: 'create',
-          resource_type: 'user',
-          resource_id: user._id,
-          timestamp: new Date(),
-          details: {
-            action: 'user_registered_pending_verse_join',
-            invitation_token: invitation_token,
-            requires_join_action: true
-          }
-        });
-        await activityLog.save();
-      }
+      });
+      await activityLog.save();
     }
 
     // Return response with JWT
@@ -160,8 +120,7 @@ const registerUser = async (req, res) => {
       last_name: user.last_name,
       avatar_url: user.avatar_url,
       joined_verse: user.joined_verse,
-      token: generateToken(user._id),
-      pending_verse_join: invitation_token && !is_verse_setup ? verse_id : null
+      token: generateToken(user._id)
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -177,23 +136,19 @@ const loginUser = async (req, res) => {
     if (user && (await user.matchPassword(password))) {
       
       // Get pending invitations for this user (if any)
-      const userInvitations = await UserInvitation.find({
-        user_id: user._id
-      })
-      .populate({
-        path: 'invitation_id',
-        populate: [
-          { path: 'verse_id', select: 'name subdomain organization_name is_setup_complete' },
-          { path: 'role_id', select: 'name description permissions' }
-        ]
+      // This includes invitations that are accepted but user hasn't joined the verse yet
+      const pendingInvitations = await Invitation.find({
+        email: user.email,
+        is_accepted: true
       })
       .sort({ created_at: -1 });
 
+
       // Filter for verses that user hasn't joined yet
-      const pendingInvitations = userInvitations.filter(ui => {
-        if (!ui.invitation_id || !ui.invitation_id.verse_id) return false;
+      const filteredPendingInvitations = pendingInvitations.filter(invitation => {
+        if (!invitation.verse_id) return false;
         return !user.joined_verse.some(verseId => 
-          verseId.toString() === ui.invitation_id.verse_id._id.toString()
+          verseId.toString() === invitation.verse_id._id.toString()
         );
       });
 
@@ -209,29 +164,8 @@ const loginUser = async (req, res) => {
       };
 
       // Add pending invitations if any
-      if (pendingInvitations.length > 0) {
-        response.pending_invitations = pendingInvitations.map(ui => ({
-          invitation_token: ui.invitation_id.token,
-          verse_id: ui.invitation_id.verse_id._id,
-          // verse: {
-          //   _id: ui.invitation_id.verse_id._id,
-          //   name: ui.invitation_id.verse_id.name,
-          //   subdomain: ui.invitation_id.verse_id.subdomain,
-          //   organization_name: ui.invitation_id.verse_id.organization_name,
-          //   is_setup_complete: ui.invitation_id.verse_id.is_setup_complete
-          // },
-          // role: {
-          //   _id: ui.invitation_id.role_id._id,
-          //   name: ui.invitation_id.role_id.name,
-          //   description: ui.invitation_id.role_id.description,
-          //   permissions: ui.invitation_id.role_id.permissions
-          // },
-          // first_name: ui.invitation_id.first_name,
-          // last_name: ui.invitation_id.last_name,
-          // position: ui.invitation_id.position,
-          // invited_at: ui.invitation_id.created_at,
-          // expires_at: ui.invitation_id.expires_at
-        }));
+      if (filteredPendingInvitations.length > 0) {
+        response.pending_invitations = filteredPendingInvitations;
       }
 
       res.json(response);
