@@ -29,6 +29,7 @@ const registerUser = async (req, res) => {
 
     let first_name = '';
     let last_name = '';
+    let position = '';
     let verse_id = null;
     let role_id = null;
     let is_verse_setup = false;
@@ -50,6 +51,7 @@ const registerUser = async (req, res) => {
       // Get user details from invitation
       first_name = invitation.first_name || '';
       last_name = invitation.last_name || '';
+      position = invitation.position || '';
       verse_id = invitation.verse_id;
       role_id = invitation.role_id;
 
@@ -65,6 +67,7 @@ const registerUser = async (req, res) => {
       email,
       first_name,
       last_name,
+      position,
       avatar_url,
       joined_verse: []
     });
@@ -118,6 +121,7 @@ const registerUser = async (req, res) => {
       email: user.email,
       first_name: user.first_name,
       last_name: user.last_name,
+      position: user.position,
       avatar_url: user.avatar_url,
       joined_verse: user.joined_verse,
       token: generateToken(user._id)
@@ -157,6 +161,7 @@ const loginUser = async (req, res) => {
         _id: user._id,
         first_name: user.first_name,
         last_name: user.last_name,
+        position: user.position,
         email: user.email,
         avatar_url: user.avatar_url,
         joined_verse: user.joined_verse,
@@ -204,6 +209,7 @@ const getUserByEmail = async (req, res) => {
       email: user.email,
       first_name: user.first_name,
       last_name: user.last_name,
+      position: user.position,
       avatar_url: user.avatar_url,
       joined_verse: user.joined_verse,
       is_active: user.is_active,
@@ -225,7 +231,7 @@ const sanitize = (user) => {
 
 //   Update user profile
 const updateUserProfile = async (req, res) => {
-  const ALLOWED = ["email", "first_name", "last_name", "avatar_url", "verse_ids"];
+  const ALLOWED = ["email", "first_name", "last_name", "avatar_url", "verse_ids", "position"];
 
   const user = await User.findById(req.user._id);
   if (!user) return res.status(404).json({ message: "User not found" });

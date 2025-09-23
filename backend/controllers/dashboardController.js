@@ -27,8 +27,8 @@ const getDashboard = async (req, res) => {
 
     // Get verse information
     const verse = await Verse.findById(verse_id)
-      .populate('created_by', 'first_name last_name email')
-      .populate('setup_completed_by', 'first_name last_name email');
+      .populate('created_by', 'first_name last_name email position')
+      .populate('setup_completed_by', 'first_name last_name email position');
 
     if (!verse) {
       return res.status(404).json({ message: 'Verse not found' });
@@ -48,6 +48,7 @@ const getDashboard = async (req, res) => {
         first_name: currentUser.first_name,
         last_name: currentUser.last_name,
         email: currentUser.email,
+        position: currentUser.position,
         avatar_url: currentUser.avatar_url
       },
       verse: {
@@ -106,7 +107,7 @@ async function getAdminDashboardData(verse_id, userId) {
       is_accepted: false,
       expires_at: { $gt: new Date() }
     })
-    .populate('invited_by', 'first_name last_name email')
+    .populate('invited_by', 'first_name last_name email position')
     .populate('role_id', 'name description')
     .sort({ created_at: -1 })
     .limit(10);
@@ -116,7 +117,7 @@ async function getAdminDashboardData(verse_id, userId) {
       verse_id,
       is_accepted: true
     })
-    .populate('invited_by', 'first_name last_name email')
+    .populate('invited_by', 'first_name last_name email position')
     .populate('role_id', 'name description')
     .sort({ accepted_at: -1 })
     .limit(10);
@@ -132,7 +133,7 @@ async function getAdminDashboardData(verse_id, userId) {
       verse_id,
       action: { $in: ['create', 'update', 'delete', 'setup_complete'] }
     })
-    .populate('user_id', 'first_name last_name email')
+    .populate('user_id', 'first_name last_name email position')
     .sort({ timestamp: -1 })
     .limit(20);
 
@@ -213,7 +214,7 @@ async function getEditorDashboardData(verse_id, userId) {
       action: 'submit_for_approval',
       resource_type: 'asset'
     })
-    .populate('user_id', 'first_name last_name email')
+    .populate('user_id', 'first_name last_name email position')
     .sort({ timestamp: -1 })
     .limit(10);
 
@@ -223,7 +224,7 @@ async function getEditorDashboardData(verse_id, userId) {
       action: 'update',
       resource_type: { $in: ['asset', 'channel'] }
     })
-    .populate('user_id', 'first_name last_name email')
+    .populate('user_id', 'first_name last_name email position')
     .sort({ timestamp: -1 })
     .limit(10);
 
