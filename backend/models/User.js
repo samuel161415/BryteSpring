@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   first_name: String,
   last_name: String,
   avatar_url: String,
+  position: String,
   is_superadmin: { type: Boolean, default: false },
   is_active: { type: Boolean, default: true },
   joined_verse: [{ type: mongoose.Schema.Types.ObjectId, ref: "Verse" }],
