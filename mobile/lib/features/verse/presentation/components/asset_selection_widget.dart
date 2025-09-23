@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/features/verse/presentation/components/back_and_cancel_widget.dart';
 import 'package:mobile/features/verse/presentation/components/custom_outlined_button.dart';
 import 'package:mobile/features/verse/presentation/components/verse_loading_widget.dart';
 import '../bloc/verse_bloc.dart';
@@ -46,6 +47,29 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
   final List<bool> _selectedAssets = List.filled(12, false);
   List<String> _selectedAssetsList = [];
   bool isLoading = false;
+  Future<bool> _showCancelEditDialog(BuildContext context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap a button
+      builder: (context) => AlertDialog(
+        title: const Text("Cancel Creating Verse"),
+        content: const Text("Are you sure you want to erase your changes?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // stay
+            child: const Text("No"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              widget.controller.jumpToPage(0);
+            },
+            child: const Text("Yes, Cancel"),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +81,10 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
           setState(() {
             isLoading = false;
           });
+          widget.controller.nextPage(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         } else if (state is VerseCreationFailure) {
           setState(() => isLoading = false);
           ScaffoldMessenger.of(
@@ -78,12 +106,13 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Top bar
                   TopBar(),
+                  BackAndCancelWidget(controller: widget.controller),
 
                   const SizedBox(height: 20),
 
@@ -91,10 +120,10 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
                   Text(
                     "verse_creation_page.assets_question".tr(),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 24,
-                      fontWeight: FontWeight.bold,
                       color: Colors.black,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
 
@@ -122,11 +151,11 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
                             Checkbox(
                               value: _selectedAssets[index],
                               onChanged: (value) {
-                                // if (value == true) {
-                                //   _selectedAssetsList.add(assets[index]);
-                                // } else if (value == false) {
-                                //   _selectedAssetsList.remove(assets[index]);
-                                // }
+                                if (value == true) {
+                                  _selectedAssetsList.add(assets[index]);
+                                } else if (value == false) {
+                                  _selectedAssetsList.remove(assets[index]);
+                                }
                                 setState(() {
                                   _selectedAssets[index] = value!;
                                 });
@@ -153,6 +182,8 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
                   const SizedBox(height: 10),
                   // Confirm button
                   CustomOutlinedButton(
+                    isEnabled: _selectedAssetsList.isNotEmpty,
+
                     text: "verse_creation_page.confirm_assets".tr(),
                     onPressed: () {
                       _selectedAssetsList.clear();
@@ -169,11 +200,6 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
                         BlocProvider.of<VerseBloc>(
                           context,
                         ).add(CreateVerseRequested(widget.verse));
-
-                        widget.controller.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
                       }
                     },
                   ),

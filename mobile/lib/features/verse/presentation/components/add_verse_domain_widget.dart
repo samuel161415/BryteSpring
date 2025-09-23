@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:mobile/core/constant.dart';
+import 'package:mobile/features/verse/presentation/components/back_and_cancel_widget.dart';
 import '../../domain/entities/verse.dart';
 import 'top_bar.dart';
 import 'custom_outlined_button.dart';
 
 class AddVerseDomainWidget extends StatefulWidget {
-  const AddVerseDomainWidget({
+  AddVerseDomainWidget({
     super.key,
     required this.screenSize,
     required this.controller,
     required this.verse,
     required this.name,
+    this.verseSubDomain,
   });
   final PageController controller;
   final Verse verse;
   final String name;
+  String? verseSubDomain;
 
   final Size screenSize;
 
@@ -26,6 +29,22 @@ class AddVerseDomainWidget extends StatefulWidget {
 class _AddVerseDomainWidgetState extends State<AddVerseDomainWidget> {
   TextEditingController verseNameController = TextEditingController();
   bool changeName = false;
+  String toValidSubdomain(String input) {
+    // Convert to lowercase
+    String result = input.toLowerCase();
+
+    // Replace any invalid characters with a hyphen
+    result = result.replaceAll(RegExp(r'[^a-z0-9-]'), '-');
+
+    // Remove leading or trailing hyphens
+    result = result.replaceAll(RegExp(r'^-+|-+$'), '');
+
+    // Collapse multiple consecutive hyphens into one
+    result = result.replaceAll(RegExp(r'-+'), '-');
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,23 +53,25 @@ class _AddVerseDomainWidgetState extends State<AddVerseDomainWidget> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Top bar
           TopBar(),
+          BackAndCancelWidget(controller: widget.controller),
 
           const SizedBox(height: 20),
 
           // Greeting
           Text(
-            "${widget.name}" + "verse_creation_page.verse_name_info".tr(),
+            "${widget.name.isNotEmpty ? widget.name : "Hello"}" +
+                "verse_creation_page.verse_name_info".tr(),
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+            style: TextStyle(
+              fontSize: 24,
               color: Colors.black,
+              fontWeight: FontWeight.w900,
             ),
           ),
 
@@ -72,7 +93,7 @@ class _AddVerseDomainWidgetState extends State<AddVerseDomainWidget> {
                     minimumSize: const Size.fromHeight(48),
                   ),
                   child: Text(
-                    "${widget.verse.name.toLowerCase()}.bryteverse",
+                    "${toValidSubdomain(widget.verse.name)}.bryteverse",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 16,
@@ -83,6 +104,9 @@ class _AddVerseDomainWidgetState extends State<AddVerseDomainWidget> {
               :
                 // Title textfield
                 TextField(
+                  onChanged: (value) {
+                    setState(() {});
+                  },
                   controller: verseNameController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -146,26 +170,26 @@ class _AddVerseDomainWidgetState extends State<AddVerseDomainWidget> {
 
           // Button
           CustomOutlinedButton(
+            isEnabled:
+                verseNameController.text.isNotEmpty || changeName == false,
+
             text: "verse_creation_page.confirm_name_final".tr(),
             onPressed: () {
               if (verseNameController.text.isNotEmpty) {
-                widget.verse.subdomain = verseNameController.text;
+                widget.verse.subdomain = toValidSubdomain(
+                  verseNameController.text,
+                );
                 widget.controller.nextPage(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
               } else if (changeName == false) {
-                widget.verse.subdomain = widget.verse.name;
+                widget.verse.subdomain = toValidSubdomain(widget.verse.name);
                 widget.controller.nextPage(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
               }
-
-              widget.controller.nextPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
             },
           ),
         ],

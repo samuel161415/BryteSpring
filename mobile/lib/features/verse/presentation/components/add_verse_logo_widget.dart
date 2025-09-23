@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
+import 'package:mobile/features/verse/presentation/components/back_and_cancel_widget.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:dio/dio.dart';
@@ -37,9 +38,9 @@ class AddVerseLogoWidget extends StatefulWidget {
 
 class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
   TextEditingController verseNameController = TextEditingController();
-  File? _selectedImage;
+  XFile? _selectedImage;
   Uint8List? _selectedImageBytes;
-
+  bool isLoading = false;
   final ImagePicker _picker = ImagePicker();
 
   // DigitalOcean Spaces config
@@ -92,46 +93,41 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
   //   // }
   // }
   Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+
     if (kIsWeb) {
-      // ✅ Web: no permission needed
-      final XFile? pickedFile = await ImagePicker().pickImage(
+      // Web: permissions are not required
+      final XFile? pickedFile = await picker.pickImage(
         source: ImageSource.gallery,
       );
       if (pickedFile != null) {
         final bytes = await pickedFile.readAsBytes();
         setState(() {
-          _selectedImage = File(pickedFile.path); // use this for preview
-          _selectedImageBytes = bytes; // use this for preview
+          _selectedImage = pickedFile; // ✅ always XFile
+          _selectedImageBytes = bytes; // optional for preview
         });
       }
     } else {
-      // ✅ Mobile: request permission
+      // Mobile: request permission first
+      final PermissionStatus status = await Permission.photos.request();
 
-      PermissionStatus status = await Permission.photos.request();
-      final XFile? pickedFile = await ImagePicker().pickImage(
-        source: ImageSource.gallery,
-      );
-      if (pickedFile != null) {
-        setState(() {
-          _selectedImage = File(pickedFile.path); // use this for preview
-        });
-        if (status.isGranted) {
-          final XFile? pickedFile = await ImagePicker().pickImage(
-            source: ImageSource.gallery,
-          );
-          if (pickedFile != null) {
-            setState(() {
-              _selectedImage = File(pickedFile.path); // use this for preview
-            });
-          }
-        } else if (status.isDenied) {
-          print("Permission denied by user");
-        } else if (status.isPermanentlyDenied) {
-          openAppSettings();
+      if (status.isGranted) {
+        final XFile? pickedFile = await picker.pickImage(
+          source: ImageSource.gallery,
+        );
+        if (pickedFile != null) {
+          setState(() {
+            _selectedImage = pickedFile; // ✅ always XFile
+          });
         }
+      } else if (status.isDenied) {
+        print("Permission denied by user");
+      } else if (status.isPermanentlyDenied) {
+        openAppSettings();
       }
     }
   }
+
   // Upload image to DigitalOcean Spaces using Dio
 
   // Future<void> uploadFile() async {
@@ -164,14 +160,43 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
   //     print("❌ Upload failed: $e");
   //   }
   // }
+  Future<bool> _showCancelEditDialog(BuildContext context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap a button
+      builder: (context) => AlertDialog(
+        title: const Text("Cancel Creating Verse"),
+        content: const Text("Are you sure you want to erase your changes?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // stay
+            child: const Text("No"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              widget.controller.jumpToPage(0);
+            },
+            child: const Text("Yes, Cancel"),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<UploadBloc, UploadState>(
       listener: (context, state) {
-        if (state is UploadSuccess) {
+        if (state is UploadLoading) {
+          setState(() {
+            isLoading = true;
+          });
+        } else if (state is UploadSuccess) {
           widget.verse.logo = state.url;
-
+          setState(() {
+            isLoading = false;
+          });
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text("Uploaded Sucessfully")));
@@ -179,6 +204,10 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           );
+        } else {
+          setState(() {
+            isLoading = false;
+          });
         }
       },
       child: Container(
@@ -187,12 +216,13 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Top bar
             TopBar(),
+            BackAndCancelWidget(controller: widget.controller),
 
             const SizedBox(height: 20),
 
@@ -201,9 +231,9 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
               "verse_creation_page.logo_question".tr(),
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
+                fontSize: 24,
                 color: Colors.black,
+                fontWeight: FontWeight.w900,
               ),
             ),
 
@@ -226,17 +256,18 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
                           child: Text("verse_creation_page.choose_logo".tr()),
                         ),
                         Platform.isAndroid && Platform.isIOS
-                            ? Image.file(_selectedImage!, height: 120)
+                            ? Image.file(File(_selectedImage!.path), height: 80)
                             : ((_selectedImageBytes != null)
                                   ? Image.memory(
                                       _selectedImageBytes!,
-                                      height: 120,
+                                      height: 80,
                                     )
                                   : Container()),
                       ],
                     ),
                   )
                 : CustomOutlinedButton(
+                    isEnabled: true,
                     text: "verse_creation_page.choose_logo".tr(),
                     onPressed: () {
                       _pickImage();
@@ -262,6 +293,8 @@ class _AddVerseLogoWidgetState extends State<AddVerseLogoWidget> {
             const SizedBox(height: 40),
             // Button
             CustomOutlinedButton(
+              isEnabled: _selectedImage != null,
+              isLoading: isLoading,
               text: "verse_creation_page.preview_logo".tr(),
               onPressed: () {
                 if (_selectedImage != null) {

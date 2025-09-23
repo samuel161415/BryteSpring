@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 class CustomOutlinedButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final bool isEnabled;
+  final bool isLoading;
 
   const CustomOutlinedButton({
     Key? key,
     required this.text,
     required this.onPressed,
+    required this.isEnabled,
+    this.isLoading = false,
   }) : super(key: key);
 
   @override
@@ -17,7 +21,10 @@ class CustomOutlinedButton extends StatelessWidget {
       height: 48,
       width: 390,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black, width: 4),
+        border: Border.all(
+          color: isEnabled ? Colors.black : Colors.grey,
+          width: 4,
+        ),
       ),
       child: ElevatedButton(
         onPressed: onPressed,
@@ -29,14 +36,16 @@ class CustomOutlinedButton extends StatelessWidget {
           ),
           minimumSize: const Size.fromHeight(48),
         ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        child: isLoading
+            ? CircularProgressIndicator()
+            : Text(
+                text,
+                style: TextStyle(
+                  color: isEnabled ? Colors.black : Colors.grey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
       ),
     );
   }

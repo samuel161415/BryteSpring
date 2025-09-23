@@ -100,6 +100,7 @@ class _InviteCompletePageState extends State<InviteCompletePage> {
                         const SizedBox(height: 40),
                         // Button
                         CustomOutlinedButton(
+                          isEnabled: true,
                           text: "zum Dashboard",
                           onPressed: () {
                             context.goNamed(Routelists.dashboard);

@@ -36,7 +36,7 @@ class _VerseCompleteWidgetState extends State<VerseCompleteWidget> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -50,9 +50,9 @@ class _VerseCompleteWidgetState extends State<VerseCompleteWidget> {
             "Herzlich willkommenin Deinem Verse, " + "${widget.name}",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+              fontSize: 24,
               color: Colors.black,
+              fontWeight: FontWeight.w900,
             ),
           ),
 
@@ -75,6 +75,8 @@ class _VerseCompleteWidgetState extends State<VerseCompleteWidget> {
           const SizedBox(height: 40),
           // Button
           CustomOutlinedButton(
+            isEnabled: true,
+
             text: "Dankeschön, sieht toll aus!",
             onPressed: () {
               context.go('/${Routelists.dashboard}');

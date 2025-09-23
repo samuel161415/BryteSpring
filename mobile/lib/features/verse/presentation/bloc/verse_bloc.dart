@@ -18,7 +18,7 @@ class VerseBloc extends Bloc<VerseEvent, VerseState> {
     final result = await createVerse(event.verse);
     result.fold(
       (failure) => emit(
-        const VerseCreationFailure('Failed to create verse'),
+        VerseCreationFailure(failure.message),
       ), // You can map failures to specific messages
       (verse) => emit(VerseCreationSuccess(verse)),
     );

@@ -27,37 +27,11 @@ class VerseRemoteDataSourceImpl implements VerseRemoteDataSource {
       verse.logo ??= "https://example.com/logo.png";
 
       final body = verse.toJson();
-      print("=== Verse JSON Payload==");
-      print(verse.toJson());
 
       final response = await dio.post(
         'https://brightcore-iugy8.ondigitalocean.app/verse/complete-setup',
         data: body,
-        // {
-        //   "verse_id": verse.verseId,
-        //   "name": "tempo Verse",
-        //   "subdomain": "bnw",
-        //   "email": "samuelnegalign1er@gmail.com",
-        //   "organization_name": "BNW Corporation",
-        //   "branding": {
-        //     "logo_url": "https://example.com/logo.png",
-        //     "primary_color": "#3B82F6",
-        //     "color_name": "Primary Blue",
-        //   },
-        //   "initial_channels": [
-        //     {
-        //       "name": "general",
-        //       "type": "channel",
-        //       "description": "General discussion channel",
-        //     },
-        //     {
-        //       "name": "announcements",
-        //       "type": "channel",
-        //       "description": "Important announcements",
-        //     },
-        //   ],
-        //   "is_neutral_view": false,
-        // },
+
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -76,7 +50,7 @@ class VerseRemoteDataSourceImpl implements VerseRemoteDataSource {
       print("=== ERROR RESPONSE ===");
       print("Status code: ${e.response?.statusCode}");
       print("Data: ${e.response?.data}");
-      throw ServerException("Upload failed: ${e.message}");
+      throw ServerException("verse Creation failed: ${e.message}");
     }
   }
 }
