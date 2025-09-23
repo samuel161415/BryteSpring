@@ -6,6 +6,8 @@ import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/features/verse_join/presentation/components/top_part_widget.dart';
 import 'package:mobile/features/verse_join/presentation/bloc/join_verse_bloc.dart';
 import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
+import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/services/auth_service.dart';
 
 class GetToKnowRoleWidget extends StatefulWidget {
   final InvitationEntity invitation;
@@ -30,6 +32,10 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
     return BlocListener<JoinVerseBloc, JoinVerseState>(
       listener: (context, state) {
         if (state is JoinVerseSuccess) {
+          // Update current user joined_verse
+          final authService = sl<AuthService>();
+          authService.addJoinedVerse(widget.invitation.verseId);
+
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -148,7 +154,7 @@ class _GetToKnowRoleWidgetState extends State<GetToKnowRoleWidget> {
   void _handleJoinVerse() {
     // Call join verse API with the verse ID from invitation
     context.read<JoinVerseBloc>().add(JoinVerse(widget.invitation.verseId));
-    context.goNamed(Routelists.joinVerseSuccess, extra: widget.invitation);
+    // Do not navigate immediately; wait for Bloc listener to handle success/failure
   }
 }
 

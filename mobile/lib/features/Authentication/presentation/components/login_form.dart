@@ -120,7 +120,7 @@ class _LoginFormState extends State<LoginForm> {
           print('Login successful for user: ${user.email}');
           print('Invitation present: ${widget.invitation != null}');
 
-          // Save account if remember me is checked
+          // Save account if remember me is checked (do this BEFORE any early returns)
           if (_rememberMe) {
             try {
               final savedAccountsService = sl<SavedAccountsService>();
@@ -136,17 +136,63 @@ class _LoginFormState extends State<LoginForm> {
             }
           }
 
+          // Post-login routing based on joined verses, invitation param, or pending invitations
+          try {
+            // 1) If an invitation param is provided, prioritize it
+            if (widget.invitation != null) {
+              final invitedVerseId = widget.invitation!.verseId;
+              final alreadyMember = user.joinedVerse.contains(invitedVerseId);
+              if (!alreadyMember) {
+                // Not a member of the invited verse → go to join flow
+                context.pushNamed(
+                  Routelists.almostJoinVerse,
+                  extra: widget.invitation,
+                );
+                return;
+              }
+              // Already member of the invited verse → dashboard
+              context.goNamed(Routelists.dashboard);
+              return;
+            }
+
+            // 2) No invitation param: if already in any verse → dashboard
+            if (user.joinedVerse.isNotEmpty) {
+              context.goNamed(Routelists.dashboard);
+              return;
+            }
+
+            // 3) No joined verses: if has pending invitations → use index 0
+            if (user.pendingInvitations.isNotEmpty) {
+              final firstInvitation = user.pendingInvitations.first;
+              context.pushNamed(
+                Routelists.almostJoinVerse,
+                extra: InvitationEntity(
+                  id: firstInvitation.id,
+                  verseId: firstInvitation.verseId,
+                  email: firstInvitation.email,
+                  roleId: firstInvitation.roleId,
+                  token: firstInvitation.token,
+                  invitedBy: firstInvitation.invitedBy,
+                  isAccepted: firstInvitation.isAccepted,
+                  createdAt: firstInvitation.createdAt,
+                  expiresAt: firstInvitation.expiresAt,
+                  acceptedAt: firstInvitation.acceptedAt,
+                  firstName: firstInvitation.firstName,
+                  lastName: firstInvitation.lastName,
+                  position: firstInvitation.position,
+                ),
+              );
+              return;
+            }
+          } catch (e) {
+            print('Post-login routing check failed: $e');
+          }
+
           // Login successful
           print('widget.invitation: ${widget.invitation}');
-          if (widget.invitation != null) {
-            print('Checking verse setup status...');
-            // Check verse setup status if invitation is provided
-            await _checkVerseSetupAndRedirect();
-          } else {
-            print('No invitation, redirecting to dashboard');
-            // Normal login flow - redirect to dashboard
-            context.go('/${Routelists.dashboard}');
-          }
+          // Fallback (should rarely hit due to returns above)
+          print('No specific routing condition matched; going dashboard');
+          context.goNamed(Routelists.dashboard);
         },
       );
     } catch (e) {
@@ -286,11 +332,6 @@ class _LoginFormState extends State<LoginForm> {
               backgroundColor: Colors.orange,
             ),
           );
-          // context.go('/${Routelists.dashboard}');
-          // context.pushNamed(
-          //   Routelists.almostJoinVerse,
-          //   extra: widget.invitation,
-          // );
         },
         (verse) {
           print(
