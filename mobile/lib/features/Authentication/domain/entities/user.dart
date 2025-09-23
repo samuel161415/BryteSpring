@@ -1,3 +1,4 @@
+import 'package:mobile/features/Authentication/domain/entities/invitation_entity.dart';
 import 'dart:convert';
 
 class User {
@@ -14,6 +15,7 @@ class User {
   final List<String> joinedVerse;
   final String token;
   final String refreshToken;
+  final List<InvitationEntity> pendingInvitations;
 
   User({
     required this.id,
@@ -29,6 +31,7 @@ class User {
     required this.joinedVerse,
     required this.token,
     required this.refreshToken,
+    this.pendingInvitations = const [],
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -54,6 +57,11 @@ class User {
           : <String>[],
       token: json['token'] ?? '',
       refreshToken: json['refresh_token'] ?? json['token'] ?? '',
+      pendingInvitations:
+          (json['pending_invitations'] as List?)
+              ?.map((e) => InvitationEntity.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <InvitationEntity>[],
     );
   }
 
@@ -72,6 +80,7 @@ class User {
       'joined_verse': joinedVerse,
       'token': token,
       'refresh_token': refreshToken,
+      'pending_invitations': pendingInvitations.map((e) => e.toJson()).toList(),
     };
   }
 
