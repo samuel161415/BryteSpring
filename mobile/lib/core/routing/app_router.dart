@@ -177,11 +177,18 @@ class AppRouter {
     GoRoute(
       path: '/${Routelists.almostJoinVerse}',
       name: Routelists.almostJoinVerse,
-      pageBuilder: (context, state) => _buildPage(
-        context,
-        state,
-        JoinVerseAlmostDone(invitation: state.extra as InvitationEntity),
-      ),
+      pageBuilder: (context, state) {
+        final invitation = state.extra as InvitationEntity?;
+        if (invitation == null) {
+          // If no invitation provided, redirect to login
+          return _buildPage(context, state, LoginPage());
+        }
+        return _buildPage(
+          context,
+          state,
+          JoinVerseAlmostDone(invitation: invitation),
+        );
+      },
     ),
     GoRoute(
       path: '/${Routelists.joinVerse}',
@@ -281,10 +288,14 @@ class AppRouter {
       name: Routelists.createVerse,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
-        final verseId = extra?['verseId'] as String? ?? 'verseId';
-        final currentUserName =
-            extra?['currentUserName'] as String? ?? 'currentUserName';
-        final email = extra?['email'] as String? ?? 'email';
+        final verseId = extra?['verseId'] as String?;
+        final currentUserName = extra?['currentUserName'] as String?;
+        final email = extra?['email'] as String?;
+        if (verseId == null || currentUserName == null || email == null) {
+          // If no extra provided, redirect to dashboard
+          return _buildPage(context, state, const DashboardPage());
+        }
+
         return _buildPage(
           context,
           state,

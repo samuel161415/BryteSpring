@@ -139,7 +139,9 @@ class _LoginFormState extends State<LoginForm> {
           // Post-login routing based on joined verses, invitation param, or pending invitations
           try {
             // 1) If an invitation param is provided, prioritize it
-            if (widget.invitation != null) {
+            if (widget.invitation != null &&
+                widget.invitation!.email.toLowerCase() ==
+                    _emailController.text.trim().toLowerCase()) {
               final invitedVerseId = widget.invitation!.verseId;
               final alreadyMember = user.joinedVerse.contains(invitedVerseId);
               if (!alreadyMember) {
