@@ -89,12 +89,12 @@ exports.createChannel = async (req, res) => {
       return res.status(500).json({ message: 'Role data not properly loaded' });
     }
     
-    const hasPermission = role.name === 'Administrator' || 
-                         (role.permissions && role.permissions.manage_channels);
+    // const hasPermission = role.name === 'Administrator' || 
+    //                      (role.permissions && role.permissions.manage_channels);
     
-    if (!hasPermission) {
-      return res.status(403).json({ message: 'Insufficient permissions to create folders' });
-    }
+    // if (!hasPermission) {
+    //   return res.status(403).json({ message: 'Insufficient permissions to create folders' });
+    // }
 
     // Check if parent channel exists and belongs to the same verse
     let parentChannel = null;
@@ -398,12 +398,12 @@ exports.updateChannel = async (req, res) => {
     }
 
     const role = userRole.role_id;
-    const hasPermission = role.name === 'Administrator' || 
-                         (role.permissions && role.permissions.manage_channels);
+    // const hasPermission = role.name === 'Administrator' || 
+    //                      (role.permissions && role.permissions.manage_channels);
     
-    if (!hasPermission) {
-      return res.status(403).json({ message: 'Insufficient permissions to update channels' });
-    }
+    // if (!hasPermission) {
+    //   return res.status(403).json({ message: 'Insufficient permissions to update channels' });
+    // }
 
     // Capture pre-update state for audit
     const before = channel.toObject();
