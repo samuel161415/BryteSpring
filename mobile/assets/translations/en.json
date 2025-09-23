@@ -118,7 +118,7 @@
     "join_button": "Join Verse",
     "almost_done_title": "Almost there!",
     "almost_done_desc": "Before you can store and manage content, you need to join a Verse. You can ask your company's administrator for an invitation, or create a new Verse.",
-    "create_verse_button": "+ Create Verse",
+    "create_verse_button": "+ Join Verse",
     "welcome_title": "Welcome to the Verse of {verseName}!",
     "welcome_desc": "Great, you joined the Verse of {verseName} as an Expert. Are you ready to learn more about your new role?",
     "learn_role_cta": "Get to know {name}'s role",

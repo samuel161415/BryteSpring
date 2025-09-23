@@ -13,6 +13,7 @@ import 'package:mobile/features/Authentication/domain/entities/invitation_entity
 import 'package:mobile/features/verse_join/domain/usecases/verse_join_usecase.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/core/routing/routeLists.dart';
+import 'package:mobile/core/services/auth_service.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -28,6 +29,7 @@ class _DashboardPageState extends State<DashboardPage> {
   InvitationEntity? _firstPendingInvitation;
   bool _hasNoJoinedVerse = false;
   bool _isAcceptingInvitation = false;
+  bool _isLoggingOut = false;
   @override
   void initState() {
     super.initState();
@@ -197,36 +199,64 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildNoVerseState(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 24),
-          const Icon(Icons.info_outline, color: Colors.orange, size: 40),
-          const SizedBox(height: 12),
-          const Text(
-            'You have not joined a verse yet.',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'To use the dashboard, please join a pending invitation or create a verse.',
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          if (_firstPendingInvitation != null)
+    return Container(
+      width: double.infinity,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 24),
+            const Icon(Icons.info_outline, color: Colors.orange, size: 40),
+            const SizedBox(height: 12),
+            const Text(
+              'You have not joined a verse yet.',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'To use the dashboard, please join a pending invitation or create a verse.',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            if (_firstPendingInvitation != null)
+              InkWell(
+                onTap: _isAcceptingInvitation ? null : _handlePendingInvitation,
+                child: Container(
+                  width: 200,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 4),
+                    color: _isAcceptingInvitation ? Colors.grey[200] : null,
+                  ),
+                  child: Center(
+                    child: _isAcceptingInvitation
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.black,
+                              ),
+                            ),
+                          )
+                        : const Text('Accept invitation'),
+                  ),
+                ),
+              ),
+            const SizedBox(height: 12),
             InkWell(
-              onTap: _isAcceptingInvitation ? null : _handlePendingInvitation,
+              onTap: _isLoggingOut ? null : _handleLogout,
               child: Container(
                 width: 200,
                 height: 40,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 4),
-                  color: _isAcceptingInvitation ? Colors.grey[200] : null,
+                  color: _isLoggingOut ? Colors.grey[200] : null,
                 ),
                 child: Center(
-                  child: _isAcceptingInvitation
+                  child: _isLoggingOut
                       ? const SizedBox(
                           width: 20,
                           height: 20,
@@ -237,12 +267,13 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                           ),
                         )
-                      : const Text('Accept invitation'),
+                      : const Text('Logout'),
                 ),
               ),
             ),
-          const SizedBox(height: 24),
-        ],
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }
@@ -307,6 +338,31 @@ class _DashboardPageState extends State<DashboardPage> {
           _isAcceptingInvitation = false;
         });
       }
+    }
+  }
+
+  Future<void> _handleLogout() async {
+    try {
+      setState(() {
+        _isLoggingOut = true;
+      });
+      final authService = sl<AuthService>();
+      await authService.logout();
+      if (!mounted) return;
+      context.goNamed(Routelists.login);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Logout failed: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _isLoggingOut = false;
+      });
     }
   }
 }

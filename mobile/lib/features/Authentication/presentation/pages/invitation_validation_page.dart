@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/core/constant.dart';
 import 'package:mobile/core/routing/routeLists.dart';
 import 'package:mobile/core/widgets/app_footer.dart';
+import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/services/auth_service.dart';
 import 'package:mobile/features/Authentication/presentation/bloc/invitation_validation_bloc.dart';
 
 class InvitationValidationPage extends StatefulWidget {
@@ -20,10 +22,29 @@ class _InvitationValidationPageState extends State<InvitationValidationPage> {
   @override
   void initState() {
     super.initState();
-    // Trigger invitation validation when page loads
-    context.read<InvitationValidationBloc>().add(
-      ValidateInvitation(widget.token),
-    );
+    // Ensure we are logged out when coming from invitation link
+    _logoutIfNeededAndValidate();
+  }
+
+  void _logoutIfNeededAndValidate() async {
+    try {
+      final authService = sl<AuthService>();
+      if (authService.isAuthenticated) {
+        await authService.logout();
+      }
+    } catch (_) {
+      // Fall back to clearing local state if remote logout fails
+      try {
+        sl<AuthService>().clearAuth();
+      } catch (_) {}
+    } finally {
+      // Trigger invitation validation after ensuring logout
+      if (mounted) {
+        context.read<InvitationValidationBloc>().add(
+          ValidateInvitation(widget.token),
+        );
+      }
+    }
   }
 
   void _handleLanguageChanged() {
