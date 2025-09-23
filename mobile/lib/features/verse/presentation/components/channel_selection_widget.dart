@@ -23,18 +23,18 @@ class ChannelSelectionWidget extends StatefulWidget {
 
 class _ChannelSelectionWidgetState extends State<ChannelSelectionWidget> {
   final List<String> channels = [
-    "verse_creation_page.channel_corporate_website",
-    "verse_creation_page.channel_microsite",
-    "verse_creation_page.channel_online_shop",
-    "verse_creation_page.channel_social_media",
-    "verse_creation_page.channel_newsletter",
-    "verse_creation_page.channel_seo",
-    "verse_creation_page.channel_business_material",
-    "verse_creation_page.channel_marketing_print",
-    "verse_creation_page.channel_publishing",
-    "verse_creation_page.channel_hr_files",
-    "verse_creation_page.channel_intranet",
-    "verse_creation_page.channel_internal_systems",
+    "Corporate Website",
+    "Microsite, Landingpages",
+    "Online Shop",
+    "Social Media",
+    "Newsletter",
+    "SEO, Suchmaschine",
+    "Geschäftsmaterial",
+    "Marketing (Print)",
+    "Publishing",
+    "Personalakten",
+    "Intranet",
+    "Interne Systeme",
   ];
 
   final List<bool> _selectedChannels = List.filled(12, false);
