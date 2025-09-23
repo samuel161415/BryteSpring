@@ -143,11 +143,8 @@ class _LoginFormState extends State<LoginForm> {
               final invitedVerseId = widget.invitation!.verseId;
               final alreadyMember = user.joinedVerse.contains(invitedVerseId);
               if (!alreadyMember) {
-                // Not a member of the invited verse → go to join flow
-                context.pushNamed(
-                  Routelists.almostJoinVerse,
-                  extra: widget.invitation,
-                );
+                // Not a member of the invited verse → decide join vs create based on verse setup
+                await _checkVerseSetupAndRedirect();
                 return;
               }
               // Already member of the invited verse → dashboard
@@ -164,9 +161,8 @@ class _LoginFormState extends State<LoginForm> {
             // 3) No joined verses: if has pending invitations → use index 0
             if (user.pendingInvitations.isNotEmpty) {
               final firstInvitation = user.pendingInvitations.first;
-              context.pushNamed(
-                Routelists.almostJoinVerse,
-                extra: InvitationEntity(
+              await _checkVerseSetupAndRedirectFor(
+                InvitationEntity(
                   id: firstInvitation.id,
                   verseId: firstInvitation.verseId,
                   email: firstInvitation.email,
@@ -345,33 +341,18 @@ class _LoginFormState extends State<LoginForm> {
           }
           if (verse.isSetupComplete) {
             // Verse setup is complete, redirect to almost join page
-
             context.pushNamed(
               Routelists.almostJoinVerse,
               extra: widget.invitation,
             );
           } else {
-            // Verse setup is not complete, for now do nothing
-            // TODO: Implement verse setup flow later
-            print(
-              'Verse setup not complete, showing message and redirecting to dashboard',
-            );
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Verse "${verse.name}" setup is not complete yet. Please wait for the admin to complete the setup.',
-                ),
-                backgroundColor: Colors.blue,
-                duration: const Duration(seconds: 5),
-              ),
-            );
-            // Redirect to dashboard for now
-            context.goNamed(
-              '${Routelists.createVerse}',
+            // Verse setup is not complete → go to create verse
+            context.pushNamed(
+              Routelists.createVerse,
               extra: {
                 'verseId': widget.invitation!.verseId,
-                "currentUserName": widget.invitation!.firstName,
-                "email": widget.invitation!.email,
+                'currentUserName': widget.invitation!.firstName,
+                'email': widget.invitation!.email,
               },
             );
           }
@@ -387,6 +368,45 @@ class _LoginFormState extends State<LoginForm> {
         ),
       );
       // context.go('/${Routelists.dashboard}');
+    }
+  }
+
+  Future<void> _checkVerseSetupAndRedirectFor(InvitationEntity inv) async {
+    try {
+      final verseJoinUseCase = sl<VerseJoinUseCase>();
+      final verseResult = await verseJoinUseCase.getVerse(inv.verseId);
+
+      verseResult.fold(
+        (failure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to fetch verse: ${failure.message}'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        },
+        (verse) {
+          if (verse.isSetupComplete) {
+            context.pushNamed(Routelists.almostJoinVerse, extra: inv);
+          } else {
+            context.pushNamed(
+              Routelists.createVerse,
+              extra: {
+                'verseId': inv.verseId,
+                'currentUserName': inv.firstName,
+                'email': inv.email,
+              },
+            );
+          }
+        },
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error checking verse status: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
