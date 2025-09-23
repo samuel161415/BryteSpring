@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/exceptions.dart';
@@ -12,7 +13,7 @@ class UploadRepositoryImpl implements UploadRepository {
 
   @override
   Future<Either<Failure, String>> uploadImage(
-    File image,
+    XFile image,
     String verseId,
     String folderPath,
   ) async {

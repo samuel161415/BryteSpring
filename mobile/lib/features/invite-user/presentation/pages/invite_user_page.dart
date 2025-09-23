@@ -32,12 +32,40 @@ class _InviteUserPageState extends State<InviteUserPage> {
   bool isAdmin = false;
   bool isUser = false;
   bool isExpert = false;
+  String firstName = "";
+  String lastName = "";
+  String position = "";
+
   @override
   void initState() {
     super.initState();
     context.read<InvitedVerseUserRoleBloc>().add(
       GetInviteVerseRoleEvent(widget.verseId ?? ""),
     );
+  }
+
+  void parseUserInput(String input) {
+    // Split input into two parts: "name" and "position"
+    final parts = input.split(',');
+
+    if (parts.length < 2) {
+      print("Invalid input format. Use: FirstName LastName, Position");
+      return;
+    }
+
+    final fullName = parts[0].trim(); // "John Doe"
+    final position = parts[1].trim(); // "Software Engineer"
+
+    final nameParts = fullName.split(' ');
+
+    if (nameParts.isNotEmpty) {
+      firstName = nameParts.first; // "John"
+      lastName = nameParts.length > 1
+          ? nameParts
+                .sublist(1)
+                .join(' ') // "Doe"
+          : ''; // In case only one word was given
+    }
   }
 
   @override
@@ -291,17 +319,21 @@ class _InviteUserPageState extends State<InviteUserPage> {
                           const SizedBox(height: 40),
                           // Button
                           CustomOutlinedButton(
+                            isEnabled:
+                                widget.verseId != null &&
+                                selectedRoleId.isNotEmpty,
+
                             text: "Einladung senden",
                             onPressed: () {
                               if (widget.verseId != null &&
                                   selectedRoleId.isNotEmpty) {
                                 final user = InvitationUser(
                                   email: _emailController.text,
-                                  position: postionController.text,
+                                  position: position,
                                   roleId: selectedRoleId,
                                   verseId: widget.verseId!,
-                                  firstName: postionController.text,
-                                  lastName: postionController.text,
+                                  firstName: firstName,
+                                  lastName: lastName,
                                   subdomain: "brightnetworks",
                                 );
                                 context.read<UserInvitationBloc>().add(

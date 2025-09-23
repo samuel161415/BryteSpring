@@ -47,9 +47,9 @@ class VerseLoadingWidget extends StatelessWidget {
             "Prima, " + name + "!Dein Verse läuft gerade vom Stapel.",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+              fontSize: 24,
               color: Colors.black,
+              fontWeight: FontWeight.w900,
             ),
           ),
           const SizedBox(height: 20),

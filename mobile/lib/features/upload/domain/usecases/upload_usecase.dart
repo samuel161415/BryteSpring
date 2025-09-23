@@ -1,6 +1,7 @@
 // domain/usecases/upload_image.dart
 import 'dart:io';
 import 'package:dartz/dartz.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/error/failure.dart';
 import '../repositories/upload_repository.dart';
 
@@ -10,7 +11,7 @@ class UploadImage {
   UploadImage(this.repository);
 
   Future<Either<Failure, String>> call(
-    File image,
+    XFile image,
     String verseId,
     String folderPath,
   ) {

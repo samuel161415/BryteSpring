@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:mobile/features/verse/presentation/components/back_and_cancel_widget.dart';
 import 'package:mobile/features/verse/presentation/components/custom_outlined_button.dart';
 import 'top_bar.dart';
 import '../../domain/entities/verse.dart';
@@ -24,6 +25,30 @@ class StractureVerseWidget extends StatefulWidget {
 }
 
 class _StractureVerseWidgetState extends State<StractureVerseWidget> {
+  Future<bool> _showCancelEditDialog(BuildContext context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap a button
+      builder: (context) => AlertDialog(
+        title: const Text("Cancel Creating Verse"),
+        content: const Text("Are you sure you want to erase your changes?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false), // stay
+            child: const Text("No"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              widget.controller.jumpToPage(0);
+            },
+            child: const Text("Yes, Cancel"),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,12 +57,13 @@ class _StractureVerseWidgetState extends State<StractureVerseWidget> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Top bar
           TopBar(),
+          BackAndCancelWidget(controller: widget.controller),
 
           const SizedBox(height: 20),
 
@@ -45,10 +71,10 @@ class _StractureVerseWidgetState extends State<StractureVerseWidget> {
           Text(
             "verse_creation_page.structure_question".tr(),
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
-              fontWeight: FontWeight.bold,
               color: Colors.black,
+              fontWeight: FontWeight.w900,
             ),
           ),
 
@@ -75,6 +101,8 @@ class _StractureVerseWidgetState extends State<StractureVerseWidget> {
 
           // Confirm button
           CustomOutlinedButton(
+            isEnabled: true,
+
             text: "verse_creation_page.find_structure".tr(),
             onPressed: () {
               widget.controller.nextPage(

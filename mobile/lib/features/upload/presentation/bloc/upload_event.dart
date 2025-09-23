@@ -1,6 +1,7 @@
 // presentation/bloc/upload_event.dart
 import 'dart:io';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 
 abstract class UploadEvent extends Equatable {
   @override
@@ -8,7 +9,7 @@ abstract class UploadEvent extends Equatable {
 }
 
 class UploadImageEvent extends UploadEvent {
-  final File image;
+  final XFile image;
   final String verseId;
   final String folderPath;
 

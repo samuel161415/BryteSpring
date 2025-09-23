@@ -11,6 +11,9 @@ import 'package:mobile/features/verse/presentation/components/verse_loading_widg
 import 'package:provider/provider.dart';
 
 import '../../../../core/constant.dart';
+import '../../../../core/injection_container.dart';
+import '../../../verse_join/domain/entities/verse_join_entity.dart';
+import '../../../verse_join/domain/usecases/verse_join_usecase.dart';
 import '../components/add_organization_name_widget.dart';
 import '../components/add_verse_domain_widget.dart';
 import '../components/add_verse_name_widget.dart';
@@ -37,15 +40,44 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
   final PageController _controller = PageController();
   int _currentPage = 0;
   Verse verse = Verse.empty();
+  VerseJoinEntity? _verseJoinEntity;
   @override
   void initState() {
     super.initState();
     verse.verseId = widget.verseId;
     verse.email = widget.email;
+    _loadVerse();
   }
 
   bool _isSubmitting = false;
-  String? _errorMessage;
+
+  Future<void> _loadVerse() async {
+    try {
+      final verseJoinUseCase = sl<VerseJoinUseCase>();
+      final verseResult = await verseJoinUseCase.getVerse(widget.verseId);
+
+      verseResult.fold((failure) {}, (verse) {
+        print(
+          'Verse fetched successfully: ${verse.name}, isSetupComplete: ${verse.isSetupComplete}',
+        );
+        _verseJoinEntity = verse;
+        if (verse.isSetupComplete) {
+          // Verse setup is complete, redirect to almost join page
+        } else {}
+      });
+    } catch (e) {
+      print('Error in _checkVerseSetupAndRedirect: $e');
+      // Handle any unexpected errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error checking verse status: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
@@ -66,6 +98,7 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
         screenSize: screenSize,
         controller: _controller,
         verse: verse,
+        verseName: _verseJoinEntity!.name,
       ),
       AddVerseDomainWidget(
         name: widget.currentUserName,
@@ -73,11 +106,13 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
         screenSize: screenSize,
         controller: _controller,
         verse: verse,
+        verseSubDomain: _verseJoinEntity!.subdomain,
       ),
       AddOrganizationNameWidget(
         screenSize: screenSize,
         controller: _controller,
         verse: verse,
+        organizationName: _verseJoinEntity!.organizationName,
       ),
       AddVerseLogoWidget(
         screenSize: screenSize,
@@ -165,11 +200,14 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    height: screenSize.height * 0.77,
+                    height: screenSize.height * 0.8,
 
                     // padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: PageView(
                       controller: _controller,
+                      physics:
+                          const NeverScrollableScrollPhysics(), // 👈 disables swipe
+
                       onPageChanged: (index) {
                         setState(() => _currentPage = index);
                       },
