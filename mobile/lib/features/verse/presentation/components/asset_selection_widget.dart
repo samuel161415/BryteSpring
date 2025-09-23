@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/core/injection_container.dart';
+import 'package:mobile/core/services/auth_service.dart';
 import 'package:mobile/features/verse/presentation/components/back_and_cancel_widget.dart';
 import 'package:mobile/features/verse/presentation/components/custom_outlined_button.dart';
 import 'package:mobile/features/verse/presentation/components/verse_loading_widget.dart';
@@ -30,18 +32,18 @@ class AssetSelectionWidget extends StatefulWidget {
 
 class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
   final List<String> assets = [
-    "verse_creation_page.asset_employee_photos",
-    "verse_creation_page.asset_employee_data",
-    "verse_creation_page.asset_marketing_texts",
-    "verse_creation_page.asset_marketing_images",
-    "verse_creation_page.asset_product_texts",
-    "verse_creation_page.asset_product_images",
-    "verse_creation_page.asset_company_data",
-    "verse_creation_page.asset_documentation",
-    "verse_creation_page.asset_quotes_poetry",
-    "verse_creation_page.asset_customer_data",
-    "verse_creation_page.asset_templates",
-    "verse_creation_page.asset_layouts",
+    "Mitarbeiterbilder",
+    "Mitarbeiterdaten",
+    "Marketing Texte",
+    "Marketing Bilder",
+    "Produkt Texte",
+    "Produkt Bilder",
+    "Unternehmensdaten",
+    "Dokumentation",
+    "Zitate & Poesie",
+    "Kundendaten",
+    "Templates",
+    "Vorlagen",
   ];
 
   final List<bool> _selectedAssets = List.filled(12, false);
@@ -85,6 +87,8 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
           );
+          final authService = sl<AuthService>();
+          authService.addJoinedVerse(widget.verse.verseId);
         } else if (state is VerseCreationFailure) {
           setState(() => isLoading = false);
           ScaffoldMessenger.of(
@@ -95,7 +99,7 @@ class _AssetSelectionWidgetState extends State<AssetSelectionWidget> {
       child: isLoading
           ? VerseLoadingWidget(
               name: widget.name,
-
+              isLoading: true,
               screenSize: widget.screenSize,
               controller: widget.controller,
               verse: widget.verse,

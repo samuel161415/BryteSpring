@@ -14,7 +14,7 @@ class VerseLoadingWidget extends StatelessWidget {
     required this.verse,
     required this.name,
   });
-  bool? isLoading = true;
+  bool? isLoading = false;
   final PageController controller;
   final Verse verse;
   final Size screenSize;

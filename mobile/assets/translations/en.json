@@ -34,7 +34,7 @@
   "verse_creation_page":{
     "greeting": "Hello, ",
     "almost_done": "Almost done!",
-    "before_join": "Before you can store and manage content, you must first join a Verse. You can ask your company's administrator for an invitation, or create a new Verse.",
+    "before_join": "Before you can store and manage content, you are invited to create a new Verse.",
     "create_verse": "+ Create Verse",
     "which_verse": ", which Verse should we create together?",
     "verse_name_question": "What should the Verse be called?",
