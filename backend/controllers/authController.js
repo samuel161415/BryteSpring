@@ -5,6 +5,7 @@ const UserRole = require("../models/UserRole");
 const UserInvitation = require("../models/UserInvitation");
 const Verse = require("../models/Verse");
 const ActivityLog = require("../models/ActivityLog");
+const { buildUserResponse } = require("../services/userService");
 
 // Generate JWT
 const generateToken = (id) => {
@@ -138,42 +139,8 @@ const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {
-      
-      // Get pending invitations for this user (if any)
-      // This includes invitations that are accepted but user hasn't joined the verse yet
-      const pendingInvitations = await Invitation.find({
-        email: user.email,
-        is_accepted: true
-      })
-      .sort({ created_at: -1 });
-
-
-      // Filter for verses that user hasn't joined yet
-      const filteredPendingInvitations = pendingInvitations.filter(invitation => {
-        if (!invitation.verse_id) return false;
-        return !user.joined_verse.some(verseId => 
-          verseId.toString() === invitation.verse_id._id.toString()
-        );
-      });
-
-      // Build response with pending invitations
-      const response = {
-        _id: user._id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        position: user.position,
-        email: user.email,
-        avatar_url: user.avatar_url,
-        joined_verse: user.joined_verse,
-        token: generateToken(user._id),
-        pending_invitations: []
-      };
-
-      // Add pending invitations if any
-      if (filteredPendingInvitations.length > 0) {
-        response.pending_invitations = filteredPendingInvitations;
-      }
-
+      const token = generateToken(user._id);
+      const response = await buildUserResponse(user, token);
       res.json(response);
     } else {
       res.status(401).json({ message: "Invalid email or password" });
@@ -191,7 +158,12 @@ const logoutUser = (req, res) => {
 
 //   Get user profile
 const getUserProfile = async (req, res) => {
-  res.json(req.user);
+  try {
+    const userResponse = await buildUserResponse(req.user);
+    res.json(userResponse);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 //   Get user by email

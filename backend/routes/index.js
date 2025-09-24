@@ -1,5 +1,5 @@
 const express = require('express');
-const { protect, admin } = require("../middleware/authMiddleware");
+const { protect, admin } = require("../middleware/auth");
 const router = express.Router();
 const homeController = require('../controllers/homeController');
 const emailTestController = require('../controllers/emailTestController');
