@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/core/injection_container.dart';
 import 'package:mobile/core/routing/routeLists.dart';
+import 'package:mobile/features/Authentication/domain/repositories/login_repository.dart';
 import 'package:mobile/features/invite-user/domain/model/invitation_model.dart';
 import 'package:mobile/features/invite-user/presentation/bloc/invite_user_bloc.dart';
 import 'package:mobile/features/invite-user/presentation/bloc/invite_user_event.dart';
@@ -35,36 +37,79 @@ class _InviteUserPageState extends State<InviteUserPage> {
   String firstName = "";
   String lastName = "";
   String position = "";
-
+  String? selectedRole;
+  String? currentUserName;
   @override
   void initState() {
     super.initState();
     context.read<InvitedVerseUserRoleBloc>().add(
       GetInviteVerseRoleEvent(widget.verseId ?? ""),
     );
+    _loadDashboardData();
+  }
+
+  Future<void> _loadDashboardData() async {
+    try {
+      final loginRepository = sl<LoginRepository>();
+
+      // Load current user
+      final userResult = await loginRepository.getCurrentUser();
+
+      userResult.fold(
+        (failure) {
+          // Handle error
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to load user: ${failure.message}'),
+              ),
+            );
+          }
+        },
+        (user) {
+          if (user != null) {
+            setState(() {
+              currentUserName = user.firstName;
+            });
+          }
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading dashboard data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   void parseUserInput(String input) {
-    // Split input into two parts: "name" and "position"
-    final parts = input.split(',');
+    // Normalize the input by replacing commas with spaces, then clean up multiple spaces
+    final normalizedInput = input
+        .replaceAll(',', ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    // Split by spaces
+    final parts = normalizedInput.split(' ');
 
     if (parts.length < 2) {
       print("Invalid input format. Use: FirstName LastName, Position");
       return;
     }
 
-    final fullName = parts[0].trim(); // "John Doe"
-    final position = parts[1].trim(); // "Software Engineer"
+    // Position is the last part
+    position = parts.last;
 
-    final nameParts = fullName.split(' ');
+    // Everything before the last part is the name
+    final nameParts = parts.sublist(0, parts.length - 1);
 
     if (nameParts.isNotEmpty) {
-      firstName = nameParts.first; // "John"
-      lastName = nameParts.length > 1
-          ? nameParts
-                .sublist(1)
-                .join(' ') // "Doe"
-          : ''; // In case only one word was given
+      firstName = nameParts.first;
+      lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
     }
   }
 
@@ -84,7 +129,13 @@ class _InviteUserPageState extends State<InviteUserPage> {
             child: BlocListener<UserInvitationBloc, InvitedUserState>(
               listener: (context, state) {
                 if (state is InvitedUserSuccess) {
-                  context.pushNamed(Routelists.completeUserInvite);
+                  context.pushNamed(
+                    Routelists.completeUserInvite,
+                    extra: {
+                      "invitedUserName": firstName,
+                      "inviterUame": currentUserName ?? "User",
+                    },
+                  );
                 } else if (state is InvitedUserFailure) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Error: ${state.error}')),
@@ -124,12 +175,7 @@ class _InviteUserPageState extends State<InviteUserPage> {
                         children: [
                           // Top bar
                           TopBar(),
-                          IconButton(
-                            onPressed: () {
-                              context.pop();
-                            },
-                            icon: Icon(Icons.arrow_back_ios_new_outlined),
-                          ),
+
                           const SizedBox(height: 30),
 
                           // Greeting
@@ -147,6 +193,9 @@ class _InviteUserPageState extends State<InviteUserPage> {
 
                           // Title textfield
                           TextField(
+                            onChanged: (value) {
+                              setState(() {});
+                            },
                             controller: _emailController,
                             decoration: InputDecoration(
                               hintText:
@@ -186,6 +235,11 @@ class _InviteUserPageState extends State<InviteUserPage> {
                           const SizedBox(height: 12),
                           // Title textfield
                           TextField(
+                            onChanged: (value) {
+                              parseUserInput(postionController.text);
+
+                              setState(() {});
+                            },
                             controller: postionController,
                             decoration: InputDecoration(
                               hintText: "Vor- und Nachname, Position",
@@ -272,21 +326,24 @@ class _InviteUserPageState extends State<InviteUserPage> {
                                     return Row(
                                       children: [
                                         Checkbox(
-                                          value: role.isSelected ?? false,
+                                          value: role.role == selectedRole,
                                           onChanged: (value) {
                                             if (role.isSelected != false) {
                                               selectedRoleId = role.roleId;
                                             }
-                                            context
-                                                .read<
-                                                  InvitedVerseUserRoleBloc
-                                                >()
-                                                .add(
-                                                  ToggleRoleEvent(
-                                                    role.roleId,
-                                                    value ?? false,
-                                                  ),
-                                                );
+                                            setState(() {
+                                              selectedRole = role.role;
+                                            });
+                                            // context
+                                            //     .read<
+                                            //       InvitedVerseUserRoleBloc
+                                            //     >()
+                                            //     .add(
+                                            //       ToggleRoleEvent(
+                                            //         role.roleId,
+                                            //         value ?? false,
+                                            //       ),
+                                            //     );
                                           },
                                         ),
                                         Expanded(child: Text(role.role)),
@@ -321,12 +378,20 @@ class _InviteUserPageState extends State<InviteUserPage> {
                           CustomOutlinedButton(
                             isEnabled:
                                 widget.verseId != null &&
-                                selectedRoleId.isNotEmpty,
+                                selectedRoleId.isNotEmpty &&
+                                position.isNotEmpty &&
+                                firstName.isNotEmpty &&
+                                lastName.isNotEmpty,
 
                             text: "Einladung senden",
                             onPressed: () {
+                              parseUserInput(postionController.text);
+                              setState(() {});
                               if (widget.verseId != null &&
-                                  selectedRoleId.isNotEmpty) {
+                                  selectedRoleId.isNotEmpty &&
+                                  position.isNotEmpty &&
+                                  firstName.isNotEmpty &&
+                                  lastName.isNotEmpty) {
                                 final user = InvitationUser(
                                   email: _emailController.text,
                                   position: position,
