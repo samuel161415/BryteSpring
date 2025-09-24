@@ -5,7 +5,6 @@ const User = require('../models/User');
 exports.requireAuth = async (req, res, next) => {
   try {
     const header = req.headers.authorization || '';
-    // console.log("header", header);
     const [scheme, token] = header.split(' ');
     if (scheme !== 'Bearer' || !token) {
       return res.status(401).json({ message: 'Unauthorized' });
@@ -14,7 +13,6 @@ exports.requireAuth = async (req, res, next) => {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
    
     const user = await User.findById(payload.id || payload.userId);
-    // console.log("user",user)
     if (!user || user.is_active === false) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -25,3 +23,15 @@ exports.requireAuth = async (req, res, next) => {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 };
+
+// Admin middleware - checks if user has admin role
+exports.admin = (req, res, next) => {
+  if (req.user && req.user.is_superadmin === true) {
+    next();
+  } else {
+    res.status(403).json({ message: 'Admin access required' });
+  }
+};
+
+// Alias for requireAuth to maintain compatibility with existing code
+exports.protect = exports.requireAuth;
