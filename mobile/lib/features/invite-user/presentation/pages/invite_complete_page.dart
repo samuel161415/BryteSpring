@@ -10,7 +10,9 @@ import '../../../../core/widgets/app_footer.dart';
 import '../../../verse/presentation/components/custom_outlined_button.dart';
 
 class InviteCompletePage extends StatefulWidget {
-  const InviteCompletePage({super.key});
+  const InviteCompletePage({super.key, this.invitedUserName, this.inviterUame});
+  final String? invitedUserName;
+  final String? inviterUame;
 
   @override
   State<InviteCompletePage> createState() => _InviteCompletePageState();
@@ -60,7 +62,7 @@ class _InviteCompletePageState extends State<InviteCompletePage> {
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 30,
-                      vertical: 5,
+                      vertical: 25,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,7 +74,7 @@ class _InviteCompletePageState extends State<InviteCompletePage> {
 
                         // Greeting
                         Text(
-                          "Lieber Dirk, Stephan Tomat hatDeine Einladung erhalten.",
+                          "Lieber ${widget.inviterUame ?? "inviter user"}, ${widget.invitedUserName ?? "invited user"} Tomat hatDeine Einladung erhalten.",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 28,

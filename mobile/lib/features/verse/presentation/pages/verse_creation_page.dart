@@ -7,6 +7,7 @@ import 'package:mobile/features/verse/presentation/components/asset_selection_wi
 import 'package:mobile/features/verse/presentation/components/channel_selection_widget.dart';
 import 'package:mobile/features/verse/presentation/components/stracture_verse_widget.dart';
 import 'package:mobile/features/verse/presentation/components/verse_complete_widget.dart';
+import 'package:mobile/features/verse/presentation/components/verse_loading_completed.dart';
 import 'package:mobile/features/verse/presentation/components/verse_loading_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -154,7 +155,7 @@ class _VerseCreationPageState extends State<VerseCreationPage> {
         // onSubmit: _submitForm,
         // isSubmitting: _isSubmitting,
       ),
-      VerseLoadingWidget(
+      VerseLoadingCompleted(
         isLoading: false,
         name: widget.currentUserName,
 
