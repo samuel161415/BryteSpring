@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions for responsive layout
+    // Get screkkjhhggfffdduyytghggen dimensionhhjkjuok9009099iip[yuuigihfdguyhis for responsive layout
     final Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
               borderRadius: BorderRadius.circular(24.0),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withOpacity(0.5),hhhhh
                   blurRadius: 25,
                   offset: const Offset(0, 10),
                 ),
@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             child: Column(
               children: [
-                // LoginHeader(onLanguageChanged: _handleLanguageChanged),
+                // LoginHeader(onLa nguageChanged: _handleLanguageChanged),
                 LoginForm(),
                 AppFooter(onLanguageChanged: _handleLanguageChanged),
               ],
